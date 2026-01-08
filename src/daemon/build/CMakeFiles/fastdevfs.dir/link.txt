@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/fastdevfs.dir/random.cpp.o -o fastdevfs  -lfuse3 -lpthread 
