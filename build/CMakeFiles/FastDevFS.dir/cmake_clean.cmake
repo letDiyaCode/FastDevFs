@@ -3,6 +3,10 @@ file(REMOVE_RECURSE
   "CMakeFiles/FastDevFS.dir/main.cpp.o.d"
   "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/getattr.cpp.o"
   "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/getattr.cpp.o.d"
+  "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/opendir.cpp.o"
+  "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/opendir.cpp.o.d"
+  "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/readdir.cpp.o"
+  "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/readdir.cpp.o.d"
   "FastDevFS"
   "FastDevFS.pdb"
 )

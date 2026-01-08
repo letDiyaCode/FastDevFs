@@ -10,6 +10,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/diya_limbani/FastDevFs/main.cpp" "CMakeFiles/FastDevFS.dir/main.cpp.o" "gcc" "CMakeFiles/FastDevFS.dir/main.cpp.o.d"
   "/home/diya_limbani/FastDevFs/src/src/fuse_functions/getattr.cpp" "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/getattr.cpp.o" "gcc" "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/getattr.cpp.o.d"
+  "/home/diya_limbani/FastDevFs/src/src/fuse_functions/opendir.cpp" "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/opendir.cpp.o" "gcc" "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/opendir.cpp.o.d"
+  "/home/diya_limbani/FastDevFs/src/src/fuse_functions/readdir.cpp" "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/readdir.cpp.o" "gcc" "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/readdir.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

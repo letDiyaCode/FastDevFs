@@ -11,7 +11,7 @@ int fastdevfs_getattr(const char* path, struct stat* stbuf, struct fuse_file_inf
     (void) fi;
     memset(stbuf, 0, sizeof(struct stat));
 
-    if(strcmp("/", path) == 0) {
+    if(strcmp("/", path) == 0 || strcmp("/.", path) == 0 || strcmp("/..", path) == 0) {
         stbuf->st_mode = S_IFDIR | 0755;
         stbuf->st_nlink = 2;
         stbuf->st_uid = getuid();

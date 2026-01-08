@@ -3,6 +3,8 @@
 #include<fuse3/fuse.h>
 #include<iostream>
 #include "src/include/fuse_functions/getattr.h"
+#include "src/include/fuse_functions/readdir.h"
+#include "src/include/fuse_functions/opendir.h"
 
 using namespace std;
 
@@ -21,6 +23,8 @@ static struct fuse_operations fastdevfs_oper = {
     // .getattr = get_attr,
     // .readdir = readdir,
     .getattr = fastdevfs_getattr,
+    .opendir = fastdevfs_opendir,
+    .readdir = fastdevfs_readdir,
 };
 int main(int argc, char* argv[]){
     cout<<"Starting FastDevFs Daemon..."<<endl;

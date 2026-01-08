@@ -177,6 +177,54 @@ src/src/fuse_functions/getattr.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/getattr.cpp.s
 .PHONY : src/src/fuse_functions/getattr.cpp.s
 
+src/src/fuse_functions/opendir.o: src/src/fuse_functions/opendir.cpp.o
+.PHONY : src/src/fuse_functions/opendir.o
+
+# target to build an object file
+src/src/fuse_functions/opendir.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/opendir.cpp.o
+.PHONY : src/src/fuse_functions/opendir.cpp.o
+
+src/src/fuse_functions/opendir.i: src/src/fuse_functions/opendir.cpp.i
+.PHONY : src/src/fuse_functions/opendir.i
+
+# target to preprocess a source file
+src/src/fuse_functions/opendir.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/opendir.cpp.i
+.PHONY : src/src/fuse_functions/opendir.cpp.i
+
+src/src/fuse_functions/opendir.s: src/src/fuse_functions/opendir.cpp.s
+.PHONY : src/src/fuse_functions/opendir.s
+
+# target to generate assembly for a file
+src/src/fuse_functions/opendir.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/opendir.cpp.s
+.PHONY : src/src/fuse_functions/opendir.cpp.s
+
+src/src/fuse_functions/readdir.o: src/src/fuse_functions/readdir.cpp.o
+.PHONY : src/src/fuse_functions/readdir.o
+
+# target to build an object file
+src/src/fuse_functions/readdir.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/readdir.cpp.o
+.PHONY : src/src/fuse_functions/readdir.cpp.o
+
+src/src/fuse_functions/readdir.i: src/src/fuse_functions/readdir.cpp.i
+.PHONY : src/src/fuse_functions/readdir.i
+
+# target to preprocess a source file
+src/src/fuse_functions/readdir.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/readdir.cpp.i
+.PHONY : src/src/fuse_functions/readdir.cpp.i
+
+src/src/fuse_functions/readdir.s: src/src/fuse_functions/readdir.cpp.s
+.PHONY : src/src/fuse_functions/readdir.s
+
+# target to generate assembly for a file
+src/src/fuse_functions/readdir.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/readdir.cpp.s
+.PHONY : src/src/fuse_functions/readdir.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -192,6 +240,12 @@ help:
 	@echo "... src/src/fuse_functions/getattr.o"
 	@echo "... src/src/fuse_functions/getattr.i"
 	@echo "... src/src/fuse_functions/getattr.s"
+	@echo "... src/src/fuse_functions/opendir.o"
+	@echo "... src/src/fuse_functions/opendir.i"
+	@echo "... src/src/fuse_functions/opendir.s"
+	@echo "... src/src/fuse_functions/readdir.o"
+	@echo "... src/src/fuse_functions/readdir.i"
+	@echo "... src/src/fuse_functions/readdir.s"
 .PHONY : help
 
 

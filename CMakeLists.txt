@@ -9,6 +9,8 @@ pkg_check_modules(FUSE3 REQUIRED fuse3)
 add_executable(FastDevFS 
     main.cpp
     src/src/fuse_functions/getattr.cpp
+    src/src/fuse_functions/readdir.cpp
+    src/src/fuse_functions/opendir.cpp
 )
 
 target_include_directories(FastDevFS PRIVATE 
