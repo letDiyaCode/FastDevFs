@@ -1,0 +1,3 @@
+/home/diya_limbani/FastDevFs/build/CMakeFiles/FastDevFS.dir
+/home/diya_limbani/FastDevFs/build/CMakeFiles/edit_cache.dir
+/home/diya_limbani/FastDevFs/build/CMakeFiles/rebuild_cache.dir
