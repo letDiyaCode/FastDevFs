@@ -1,3 +1,0 @@
-/home/bismarck/FastDevFs/src/daemon/build/CMakeFiles/fastdevfs.dir
-/home/bismarck/FastDevFs/src/daemon/build/CMakeFiles/edit_cache.dir
-/home/bismarck/FastDevFs/src/daemon/build/CMakeFiles/rebuild_cache.dir
