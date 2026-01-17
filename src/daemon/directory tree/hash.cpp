@@ -1,5 +1,5 @@
 
-#include "hash.h"
+#include "../../../include/daemon/directory tree/hash.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
@@ -166,6 +166,34 @@ int hashmap_has(hashmap_t *m, const char *key) {
     uint64_t h = poly_hash(key);
     entry_t *e = find_entry(m, key, h);
     return e ? 1 : 0;
+}
+
+int hashmap_remove(hashmap_t *m, const char *key) {
+    if (!m || !key) return 0;
+    uint64_t h = poly_hash(key);
+    size_t idx = (size_t)(h % m->n_buckets);
+    entry_t *e = m->buckets[idx];
+    entry_t *prev = NULL;
+    
+    // Find the entry in the chain
+    while (e) {
+        if (e->hash == h && strcmp(e->key, key) == 0) {
+            // Found it, remove from chain
+            if (prev) {
+                prev->next = e->next;
+            } else {
+                m->buckets[idx] = e->next;
+            }
+            // Free the entry
+            free(e->key);
+            free(e);
+            m->size -= 1;
+            return 1;
+        }
+        prev = e;
+        e = e->next;
+    }
+    return 0;  // Not found
 }
 
 size_t hashmap_size(hashmap_t *m) {

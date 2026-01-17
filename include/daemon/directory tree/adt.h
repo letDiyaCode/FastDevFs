@@ -25,6 +25,7 @@ struct header{
   int firstfree = 0;
   int start = -1;
   int size = 100000;
+  int nodeallocated = 1; ////// 0th index will be used for root node
    HashMap hash;
 };
 struct treefile{
@@ -36,6 +37,8 @@ struct treefile{
 int hashindex(string filename, treefile &file1);
 void insert(string filename, string parentname, treefile &file1);
 void delete1(string filename, treefile &file1);
+void change_parent(string filename, string newparentname, treefile &file1);
 void initialize(treefile &file1);
 
 #endif /* ADT_H */
+

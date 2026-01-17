@@ -1,7 +1,6 @@
 #include <iostream>
-#include "adt.h"
-#include "hash.h"
-#include "hash.cpp"
+#include "../../../include/daemon/directory tree/adt.h"
+#include "../../../include/daemon/directory tree/hash.h"
 using namespace std;
 
 int hashindex(string filename, treefile &file1){
@@ -15,6 +14,16 @@ int hashindex(string filename, treefile &file1){
 void insert(string filename, string parentname, treefile &file1){
     lock_guard<recursive_mutex> lock(file1.mtx);
     
+    // Input validation - Single Point of Failure Prevention
+    if (filename.empty()) {
+        return;  // Invalid filename
+    }
+    
+    // Check for null or invalid treefile
+    if (file1.head.size <= 0 || file1.head.size > 100000) {
+        return;  // Invalid treefile state
+    }
+    
     // Check if filename already exists
     if (file1.head.hash.has(filename)) {
         int existingIndex = file1.head.hash[filename];
@@ -24,9 +33,28 @@ void insert(string filename, string parentname, treefile &file1){
         }
     }
     
+    // Check available space - Single Point of Failure Prevention
+    if (file1.head.nodeallocated >= file1.head.size) {
+        return;  // Tree is full
+    }
+    
     int free = file1.head.firstfree;
     if (free < 0 || free >= file1.head.size) {
-        return;  // No free space available
+        // Recovery: Try to find a free node
+        for (int i = 1; i < file1.head.size; i++) {
+            if (file1.arr[i].isdeleted) {
+                free = i;
+                break;
+            }
+        }
+        if (free < 0 || free >= file1.head.size) {
+            return;  // No free space available
+        }
+    }
+    
+    // Validate free node before using
+    if (free < 0 || free >= file1.head.size || !file1.arr[free].isdeleted) {
+        return;  // Invalid free node
     }
     
     int nextf = file1.arr[free].nextfree;
@@ -35,21 +63,33 @@ void insert(string filename, string parentname, treefile &file1){
     // Update firstfree to point to next free node
     file1.head.firstfree = nextf;
     
-    // Add to hash map
-    file1.head.hash[filename] = index;
+    // Add to hash map - with error checking
+    try {
+        file1.head.hash[filename] = index;
+    } catch (...) {
+        // Recovery: Restore firstfree
+        file1.head.firstfree = free;
+        return;  // Hash map operation failed
+    }
     
-    // Get parent index (empty parentname means root node)
+    // Get parent index (empty parentname means root node at index 0)
     int parentindex = -1;
-    if (!parentname.empty() && file1.head.hash.has(parentname)) {
+    if (parentname.empty()) {
+        // If parentname is empty, parent is root (index 0)
+        parentindex = 0;
+    } else if (file1.head.hash.has(parentname)) {
         parentindex = file1.head.hash[parentname];
         // Verify parent is not deleted
         if (parentindex >= 0 && parentindex < file1.head.size && 
             file1.arr[parentindex].isdeleted) {
-            parentindex = -1;  // Parent is deleted, treat as root
+            parentindex = 0;  // Parent is deleted, treat as root
         }
+    } else {
+        // Parent doesn't exist, default to root
+        parentindex = 0;
     }
     
-    // Link to parent if parent exists
+    // Link to parent
     if (parentindex >= 0 && parentindex < file1.head.size) {
         int firstson = file1.arr[parentindex].firstchild;
         file1.arr[parentindex].firstchild = index;  // new kid given
@@ -57,7 +97,7 @@ void insert(string filename, string parentname, treefile &file1){
         file1.arr[index].nextsibling = firstson;  // sibling sorted
         file1.arr[index].parent = parentindex;
     } else {
-        // Root node (no parent)
+        // No parent (shouldn't happen, but set defaults)
         file1.arr[index].parent = -1;
         file1.arr[index].nextsibling = -1;
     }
@@ -66,25 +106,50 @@ void insert(string filename, string parentname, treefile &file1){
     file1.arr[index].isdeleted = false;
     file1.arr[index].metadata.name = filename;
     file1.arr[index].firstchild = -1;
+    
+    // Update nodeallocated counter (but don't count index 0)
+    if (index != 0) {
+        file1.head.nodeallocated++;
+    }
 }
 
-void delete1(string filename, treefile &file1){
-    lock_guard<recursive_mutex> lock(file1.mtx);
-    
-    if (!file1.head.hash.has(filename)) {
-        return;  // File not found
-    }
-    
-    int index = hashindex(filename, file1);
+// Helper function to recursively delete a subtree
+static void delete_subtree_recursive(int index, treefile &file1, int max_depth = 1000) {
+    // Bounds checking - Single Point of Failure Prevention
     if (index < 0 || index >= file1.head.size) {
         return;  // Invalid index
     }
     
-    // Check if node has children - prevent deletion if it does
-    // (Alternatively, could recursively delete children, but that's more complex)
-    if (file1.arr[index].firstchild != -1) {
-        return;  // Cannot delete node with children
+    if (file1.arr[index].isdeleted) {
+        return;  // Already deleted
     }
+    
+    // Prevent infinite loops/stack overflow - Single Point of Failure Prevention
+    if (max_depth <= 0) {
+        return;  // Max recursion depth reached
+    }
+    
+    // First, recursively delete all children
+    int child = file1.arr[index].firstchild;
+    int iteration_count = 0;
+    while (child != -1 && child < file1.head.size) {
+        // Validate child index to prevent cycles and infinite loops
+        if (child < 0 || child >= file1.head.size) {
+            break;  // Invalid child index
+        }
+        
+        // Prevent infinite loops in sibling chain
+        if (++iteration_count > file1.head.size) {
+            break;  // Too many iterations, potential cycle
+        }
+        
+        int nextSibling = file1.arr[child].nextsibling;
+        delete_subtree_recursive(child, file1, max_depth - 1);
+        child = nextSibling;
+    }
+    
+    // Get filename before clearing metadata
+    string filename = file1.arr[index].metadata.name;
     
     // Unlink from parent's child list
     int parentIndex = file1.arr[index].parent;
@@ -105,6 +170,11 @@ void delete1(string filename, treefile &file1){
         }
     }
     
+    // Remove from hash map
+    if (!filename.empty()) {
+        file1.head.hash.remove(filename);
+    }
+    
     // Add to free list
     int free = file1.head.firstfree;
     file1.head.firstfree = index;
@@ -118,13 +188,172 @@ void delete1(string filename, treefile &file1){
     file1.arr[index].nextsibling = -1;
     file1.arr[index].parent = -1;
     
-    // Note: Hash map entry is not removed (HashMap doesn't have remove function)
-    // The entry will remain but point to a deleted node, which is acceptable
-    // since we check isdeleted flag and hash.has() before using the index
+    // Update nodeallocated counter (but keep 0th index reserved)
+    if (index != 0) {
+        file1.head.nodeallocated--;
+    }
+}
+
+void delete1(string filename, treefile &file1){
+    lock_guard<recursive_mutex> lock(file1.mtx);
+    
+    // Input validation - Single Point of Failure Prevention
+    if (filename.empty()) {
+        return;  // Invalid filename
+    }
+    
+    // Validate treefile state
+    if (file1.head.size <= 0 || file1.head.size > 100000) {
+        return;  // Invalid treefile state
+    }
+    
+    if (!file1.head.hash.has(filename)) {
+        return;  // File not found
+    }
+    
+    int index = hashindex(filename, file1);
+    if (index < 0 || index >= file1.head.size) {
+        return;  // Invalid index
+    }
+    
+    // Prevent deletion of root node (index 0) - Critical Protection
+    if (index == 0) {
+        return;  // Root node cannot be deleted - Single Point of Failure Protection
+    }
+    
+    // Validate node state before deletion
+    if (file1.arr[index].isdeleted) {
+        // Node already deleted, but hash entry exists - cleanup
+        file1.head.hash.remove(filename);
+        return;
+    }
+    
+    // Recursively delete the entire subtree
+    delete_subtree_recursive(index, file1, file1.head.size);
+}
+
+void change_parent(string filename, string newparentname, treefile &file1){
+    lock_guard<recursive_mutex> lock(file1.mtx);
+    
+    // Input validation - Single Point of Failure Prevention
+    if (filename.empty()) {
+        return;  // Invalid filename
+    }
+    
+    // Validate treefile state
+    if (file1.head.size <= 0 || file1.head.size > 100000) {
+        return;  // Invalid treefile state
+    }
+    
+    if (!file1.head.hash.has(filename)) {
+        return;  // Node not found
+    }
+    
+    int index = hashindex(filename, file1);
+    if (index < 0 || index >= file1.head.size || file1.arr[index].isdeleted) {
+        return;  // Invalid index
+    }
+    
+    // Cannot change parent of root node
+    if (index == 0) {
+        return;
+    }
+    
+    // Get new parent index (empty means root at index 0)
+    int newparentindex = -1;
+    if (newparentname.empty()) {
+        newparentindex = 0;  // Root node
+    } else if (file1.head.hash.has(newparentname)) {
+        newparentindex = file1.head.hash[newparentname];
+        // Verify new parent is not deleted
+        if (newparentindex < 0 || newparentindex >= file1.head.size || 
+            file1.arr[newparentindex].isdeleted) {
+            return;  // Invalid parent
+        }
+    } else {
+        return;  // New parent doesn't exist
+    }
+    
+    // Check if moving to the same parent
+    if (file1.arr[index].parent == newparentindex) {
+        return;  // Already under this parent
+    }
+    
+    // Check if trying to move node under itself or its own descendant
+    // Prevent cycles by checking if:
+    // 1. New parent is the node itself (impossible, but check anyway)
+    // 2. New parent is a descendant of the node being moved (would create cycle)
+    if (newparentindex == index) {
+        return;  // Cannot move node under itself
+    }
+    
+    // Check if new parent is a descendant of the node being moved
+    int check = file1.arr[newparentindex].parent;
+    int depth_limit = file1.head.size; // Prevent infinite loops
+    while (check != -1 && check < file1.head.size && depth_limit > 0) {
+        if (check == index) {
+            return;  // Would create a cycle - new parent is a descendant
+        }
+        check = file1.arr[check].parent;
+        depth_limit--;
+    }
+    
+    // Also check if new parent is in the subtree of the node being moved
+    // by checking all descendants of the node being moved
+    int child = file1.arr[index].firstchild;
+    depth_limit = file1.head.size;
+    while (child != -1 && child < file1.head.size && depth_limit > 0) {
+        if (child == newparentindex) {
+            return;  // Would create a cycle - new parent is a descendant
+        }
+        // Recursively check all descendants
+        int descCheck = file1.arr[child].firstchild;
+        while (descCheck != -1 && descCheck < file1.head.size && depth_limit > 0) {
+            if (descCheck == newparentindex) {
+                return;  // Would create a cycle
+            }
+            descCheck = file1.arr[descCheck].firstchild;
+            depth_limit--;
+        }
+        child = file1.arr[child].nextsibling;
+        depth_limit--;
+    }
+    
+    // Unlink from old parent
+    int oldparentindex = file1.arr[index].parent;
+    if (oldparentindex >= 0 && oldparentindex < file1.head.size) {
+        // If this is the first child, update parent's firstchild
+        if (file1.arr[oldparentindex].firstchild == index) {
+            file1.arr[oldparentindex].firstchild = file1.arr[index].nextsibling;
+        } else {
+            // Find the sibling that points to this node
+            int sibling = file1.arr[oldparentindex].firstchild;
+            while (sibling != -1 && sibling < file1.head.size) {
+                if (file1.arr[sibling].nextsibling == index) {
+                    file1.arr[sibling].nextsibling = file1.arr[index].nextsibling;
+                    break;
+                }
+                sibling = file1.arr[sibling].nextsibling;
+            }
+        }
+    }
+    
+    // Link to new parent
+    int firstson = file1.arr[newparentindex].firstchild;
+    file1.arr[newparentindex].firstchild = index;  // new kid given
+    
+    file1.arr[index].nextsibling = firstson;  // sibling sorted
+    file1.arr[index].parent = newparentindex;
 }
 
 void initialize(treefile &file1){
     lock_guard<recursive_mutex> lock(file1.mtx);
+    
+    // Validate size before initialization - Single Point of Failure Prevention
+    if (file1.head.size <= 0 || file1.head.size > 100000) {
+        // Recovery: Set default size
+        file1.head.size = 100000;
+    }
     
     int size = file1.head.size;
     for(int i = 0; i < size; i++){
@@ -140,5 +369,8 @@ void initialize(treefile &file1){
     if (size > 0) {
         file1.arr[size - 1].nextfree = -1;
     }
-    file1.head.firstfree = 0;
+    // 0th index is reserved for root node
+    file1.head.firstfree = 1;  // Start free list from index 1
+    file1.head.nodeallocated = 1;  // 0th index is pre-allocated for root
+    file1.head.start = -1;  // Initialize start pointer
 }

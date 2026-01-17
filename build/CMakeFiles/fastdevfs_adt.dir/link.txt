@@ -1,0 +1,2 @@
+/usr/bin/ar qc libfastdevfs_adt.a CMakeFiles/fastdevfs_adt.dir/src/daemon/directory_tree/adt.cpp.o CMakeFiles/fastdevfs_adt.dir/src/daemon/directory_tree/hash.cpp.o
+/usr/bin/ranlib libfastdevfs_adt.a

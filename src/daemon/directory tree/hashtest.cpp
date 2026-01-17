@@ -1,5 +1,5 @@
 // hash_test.cpp
-#include "hash.h"
+#include "../../../include/daemon/directory tree/hash.h"
 #include <iostream>
 
 int main() {
