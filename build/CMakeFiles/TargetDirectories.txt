@@ -1,3 +1,8 @@
 /home/diya_limbani/FastDevFs/build/CMakeFiles/FastDevFS.dir
+/home/diya_limbani/FastDevFs/build/CMakeFiles/test.dir
 /home/diya_limbani/FastDevFs/build/CMakeFiles/edit_cache.dir
 /home/diya_limbani/FastDevFs/build/CMakeFiles/rebuild_cache.dir
+/home/diya_limbani/FastDevFs/build/test/CMakeFiles/fdfs_tests.dir
+/home/diya_limbani/FastDevFs/build/test/CMakeFiles/test.dir
+/home/diya_limbani/FastDevFs/build/test/CMakeFiles/edit_cache.dir
+/home/diya_limbani/FastDevFs/build/test/CMakeFiles/rebuild_cache.dir

@@ -20,3 +20,6 @@ target_include_directories(FastDevFS PRIVATE
 
 target_link_libraries(FastDevFS PRIVATE ${FUSE3_LIBRARIES})
 target_compile_options(FastDevFS PRIVATE ${FUSE3_CFLAGS_OTHER})
+
+enable_testing()
+add_subdirectory(test)

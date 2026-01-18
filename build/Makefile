@@ -65,6 +65,16 @@ CMAKE_BINARY_DIR = /home/diya_limbani/FastDevFs/build
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running tests..."
+	/usr/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+.PHONY : test/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "No interactive CMake dialog available..."
@@ -128,6 +138,19 @@ FastDevFS: cmake_check_build_system
 FastDevFS/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/build
 .PHONY : FastDevFS/fast
+
+#=============================================================================
+# Target rules for targets named fdfs_tests
+
+# Build rule for target.
+fdfs_tests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 fdfs_tests
+.PHONY : fdfs_tests
+
+# fast build rule for target.
+fdfs_tests/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/fdfs_tests.dir/build.make test/CMakeFiles/fdfs_tests.dir/build
+.PHONY : fdfs_tests/fast
 
 main.o: main.cpp.o
 .PHONY : main.o
@@ -233,7 +256,9 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... test"
 	@echo "... FastDevFS"
+	@echo "... fdfs_tests"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

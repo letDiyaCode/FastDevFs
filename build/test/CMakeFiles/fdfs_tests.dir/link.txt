@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/fdfs_tests.dir/test_dir_manager.cpp.o CMakeFiles/fdfs_tests.dir/test_hash_store.cpp.o CMakeFiles/fdfs_tests.dir/__/src/src/daemon/dir_manager.cpp.o CMakeFiles/fdfs_tests.dir/__/src/src/daemon/hash_store.cpp.o -o fdfs_tests  -lgtest -lgtest_main -lpthread 
