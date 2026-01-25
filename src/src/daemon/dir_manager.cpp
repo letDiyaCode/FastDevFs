@@ -2,11 +2,6 @@
 #include <string.h>
 #include <cstdio>
 
-/*
- * Root is node 0 and never deleted.
- * Hash table maps full path → node index.
- */
-
 void dir_manager_init(DirManager* dm) {
     hash_init(&dm->hash);
     pthread_rwlock_init(&dm->rwlock, NULL);
@@ -24,7 +19,6 @@ void dir_manager_init(DirManager* dm) {
         dm->nodes[i].in_use = false;
     }
     dm->nodes[MAX_NODES - 1].next_free = -1;
-    dm->nodes[MAX_NODES - 1].in_use = false;
 }
 
 int lookup_node(DirManager* dm, const char* path) {
@@ -35,25 +29,9 @@ int lookup_node(DirManager* dm, const char* path) {
         return dm->root;
     }
 
-    uint64_t h = 0;
-    char token[NAME_SIZE];
-    int ti = 0;
-
-    for (const char* p = path; ; ++p) {
-        if (*p == '/' || *p == '\0') {
-            if (ti > 0) {
-                token[ti] = '\0';
-                h = hash_combine(h, token);
-                ti = 0;
-            }
-            if (*p == '\0')
-                break;
-        } else if (ti < NAME_SIZE - 1) {
-            token[ti++] = *p;
-        }
-    }
-
+    uint64_t h = hash_path_poly(path);
     int res = hash_lookup(&dm->hash, h, path);
+
     pthread_rwlock_unlock(&dm->rwlock);
     return res;
 }
@@ -66,7 +44,6 @@ int insert_node(DirManager* dm, const char* path) {
         return -1;
     }
 
-    uint64_t h = 0;
     int parent = dm->root;
     char token[NAME_SIZE];
     int ti = 0;
@@ -75,14 +52,13 @@ int insert_node(DirManager* dm, const char* path) {
         if (*p == '/' || *p == '\0') {
             if (ti > 0) {
                 token[ti] = '\0';
-                uint64_t next_hash = hash_combine(h, token);
 
-                // build full path incrementally
                 char full_key[KEY_SIZE];
                 snprintf(full_key, KEY_SIZE, "%.*s",
                          (int)(p - path), path);
 
-                int node = hash_lookup(&dm->hash, next_hash, full_key);
+                uint64_t h = hash_path_poly(full_key);
+                int node = hash_lookup(&dm->hash, h, full_key);
 
                 if (*p == '\0') {
                     if (node != -1 || dm->free_list == -1) {
@@ -101,7 +77,7 @@ int insert_node(DirManager* dm, const char* path) {
                     n->in_use = true;
 
                     dm->nodes[parent].first_child = new_node;
-                    hash_insert(&dm->hash, next_hash, full_key, new_node);
+                    hash_insert(&dm->hash, h, full_key, new_node);
 
                     pthread_rwlock_unlock(&dm->rwlock);
                     return new_node;
@@ -113,7 +89,6 @@ int insert_node(DirManager* dm, const char* path) {
                 }
 
                 parent = node;
-                h = next_hash;
                 ti = 0;
             }
             if (*p == '\0')
@@ -142,23 +117,7 @@ bool remove_node(DirManager* dm, const char* path) {
         return false;
     }
 
-    uint64_t h = 0;
-    char token[NAME_SIZE];
-    int ti = 0;
-
-    for (const char* p = path; ; ++p) {
-        if (*p == '/' || *p == '\0') {
-            if (ti > 0) {
-                token[ti] = '\0';
-                h = hash_combine(h, token);
-                ti = 0;
-            }
-            if (*p == '\0')
-                break;
-        } else if (ti < NAME_SIZE - 1) {
-            token[ti++] = *p;
-        }
-    }
+    uint64_t h = hash_path_poly(path);
 
     int parent = n->parent;
     int* link = &dm->nodes[parent].first_child;

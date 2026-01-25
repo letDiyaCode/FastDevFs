@@ -11,8 +11,13 @@
 
 /*
  * System-level persistence tests.
+ *
  * Verifies that DirManager and HashTable survive restart
  * when backed by a file using mmap.
+ *
+ * NOTE:
+ * - pthread locks are NOT persistent and must be re-initialized
+ * - structural data (nodes, hash entries) must survive
  */
 
 static const char* PERSIST_FILE = "/tmp/fastdevfs_persist_test.dat";
@@ -41,8 +46,9 @@ TEST(PersistenceTest, DirManagerPersistsAcrossRestart) {
 
     DirManager* dm = static_cast<DirManager*>(addr);
 
-    // initialize + mutate
+    // first-time initialization
     dir_manager_init(dm);
+
     insert_node(dm, "/home");
     insert_node(dm, "/home/user");
     insert_node(dm, "/var");
@@ -61,6 +67,9 @@ TEST(PersistenceTest, DirManagerPersistsAcrossRestart) {
     ASSERT_NE(addr, MAP_FAILED);
 
     DirManager* dm_after = static_cast<DirManager*>(addr);
+
+    // IMPORTANT: reinitialize lock ONLY
+    pthread_rwlock_init(&dm_after->rwlock, nullptr);
 
     // verify persistence
     EXPECT_NE(lookup_node(dm_after, "/home"), -1);
@@ -82,14 +91,13 @@ TEST(PersistenceTest, HashTablePersistsAcrossRestart) {
 
     HashTable* ht = static_cast<HashTable*>(addr);
 
-    // initialize + mutate
     hash_init(ht);
 
     const char* key1 = "alpha";
     const char* key2 = "beta";
 
-    uint64_t h1 = hash_combine(0, key1);
-    uint64_t h2 = hash_combine(0, key2);
+    uint64_t h1 = hash_path_poly(key1);
+    uint64_t h2 = hash_path_poly(key2);
 
     ASSERT_TRUE(hash_insert(ht, h1, key1, 11));
     ASSERT_TRUE(hash_insert(ht, h2, key2, 22));

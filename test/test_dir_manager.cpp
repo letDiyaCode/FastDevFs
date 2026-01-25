@@ -7,8 +7,12 @@
 
 /*
  * Tests for DirManager ADT.
- * Paths are treated as literal strings.
- * No canonicalization (/, //, trailing slash) is assumed.
+ *
+ * Design assumptions:
+ * - Paths are treated as literal strings
+ * - No canonicalization (/, //, trailing slash)
+ * - Hashing is full-path based
+ * - Concurrency is handled via RW locks
  */
 
 class DirManagerTest : public ::testing::Test {
@@ -43,6 +47,7 @@ TEST_F(DirManagerTest, InsertNestedDirectories) {
 }
 
 TEST_F(DirManagerTest, InsertWithoutParentFails) {
+    // parent "/a" does not exist
     EXPECT_EQ(insert_node(&dm, "/a/b"), -1);
 }
 
@@ -139,14 +144,10 @@ TEST_F(DirManagerTest, VeryLongNameHandledSafely) {
     std::string longName(300, 'a');
     std::string path = "/" + longName;
 
-    // should not crash and should insert safely (name may be truncated)
     int node = insert_node(&dm, path.c_str());
     EXPECT_NE(node, -1);
-
-    // lookup using same path string should succeed
     EXPECT_NE(lookup_node(&dm, path.c_str()), -1);
 }
-
 
 /* ---------- Transaction behavior ---------- */
 
@@ -232,5 +233,3 @@ TEST_F(DirManagerTest, ConcurrentWritersSafe) {
     EXPECT_NE(lookup_node(&dm, "/a"), -1);
     EXPECT_NE(lookup_node(&dm, "/b"), -1);
 }
-
-

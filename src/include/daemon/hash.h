@@ -25,8 +25,8 @@ typedef struct HashTable {
 // initialization
 void hash_init(HashTable* ht);
 
-// incremental hash
-uint64_t hash_combine(uint64_t parent_hash, const char* name);
+// full-path polynomial hash
+uint64_t hash_path_poly(const char* path);
 
 // operations (key-aware)
 bool hash_insert(HashTable* ht, uint64_t hash, const char* key, int value);

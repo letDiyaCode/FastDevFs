@@ -1,8 +1,6 @@
 #include "daemon/hash.h"
 #include <string.h>
 
-static const uint64_t HASH_SEPARATOR = 1315423911ULL;
-
 void hash_init(HashTable* ht) {
     for (int i = 0; i < HASH_SIZE; i++)
         ht->buckets[i] = -1;
@@ -14,20 +12,21 @@ void hash_init(HashTable* ht) {
     ht->free_head = 0;
 }
 
-uint64_t hash_combine(uint64_t parent_hash, const char* name) {
-    uint64_t h = parent_hash;
+// Polynomial rolling hash on FULL PATH
+uint64_t hash_path_poly(const char* path) {
+    const uint64_t P = 131;
+    uint64_t h = 0;
 
-    for (const unsigned char* p = (const unsigned char*)name; *p; ++p)
-        h ^= (h << 5) + (h >> 2) + *p;
-
-    return h ^ HASH_SEPARATOR;
+    for (const unsigned char* p = (const unsigned char*)path; *p; ++p) {
+        h = (h * P + *p) % MAX_ENTRIES;
+    }
+    return h;
 }
 
 bool hash_insert(HashTable* ht, uint64_t hash,
                  const char* key, int value) {
     int bucket = hash % HASH_SIZE;
 
-    // reject exact duplicate key
     for (int i = ht->buckets[bucket]; i != -1; i = ht->entries[i].next) {
         if (ht->entries[i].hash == hash &&
             strcmp(ht->entries[i].key, key) == 0)
@@ -47,7 +46,6 @@ bool hash_insert(HashTable* ht, uint64_t hash,
 
     ht->entries[idx].next = ht->buckets[bucket];
     ht->buckets[bucket] = idx;
-
     return true;
 }
 

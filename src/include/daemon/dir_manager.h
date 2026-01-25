@@ -7,7 +7,6 @@
 #define MAX_NODES 10000
 #define NAME_SIZE 256
 
-// directory node
 typedef struct DirNode {
     char name[NAME_SIZE];
     int parent;
@@ -17,7 +16,6 @@ typedef struct DirNode {
     int next_free;
 } DirNode;
 
-// directory manager
 typedef struct DirManager {
     DirNode nodes[MAX_NODES];
     int root;
