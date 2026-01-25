@@ -188,6 +188,30 @@ __/src/src/daemon/hash.cpp.s:
 	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/run_tests.dir/build.make test/CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.s
 .PHONY : __/src/src/daemon/hash.cpp.s
 
+persistence_test.o: persistence_test.cpp.o
+.PHONY : persistence_test.o
+
+# target to build an object file
+persistence_test.cpp.o:
+	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/run_tests.dir/build.make test/CMakeFiles/run_tests.dir/persistence_test.cpp.o
+.PHONY : persistence_test.cpp.o
+
+persistence_test.i: persistence_test.cpp.i
+.PHONY : persistence_test.i
+
+# target to preprocess a source file
+persistence_test.cpp.i:
+	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/run_tests.dir/build.make test/CMakeFiles/run_tests.dir/persistence_test.cpp.i
+.PHONY : persistence_test.cpp.i
+
+persistence_test.s: persistence_test.cpp.s
+.PHONY : persistence_test.s
+
+# target to generate assembly for a file
+persistence_test.cpp.s:
+	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/run_tests.dir/build.make test/CMakeFiles/run_tests.dir/persistence_test.cpp.s
+.PHONY : persistence_test.cpp.s
+
 test_dir_manager.o: test_dir_manager.cpp.o
 .PHONY : test_dir_manager.o
 
@@ -252,6 +276,9 @@ help:
 	@echo "... __/src/src/daemon/hash.o"
 	@echo "... __/src/src/daemon/hash.i"
 	@echo "... __/src/src/daemon/hash.s"
+	@echo "... persistence_test.o"
+	@echo "... persistence_test.i"
+	@echo "... persistence_test.s"
 	@echo "... test_dir_manager.o"
 	@echo "... test_dir_manager.i"
 	@echo "... test_dir_manager.s"

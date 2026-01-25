@@ -97,10 +97,24 @@ test/CMakeFiles/run_tests.dir/test_hash_store.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/run_tests.dir/test_hash_store.cpp.s"
 	cd /home/diya_limbani/FastDevFs/build/test && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/diya_limbani/FastDevFs/test/test_hash_store.cpp -o CMakeFiles/run_tests.dir/test_hash_store.cpp.s
 
+test/CMakeFiles/run_tests.dir/persistence_test.cpp.o: test/CMakeFiles/run_tests.dir/flags.make
+test/CMakeFiles/run_tests.dir/persistence_test.cpp.o: /home/diya_limbani/FastDevFs/test/persistence_test.cpp
+test/CMakeFiles/run_tests.dir/persistence_test.cpp.o: test/CMakeFiles/run_tests.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/diya_limbani/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object test/CMakeFiles/run_tests.dir/persistence_test.cpp.o"
+	cd /home/diya_limbani/FastDevFs/build/test && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT test/CMakeFiles/run_tests.dir/persistence_test.cpp.o -MF CMakeFiles/run_tests.dir/persistence_test.cpp.o.d -o CMakeFiles/run_tests.dir/persistence_test.cpp.o -c /home/diya_limbani/FastDevFs/test/persistence_test.cpp
+
+test/CMakeFiles/run_tests.dir/persistence_test.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/run_tests.dir/persistence_test.cpp.i"
+	cd /home/diya_limbani/FastDevFs/build/test && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/diya_limbani/FastDevFs/test/persistence_test.cpp > CMakeFiles/run_tests.dir/persistence_test.cpp.i
+
+test/CMakeFiles/run_tests.dir/persistence_test.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/run_tests.dir/persistence_test.cpp.s"
+	cd /home/diya_limbani/FastDevFs/build/test && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/diya_limbani/FastDevFs/test/persistence_test.cpp -o CMakeFiles/run_tests.dir/persistence_test.cpp.s
+
 test/CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.o: test/CMakeFiles/run_tests.dir/flags.make
 test/CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.o: /home/diya_limbani/FastDevFs/src/src/daemon/dir_manager.cpp
 test/CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.o: test/CMakeFiles/run_tests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/diya_limbani/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object test/CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/diya_limbani/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object test/CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.o"
 	cd /home/diya_limbani/FastDevFs/build/test && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT test/CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.o -MF CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.o.d -o CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.o -c /home/diya_limbani/FastDevFs/src/src/daemon/dir_manager.cpp
 
 test/CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.i: cmake_force
@@ -114,7 +128,7 @@ test/CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.s: cmake_force
 test/CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.o: test/CMakeFiles/run_tests.dir/flags.make
 test/CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.o: /home/diya_limbani/FastDevFs/src/src/daemon/hash.cpp
 test/CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.o: test/CMakeFiles/run_tests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/diya_limbani/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object test/CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/diya_limbani/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object test/CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.o"
 	cd /home/diya_limbani/FastDevFs/build/test && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT test/CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.o -MF CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.o.d -o CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.o -c /home/diya_limbani/FastDevFs/src/src/daemon/hash.cpp
 
 test/CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.i: cmake_force
@@ -129,6 +143,7 @@ test/CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.s: cmake_force
 run_tests_OBJECTS = \
 "CMakeFiles/run_tests.dir/test_dir_manager.cpp.o" \
 "CMakeFiles/run_tests.dir/test_hash_store.cpp.o" \
+"CMakeFiles/run_tests.dir/persistence_test.cpp.o" \
 "CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.o" \
 "CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.o"
 
@@ -137,13 +152,14 @@ run_tests_EXTERNAL_OBJECTS =
 
 test/run_tests: test/CMakeFiles/run_tests.dir/test_dir_manager.cpp.o
 test/run_tests: test/CMakeFiles/run_tests.dir/test_hash_store.cpp.o
+test/run_tests: test/CMakeFiles/run_tests.dir/persistence_test.cpp.o
 test/run_tests: test/CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.o
 test/run_tests: test/CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.o
 test/run_tests: test/CMakeFiles/run_tests.dir/build.make
 test/run_tests: /usr/lib/x86_64-linux-gnu/libgtest_main.a
 test/run_tests: /usr/lib/x86_64-linux-gnu/libgtest.a
 test/run_tests: test/CMakeFiles/run_tests.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/diya_limbani/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable run_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/diya_limbani/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable run_tests"
 	cd /home/diya_limbani/FastDevFs/build/test && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/run_tests.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

@@ -10,6 +10,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/diya_limbani/FastDevFs/src/src/daemon/dir_manager.cpp" "test/CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.o" "gcc" "test/CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.o.d"
   "/home/diya_limbani/FastDevFs/src/src/daemon/hash.cpp" "test/CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.o" "gcc" "test/CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.o.d"
+  "/home/diya_limbani/FastDevFs/test/persistence_test.cpp" "test/CMakeFiles/run_tests.dir/persistence_test.cpp.o" "gcc" "test/CMakeFiles/run_tests.dir/persistence_test.cpp.o.d"
   "/home/diya_limbani/FastDevFs/test/test_dir_manager.cpp" "test/CMakeFiles/run_tests.dir/test_dir_manager.cpp.o" "gcc" "test/CMakeFiles/run_tests.dir/test_dir_manager.cpp.o.d"
   "/home/diya_limbani/FastDevFs/test/test_hash_store.cpp" "test/CMakeFiles/run_tests.dir/test_hash_store.cpp.o" "gcc" "test/CMakeFiles/run_tests.dir/test_hash_store.cpp.o.d"
   )

@@ -5,6 +5,7 @@ find_package(GTest REQUIRED)
 add_executable(run_tests
     test_dir_manager.cpp
     test_hash_store.cpp
+    persistence_test.cpp
     ../src/src/daemon/dir_manager.cpp
     ../src/src/daemon/hash.cpp
 )
