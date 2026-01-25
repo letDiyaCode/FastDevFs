@@ -144,5 +144,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/FastDevFS.dir/DependInfo.cmake"
-  "test/CMakeFiles/fdfs_tests.dir/DependInfo.cmake"
+  "test/CMakeFiles/run_tests.dir/DependInfo.cmake"
   )

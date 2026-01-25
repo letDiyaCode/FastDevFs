@@ -1,101 +1,179 @@
 #include "daemon/dir_manager.h"
-#include <cstring>
-#include <mutex>
+#include <string.h>
+#include <cstdio>
 
-DirManager::DirManager() {
-    for (int i = 0; i < FDFS_MAX_INODES; i++) {
-        inode_used[i] = false;
+/*
+ * Root is node 0 and never deleted.
+ * Hash table maps full path → node index.
+ */
+
+void dir_manager_init(DirManager* dm) {
+    hash_init(&dm->hash);
+    pthread_rwlock_init(&dm->rwlock, NULL);
+
+    dm->root = 0;
+    dm->nodes[0].name[0] = '/';
+    dm->nodes[0].parent = -1;
+    dm->nodes[0].first_child = -1;
+    dm->nodes[0].next_sibling = -1;
+    dm->nodes[0].in_use = true;
+
+    dm->free_list = 1;
+    for (int i = 1; i < MAX_NODES - 1; i++) {
+        dm->nodes[i].next_free = i + 1;
+        dm->nodes[i].in_use = false;
     }
-
-    inode_used[0] = true;
-    dir_nodes[0].inode = 0;
-
-    for (int i = 0; i < FDFS_MAX_DIR_ENTRIES; i++)
-        dir_nodes[0].entries[i].used = false;
+    dm->nodes[MAX_NODES - 1].next_free = -1;
+    dm->nodes[MAX_NODES - 1].in_use = false;
 }
 
-inode_t DirManager::resolve_path(const char* path) {
-    std::shared_lock lock(tree_lock);
+int lookup_node(DirManager* dm, const char* path) {
+    pthread_rwlock_rdlock(&dm->rwlock);
 
-    if (strcmp(path, "/") == 0)
-        return 0;
+    if (strcmp(path, "/") == 0) {
+        pthread_rwlock_unlock(&dm->rwlock);
+        return dm->root;
+    }
 
-    inode_t current = 0;
-    const char* p = path;
+    uint64_t h = 0;
+    char token[NAME_SIZE];
+    int ti = 0;
 
-    char token[FDFS_MAX_NAME_LEN];
-    int idx = 0;
-
-    while (*p) {
-        if (*p == '/') {
-            token[idx] = '\0';
-            idx = 0;
-
-            if (token[0] != '\0') {
-                bool found = false;
-                for (int i = 0; i < FDFS_MAX_DIR_ENTRIES; i++) {
-                    auto& e = dir_nodes[current].entries[i];
-                    if (e.used && strcmp(e.name, token) == 0) {
-                        current = e.inode;
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) return static_cast<inode_t>(-1);
+    for (const char* p = path; ; ++p) {
+        if (*p == '/' || *p == '\0') {
+            if (ti > 0) {
+                token[ti] = '\0';
+                h = hash_combine(h, token);
+                ti = 0;
             }
-        } else {
-            token[idx++] = *p;
+            if (*p == '\0')
+                break;
+        } else if (ti < NAME_SIZE - 1) {
+            token[ti++] = *p;
         }
-        p++;
     }
 
-    token[idx] = '\0';
-    if (token[0] != '\0') {
-        for (int i = 0; i < FDFS_MAX_DIR_ENTRIES; i++) {
-            auto& e = dir_nodes[current].entries[i];
-            if (e.used && strcmp(e.name, token) == 0)
-                return e.inode;
-        }
-        return static_cast<inode_t>(-1);
-    }
-
-    return current;
+    int res = hash_lookup(&dm->hash, h, path);
+    pthread_rwlock_unlock(&dm->rwlock);
+    return res;
 }
 
-bool DirManager::add_entry(inode_t parent, const char* name, inode_t inode) {
-    std::unique_lock lock(tree_lock);
+int insert_node(DirManager* dm, const char* path) {
+    pthread_rwlock_wrlock(&dm->rwlock);
 
-    if (inode >= FDFS_MAX_INODES || inode_used[inode])
+    if (strcmp(path, "/") == 0) {
+        pthread_rwlock_unlock(&dm->rwlock);
+        return -1;
+    }
+
+    uint64_t h = 0;
+    int parent = dm->root;
+    char token[NAME_SIZE];
+    int ti = 0;
+
+    for (const char* p = path; ; ++p) {
+        if (*p == '/' || *p == '\0') {
+            if (ti > 0) {
+                token[ti] = '\0';
+                uint64_t next_hash = hash_combine(h, token);
+
+                // build full path incrementally
+                char full_key[KEY_SIZE];
+                snprintf(full_key, KEY_SIZE, "%.*s",
+                         (int)(p - path), path);
+
+                int node = hash_lookup(&dm->hash, next_hash, full_key);
+
+                if (*p == '\0') {
+                    if (node != -1 || dm->free_list == -1) {
+                        pthread_rwlock_unlock(&dm->rwlock);
+                        return -1;
+                    }
+
+                    int new_node = dm->free_list;
+                    dm->free_list = dm->nodes[new_node].next_free;
+
+                    DirNode* n = &dm->nodes[new_node];
+                    strncpy(n->name, token, NAME_SIZE);
+                    n->parent = parent;
+                    n->first_child = -1;
+                    n->next_sibling = dm->nodes[parent].first_child;
+                    n->in_use = true;
+
+                    dm->nodes[parent].first_child = new_node;
+                    hash_insert(&dm->hash, next_hash, full_key, new_node);
+
+                    pthread_rwlock_unlock(&dm->rwlock);
+                    return new_node;
+                }
+
+                if (node == -1) {
+                    pthread_rwlock_unlock(&dm->rwlock);
+                    return -1;
+                }
+
+                parent = node;
+                h = next_hash;
+                ti = 0;
+            }
+            if (*p == '\0')
+                break;
+        } else if (ti < NAME_SIZE - 1) {
+            token[ti++] = *p;
+        }
+    }
+
+    pthread_rwlock_unlock(&dm->rwlock);
+    return -1;
+}
+
+bool remove_node(DirManager* dm, const char* path) {
+    pthread_rwlock_wrlock(&dm->rwlock);
+
+    int node = lookup_node(dm, path);
+    if (node <= 0) {
+        pthread_rwlock_unlock(&dm->rwlock);
         return false;
+    }
 
-    for (int i = 0; i < FDFS_MAX_DIR_ENTRIES; i++) {
-        if (!dir_nodes[parent].entries[i].used) {
-            strcpy(dir_nodes[parent].entries[i].name, name);
-            dir_nodes[parent].entries[i].inode = inode;
-            dir_nodes[parent].entries[i].used = true;
+    DirNode* n = &dm->nodes[node];
+    if (n->first_child != -1) {
+        pthread_rwlock_unlock(&dm->rwlock);
+        return false;
+    }
 
-            inode_used[inode] = true;
-            dir_nodes[inode].inode = inode;
+    uint64_t h = 0;
+    char token[NAME_SIZE];
+    int ti = 0;
 
-            for (int j = 0; j < FDFS_MAX_DIR_ENTRIES; j++)
-                dir_nodes[inode].entries[j].used = false;
-
-            return true;
+    for (const char* p = path; ; ++p) {
+        if (*p == '/' || *p == '\0') {
+            if (ti > 0) {
+                token[ti] = '\0';
+                h = hash_combine(h, token);
+                ti = 0;
+            }
+            if (*p == '\0')
+                break;
+        } else if (ti < NAME_SIZE - 1) {
+            token[ti++] = *p;
         }
     }
-    return false;
-}
 
-bool DirManager::remove_entry(inode_t parent, const char* name) {
-    std::unique_lock lock(tree_lock);
+    int parent = n->parent;
+    int* link = &dm->nodes[parent].first_child;
+    while (*link != -1 && *link != node)
+        link = &dm->nodes[*link].next_sibling;
 
-    for (int i = 0; i < FDFS_MAX_DIR_ENTRIES; i++) {
-        auto& e = dir_nodes[parent].entries[i];
-        if (e.used && strcmp(e.name, name) == 0) {
-            inode_used[e.inode] = false;
-            e.used = false;
-            return true;
-        }
-    }
-    return false;
+    if (*link == node)
+        *link = n->next_sibling;
+
+    hash_remove(&dm->hash, h, path);
+
+    n->in_use = false;
+    n->next_free = dm->free_list;
+    dm->free_list = node;
+
+    pthread_rwlock_unlock(&dm->rwlock);
+    return true;
 }

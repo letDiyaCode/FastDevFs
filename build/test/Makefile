@@ -127,25 +127,25 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-test/CMakeFiles/fdfs_tests.dir/rule:
-	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/fdfs_tests.dir/rule
-.PHONY : test/CMakeFiles/fdfs_tests.dir/rule
+test/CMakeFiles/run_tests.dir/rule:
+	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/run_tests.dir/rule
+.PHONY : test/CMakeFiles/run_tests.dir/rule
 
 # Convenience name for target.
-fdfs_tests: test/CMakeFiles/fdfs_tests.dir/rule
-.PHONY : fdfs_tests
+run_tests: test/CMakeFiles/run_tests.dir/rule
+.PHONY : run_tests
 
 # fast build rule for target.
-fdfs_tests/fast:
-	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/fdfs_tests.dir/build.make test/CMakeFiles/fdfs_tests.dir/build
-.PHONY : fdfs_tests/fast
+run_tests/fast:
+	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/run_tests.dir/build.make test/CMakeFiles/run_tests.dir/build
+.PHONY : run_tests/fast
 
 __/src/src/daemon/dir_manager.o: __/src/src/daemon/dir_manager.cpp.o
 .PHONY : __/src/src/daemon/dir_manager.o
 
 # target to build an object file
 __/src/src/daemon/dir_manager.cpp.o:
-	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/fdfs_tests.dir/build.make test/CMakeFiles/fdfs_tests.dir/__/src/src/daemon/dir_manager.cpp.o
+	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/run_tests.dir/build.make test/CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.o
 .PHONY : __/src/src/daemon/dir_manager.cpp.o
 
 __/src/src/daemon/dir_manager.i: __/src/src/daemon/dir_manager.cpp.i
@@ -153,7 +153,7 @@ __/src/src/daemon/dir_manager.i: __/src/src/daemon/dir_manager.cpp.i
 
 # target to preprocess a source file
 __/src/src/daemon/dir_manager.cpp.i:
-	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/fdfs_tests.dir/build.make test/CMakeFiles/fdfs_tests.dir/__/src/src/daemon/dir_manager.cpp.i
+	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/run_tests.dir/build.make test/CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.i
 .PHONY : __/src/src/daemon/dir_manager.cpp.i
 
 __/src/src/daemon/dir_manager.s: __/src/src/daemon/dir_manager.cpp.s
@@ -161,39 +161,39 @@ __/src/src/daemon/dir_manager.s: __/src/src/daemon/dir_manager.cpp.s
 
 # target to generate assembly for a file
 __/src/src/daemon/dir_manager.cpp.s:
-	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/fdfs_tests.dir/build.make test/CMakeFiles/fdfs_tests.dir/__/src/src/daemon/dir_manager.cpp.s
+	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/run_tests.dir/build.make test/CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.s
 .PHONY : __/src/src/daemon/dir_manager.cpp.s
 
-__/src/src/daemon/hash_store.o: __/src/src/daemon/hash_store.cpp.o
-.PHONY : __/src/src/daemon/hash_store.o
+__/src/src/daemon/hash.o: __/src/src/daemon/hash.cpp.o
+.PHONY : __/src/src/daemon/hash.o
 
 # target to build an object file
-__/src/src/daemon/hash_store.cpp.o:
-	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/fdfs_tests.dir/build.make test/CMakeFiles/fdfs_tests.dir/__/src/src/daemon/hash_store.cpp.o
-.PHONY : __/src/src/daemon/hash_store.cpp.o
+__/src/src/daemon/hash.cpp.o:
+	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/run_tests.dir/build.make test/CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.o
+.PHONY : __/src/src/daemon/hash.cpp.o
 
-__/src/src/daemon/hash_store.i: __/src/src/daemon/hash_store.cpp.i
-.PHONY : __/src/src/daemon/hash_store.i
+__/src/src/daemon/hash.i: __/src/src/daemon/hash.cpp.i
+.PHONY : __/src/src/daemon/hash.i
 
 # target to preprocess a source file
-__/src/src/daemon/hash_store.cpp.i:
-	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/fdfs_tests.dir/build.make test/CMakeFiles/fdfs_tests.dir/__/src/src/daemon/hash_store.cpp.i
-.PHONY : __/src/src/daemon/hash_store.cpp.i
+__/src/src/daemon/hash.cpp.i:
+	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/run_tests.dir/build.make test/CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.i
+.PHONY : __/src/src/daemon/hash.cpp.i
 
-__/src/src/daemon/hash_store.s: __/src/src/daemon/hash_store.cpp.s
-.PHONY : __/src/src/daemon/hash_store.s
+__/src/src/daemon/hash.s: __/src/src/daemon/hash.cpp.s
+.PHONY : __/src/src/daemon/hash.s
 
 # target to generate assembly for a file
-__/src/src/daemon/hash_store.cpp.s:
-	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/fdfs_tests.dir/build.make test/CMakeFiles/fdfs_tests.dir/__/src/src/daemon/hash_store.cpp.s
-.PHONY : __/src/src/daemon/hash_store.cpp.s
+__/src/src/daemon/hash.cpp.s:
+	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/run_tests.dir/build.make test/CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.s
+.PHONY : __/src/src/daemon/hash.cpp.s
 
 test_dir_manager.o: test_dir_manager.cpp.o
 .PHONY : test_dir_manager.o
 
 # target to build an object file
 test_dir_manager.cpp.o:
-	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/fdfs_tests.dir/build.make test/CMakeFiles/fdfs_tests.dir/test_dir_manager.cpp.o
+	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/run_tests.dir/build.make test/CMakeFiles/run_tests.dir/test_dir_manager.cpp.o
 .PHONY : test_dir_manager.cpp.o
 
 test_dir_manager.i: test_dir_manager.cpp.i
@@ -201,7 +201,7 @@ test_dir_manager.i: test_dir_manager.cpp.i
 
 # target to preprocess a source file
 test_dir_manager.cpp.i:
-	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/fdfs_tests.dir/build.make test/CMakeFiles/fdfs_tests.dir/test_dir_manager.cpp.i
+	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/run_tests.dir/build.make test/CMakeFiles/run_tests.dir/test_dir_manager.cpp.i
 .PHONY : test_dir_manager.cpp.i
 
 test_dir_manager.s: test_dir_manager.cpp.s
@@ -209,7 +209,7 @@ test_dir_manager.s: test_dir_manager.cpp.s
 
 # target to generate assembly for a file
 test_dir_manager.cpp.s:
-	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/fdfs_tests.dir/build.make test/CMakeFiles/fdfs_tests.dir/test_dir_manager.cpp.s
+	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/run_tests.dir/build.make test/CMakeFiles/run_tests.dir/test_dir_manager.cpp.s
 .PHONY : test_dir_manager.cpp.s
 
 test_hash_store.o: test_hash_store.cpp.o
@@ -217,7 +217,7 @@ test_hash_store.o: test_hash_store.cpp.o
 
 # target to build an object file
 test_hash_store.cpp.o:
-	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/fdfs_tests.dir/build.make test/CMakeFiles/fdfs_tests.dir/test_hash_store.cpp.o
+	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/run_tests.dir/build.make test/CMakeFiles/run_tests.dir/test_hash_store.cpp.o
 .PHONY : test_hash_store.cpp.o
 
 test_hash_store.i: test_hash_store.cpp.i
@@ -225,7 +225,7 @@ test_hash_store.i: test_hash_store.cpp.i
 
 # target to preprocess a source file
 test_hash_store.cpp.i:
-	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/fdfs_tests.dir/build.make test/CMakeFiles/fdfs_tests.dir/test_hash_store.cpp.i
+	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/run_tests.dir/build.make test/CMakeFiles/run_tests.dir/test_hash_store.cpp.i
 .PHONY : test_hash_store.cpp.i
 
 test_hash_store.s: test_hash_store.cpp.s
@@ -233,7 +233,7 @@ test_hash_store.s: test_hash_store.cpp.s
 
 # target to generate assembly for a file
 test_hash_store.cpp.s:
-	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/fdfs_tests.dir/build.make test/CMakeFiles/fdfs_tests.dir/test_hash_store.cpp.s
+	cd /home/diya_limbani/FastDevFs/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/run_tests.dir/build.make test/CMakeFiles/run_tests.dir/test_hash_store.cpp.s
 .PHONY : test_hash_store.cpp.s
 
 # Help Target
@@ -245,13 +245,13 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... test"
-	@echo "... fdfs_tests"
+	@echo "... run_tests"
 	@echo "... __/src/src/daemon/dir_manager.o"
 	@echo "... __/src/src/daemon/dir_manager.i"
 	@echo "... __/src/src/daemon/dir_manager.s"
-	@echo "... __/src/src/daemon/hash_store.o"
-	@echo "... __/src/src/daemon/hash_store.i"
-	@echo "... __/src/src/daemon/hash_store.s"
+	@echo "... __/src/src/daemon/hash.o"
+	@echo "... __/src/src/daemon/hash.i"
+	@echo "... __/src/src/daemon/hash.s"
 	@echo "... test_dir_manager.o"
 	@echo "... test_dir_manager.i"
 	@echo "... test_dir_manager.s"

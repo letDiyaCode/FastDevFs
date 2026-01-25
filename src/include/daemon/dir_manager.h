@@ -1,40 +1,33 @@
 #pragma once
 
-#include <cstdint>
-#include <shared_mutex>
+#include <stdbool.h>
+#include <pthread.h>
+#include "daemon/hash.h"
 
-constexpr int FDFS_MAX_INODES      = 1024;
-constexpr int FDFS_MAX_DIR_ENTRIES = 64;
-constexpr int FDFS_MAX_NAME_LEN    = 64;
+#define MAX_NODES 10000
+#define NAME_SIZE 256
 
-using inode_t = uint64_t;
+// directory node
+typedef struct DirNode {
+    char name[NAME_SIZE];
+    int parent;
+    int first_child;
+    int next_sibling;
+    bool in_use;
+    int next_free;
+} DirNode;
 
-/**
- * Directory Tree ADT
- * Static, thread-safe, no dynamic allocation
- */
-class DirManager {
-public:
-    DirManager();
+// directory manager
+typedef struct DirManager {
+    DirNode nodes[MAX_NODES];
+    int root;
+    int free_list;
+    HashTable hash;
+    pthread_rwlock_t rwlock;
+} DirManager;
 
-    inode_t resolve_path(const char* path);
-    bool add_entry(inode_t parent, const char* name, inode_t inode);
-    bool remove_entry(inode_t parent, const char* name);
-
-private:
-    struct DirEntry {
-        char     name[FDFS_MAX_NAME_LEN];
-        inode_t  inode;
-        bool     used;
-    };
-
-    struct DirNode {
-        inode_t  inode;
-        DirEntry entries[FDFS_MAX_DIR_ENTRIES];
-    };
-
-    DirNode dir_nodes[FDFS_MAX_INODES];
-    bool    inode_used[FDFS_MAX_INODES];
-
-    std::shared_mutex tree_lock;
-};
+// API
+void dir_manager_init(DirManager* dm);
+int  insert_node(DirManager* dm, const char* path);
+int  lookup_node(DirManager* dm, const char* path);
+bool remove_node(DirManager* dm, const char* path);
