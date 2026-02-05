@@ -4,9 +4,11 @@
 #define FUSE_USE_VERSION 31
 #include <fuse3/fuse.h>
 
-int fastdevfs_opendir(
-    const char* path,
-    struct fuse_file_info* fi
-);
+/*
+ * opendir FUSE callback
+ * Verifies directory existence using DirManager ADT
+ */
+int fdfs_opendir(const char* path,
+                      struct fuse_file_info* fi);
 
-#endif
+#endif // FASTDEVFS_OPENDIR_H

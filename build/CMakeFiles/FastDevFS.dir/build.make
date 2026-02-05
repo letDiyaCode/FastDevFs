@@ -125,12 +125,102 @@ CMakeFiles/FastDevFS.dir/src/src/fuse_functions/opendir.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/FastDevFS.dir/src/src/fuse_functions/opendir.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/diya_limbani/FastDevFs/src/src/fuse_functions/opendir.cpp -o CMakeFiles/FastDevFS.dir/src/src/fuse_functions/opendir.cpp.s
 
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.o: CMakeFiles/FastDevFS.dir/flags.make
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.o: /home/diya_limbani/FastDevFs/src/src/fuse_functions/mkdir.cpp
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.o: CMakeFiles/FastDevFS.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/diya_limbani/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.o -MF CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.o.d -o CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.o -c /home/diya_limbani/FastDevFs/src/src/fuse_functions/mkdir.cpp
+
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/diya_limbani/FastDevFs/src/src/fuse_functions/mkdir.cpp > CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.i
+
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/diya_limbani/FastDevFs/src/src/fuse_functions/mkdir.cpp -o CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.s
+
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.o: CMakeFiles/FastDevFS.dir/flags.make
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.o: /home/diya_limbani/FastDevFs/src/src/fuse_functions/rmdir.cpp
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.o: CMakeFiles/FastDevFS.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/diya_limbani/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.o -MF CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.o.d -o CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.o -c /home/diya_limbani/FastDevFs/src/src/fuse_functions/rmdir.cpp
+
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/diya_limbani/FastDevFs/src/src/fuse_functions/rmdir.cpp > CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.i
+
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/diya_limbani/FastDevFs/src/src/fuse_functions/rmdir.cpp -o CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.s
+
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.o: CMakeFiles/FastDevFS.dir/flags.make
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.o: /home/diya_limbani/FastDevFs/src/src/fuse_functions/access.cpp
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.o: CMakeFiles/FastDevFS.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/diya_limbani/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.o -MF CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.o.d -o CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.o -c /home/diya_limbani/FastDevFs/src/src/fuse_functions/access.cpp
+
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/diya_limbani/FastDevFs/src/src/fuse_functions/access.cpp > CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.i
+
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/diya_limbani/FastDevFs/src/src/fuse_functions/access.cpp -o CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.s
+
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.o: CMakeFiles/FastDevFS.dir/flags.make
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.o: /home/diya_limbani/FastDevFs/src/src/fuse_functions/statfs.cpp
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.o: CMakeFiles/FastDevFS.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/diya_limbani/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.o -MF CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.o.d -o CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.o -c /home/diya_limbani/FastDevFs/src/src/fuse_functions/statfs.cpp
+
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/diya_limbani/FastDevFs/src/src/fuse_functions/statfs.cpp > CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.i
+
+CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/diya_limbani/FastDevFs/src/src/fuse_functions/statfs.cpp -o CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.s
+
+CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.o: CMakeFiles/FastDevFS.dir/flags.make
+CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.o: /home/diya_limbani/FastDevFs/src/src/daemon/dir_manager.cpp
+CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.o: CMakeFiles/FastDevFS.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/diya_limbani/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.o -MF CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.o.d -o CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.o -c /home/diya_limbani/FastDevFs/src/src/daemon/dir_manager.cpp
+
+CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/diya_limbani/FastDevFs/src/src/daemon/dir_manager.cpp > CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.i
+
+CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/diya_limbani/FastDevFs/src/src/daemon/dir_manager.cpp -o CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.s
+
+CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.o: CMakeFiles/FastDevFS.dir/flags.make
+CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.o: /home/diya_limbani/FastDevFs/src/src/daemon/hash.cpp
+CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.o: CMakeFiles/FastDevFS.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/diya_limbani/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.o -MF CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.o.d -o CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.o -c /home/diya_limbani/FastDevFs/src/src/daemon/hash.cpp
+
+CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/diya_limbani/FastDevFs/src/src/daemon/hash.cpp > CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.i
+
+CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/diya_limbani/FastDevFs/src/src/daemon/hash.cpp -o CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.s
+
 # Object files for target FastDevFS
 FastDevFS_OBJECTS = \
 "CMakeFiles/FastDevFS.dir/main.cpp.o" \
 "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/getattr.cpp.o" \
 "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/readdir.cpp.o" \
-"CMakeFiles/FastDevFS.dir/src/src/fuse_functions/opendir.cpp.o"
+"CMakeFiles/FastDevFS.dir/src/src/fuse_functions/opendir.cpp.o" \
+"CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.o" \
+"CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.o" \
+"CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.o" \
+"CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.o" \
+"CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.o" \
+"CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.o"
 
 # External object files for target FastDevFS
 FastDevFS_EXTERNAL_OBJECTS =
@@ -139,9 +229,15 @@ FastDevFS: CMakeFiles/FastDevFS.dir/main.cpp.o
 FastDevFS: CMakeFiles/FastDevFS.dir/src/src/fuse_functions/getattr.cpp.o
 FastDevFS: CMakeFiles/FastDevFS.dir/src/src/fuse_functions/readdir.cpp.o
 FastDevFS: CMakeFiles/FastDevFS.dir/src/src/fuse_functions/opendir.cpp.o
+FastDevFS: CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.o
+FastDevFS: CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.o
+FastDevFS: CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.o
+FastDevFS: CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.o
+FastDevFS: CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.o
+FastDevFS: CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.o
 FastDevFS: CMakeFiles/FastDevFS.dir/build.make
 FastDevFS: CMakeFiles/FastDevFS.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/diya_limbani/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable FastDevFS"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/diya_limbani/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable FastDevFS"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/FastDevFS.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

@@ -1,25 +1,23 @@
-#include "fuse_functions/opendir.h"
+#include "fuse_functions/access.h"
 #include "daemon/dir_manager.h"
 
-#include <cstring>
 #include <cerrno>
 
 /*
  * Global DirManager instance
- * (defined in main.cpp)
  */
 extern DirManager* g_dir_manager;
 
-int fdfs_opendir(const char* path,
-                      struct fuse_file_info* fi)
+int fdfs_access(const char* path, int mask)
 {
-    (void) fi;
+    (void) mask;  // permissions not enforced yet
 
-    // Ask ADT whether directory exists
+    // Check if path exists
     int node = lookup_node(g_dir_manager, path);
     if (node == -1) {
         return -ENOENT;
     }
 
+    // Allow all access for now
     return 0;
 }

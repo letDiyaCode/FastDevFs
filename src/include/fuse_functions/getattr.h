@@ -4,6 +4,12 @@
 #define FUSE_USE_VERSION 31
 #include <fuse3/fuse.h>
 
-int fastdevfs_getattr(const char* path, struct stat* stbuf, struct fuse_file_info* fi);
+/*
+ * getattr FUSE callback
+ * Uses DirManager ADT to resolve paths
+ */
+int fdfs_getattr(const char* path,
+                      struct stat* stbuf,
+                      struct fuse_file_info* fi);
 
-#endif
+#endif // FASTDEVFS_GETATTR_H

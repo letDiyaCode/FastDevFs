@@ -176,6 +176,78 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+src/src/daemon/dir_manager.o: src/src/daemon/dir_manager.cpp.o
+.PHONY : src/src/daemon/dir_manager.o
+
+# target to build an object file
+src/src/daemon/dir_manager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.o
+.PHONY : src/src/daemon/dir_manager.cpp.o
+
+src/src/daemon/dir_manager.i: src/src/daemon/dir_manager.cpp.i
+.PHONY : src/src/daemon/dir_manager.i
+
+# target to preprocess a source file
+src/src/daemon/dir_manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.i
+.PHONY : src/src/daemon/dir_manager.cpp.i
+
+src/src/daemon/dir_manager.s: src/src/daemon/dir_manager.cpp.s
+.PHONY : src/src/daemon/dir_manager.s
+
+# target to generate assembly for a file
+src/src/daemon/dir_manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.s
+.PHONY : src/src/daemon/dir_manager.cpp.s
+
+src/src/daemon/hash.o: src/src/daemon/hash.cpp.o
+.PHONY : src/src/daemon/hash.o
+
+# target to build an object file
+src/src/daemon/hash.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.o
+.PHONY : src/src/daemon/hash.cpp.o
+
+src/src/daemon/hash.i: src/src/daemon/hash.cpp.i
+.PHONY : src/src/daemon/hash.i
+
+# target to preprocess a source file
+src/src/daemon/hash.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.i
+.PHONY : src/src/daemon/hash.cpp.i
+
+src/src/daemon/hash.s: src/src/daemon/hash.cpp.s
+.PHONY : src/src/daemon/hash.s
+
+# target to generate assembly for a file
+src/src/daemon/hash.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.s
+.PHONY : src/src/daemon/hash.cpp.s
+
+src/src/fuse_functions/access.o: src/src/fuse_functions/access.cpp.o
+.PHONY : src/src/fuse_functions/access.o
+
+# target to build an object file
+src/src/fuse_functions/access.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.o
+.PHONY : src/src/fuse_functions/access.cpp.o
+
+src/src/fuse_functions/access.i: src/src/fuse_functions/access.cpp.i
+.PHONY : src/src/fuse_functions/access.i
+
+# target to preprocess a source file
+src/src/fuse_functions/access.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.i
+.PHONY : src/src/fuse_functions/access.cpp.i
+
+src/src/fuse_functions/access.s: src/src/fuse_functions/access.cpp.s
+.PHONY : src/src/fuse_functions/access.s
+
+# target to generate assembly for a file
+src/src/fuse_functions/access.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.s
+.PHONY : src/src/fuse_functions/access.cpp.s
+
 src/src/fuse_functions/getattr.o: src/src/fuse_functions/getattr.cpp.o
 .PHONY : src/src/fuse_functions/getattr.o
 
@@ -199,6 +271,30 @@ src/src/fuse_functions/getattr.s: src/src/fuse_functions/getattr.cpp.s
 src/src/fuse_functions/getattr.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/getattr.cpp.s
 .PHONY : src/src/fuse_functions/getattr.cpp.s
+
+src/src/fuse_functions/mkdir.o: src/src/fuse_functions/mkdir.cpp.o
+.PHONY : src/src/fuse_functions/mkdir.o
+
+# target to build an object file
+src/src/fuse_functions/mkdir.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.o
+.PHONY : src/src/fuse_functions/mkdir.cpp.o
+
+src/src/fuse_functions/mkdir.i: src/src/fuse_functions/mkdir.cpp.i
+.PHONY : src/src/fuse_functions/mkdir.i
+
+# target to preprocess a source file
+src/src/fuse_functions/mkdir.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.i
+.PHONY : src/src/fuse_functions/mkdir.cpp.i
+
+src/src/fuse_functions/mkdir.s: src/src/fuse_functions/mkdir.cpp.s
+.PHONY : src/src/fuse_functions/mkdir.s
+
+# target to generate assembly for a file
+src/src/fuse_functions/mkdir.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.s
+.PHONY : src/src/fuse_functions/mkdir.cpp.s
 
 src/src/fuse_functions/opendir.o: src/src/fuse_functions/opendir.cpp.o
 .PHONY : src/src/fuse_functions/opendir.o
@@ -248,6 +344,54 @@ src/src/fuse_functions/readdir.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/readdir.cpp.s
 .PHONY : src/src/fuse_functions/readdir.cpp.s
 
+src/src/fuse_functions/rmdir.o: src/src/fuse_functions/rmdir.cpp.o
+.PHONY : src/src/fuse_functions/rmdir.o
+
+# target to build an object file
+src/src/fuse_functions/rmdir.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.o
+.PHONY : src/src/fuse_functions/rmdir.cpp.o
+
+src/src/fuse_functions/rmdir.i: src/src/fuse_functions/rmdir.cpp.i
+.PHONY : src/src/fuse_functions/rmdir.i
+
+# target to preprocess a source file
+src/src/fuse_functions/rmdir.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.i
+.PHONY : src/src/fuse_functions/rmdir.cpp.i
+
+src/src/fuse_functions/rmdir.s: src/src/fuse_functions/rmdir.cpp.s
+.PHONY : src/src/fuse_functions/rmdir.s
+
+# target to generate assembly for a file
+src/src/fuse_functions/rmdir.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.s
+.PHONY : src/src/fuse_functions/rmdir.cpp.s
+
+src/src/fuse_functions/statfs.o: src/src/fuse_functions/statfs.cpp.o
+.PHONY : src/src/fuse_functions/statfs.o
+
+# target to build an object file
+src/src/fuse_functions/statfs.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.o
+.PHONY : src/src/fuse_functions/statfs.cpp.o
+
+src/src/fuse_functions/statfs.i: src/src/fuse_functions/statfs.cpp.i
+.PHONY : src/src/fuse_functions/statfs.i
+
+# target to preprocess a source file
+src/src/fuse_functions/statfs.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.i
+.PHONY : src/src/fuse_functions/statfs.cpp.i
+
+src/src/fuse_functions/statfs.s: src/src/fuse_functions/statfs.cpp.s
+.PHONY : src/src/fuse_functions/statfs.s
+
+# target to generate assembly for a file
+src/src/fuse_functions/statfs.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.s
+.PHONY : src/src/fuse_functions/statfs.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -262,15 +406,33 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... src/src/daemon/dir_manager.o"
+	@echo "... src/src/daemon/dir_manager.i"
+	@echo "... src/src/daemon/dir_manager.s"
+	@echo "... src/src/daemon/hash.o"
+	@echo "... src/src/daemon/hash.i"
+	@echo "... src/src/daemon/hash.s"
+	@echo "... src/src/fuse_functions/access.o"
+	@echo "... src/src/fuse_functions/access.i"
+	@echo "... src/src/fuse_functions/access.s"
 	@echo "... src/src/fuse_functions/getattr.o"
 	@echo "... src/src/fuse_functions/getattr.i"
 	@echo "... src/src/fuse_functions/getattr.s"
+	@echo "... src/src/fuse_functions/mkdir.o"
+	@echo "... src/src/fuse_functions/mkdir.i"
+	@echo "... src/src/fuse_functions/mkdir.s"
 	@echo "... src/src/fuse_functions/opendir.o"
 	@echo "... src/src/fuse_functions/opendir.i"
 	@echo "... src/src/fuse_functions/opendir.s"
 	@echo "... src/src/fuse_functions/readdir.o"
 	@echo "... src/src/fuse_functions/readdir.i"
 	@echo "... src/src/fuse_functions/readdir.s"
+	@echo "... src/src/fuse_functions/rmdir.o"
+	@echo "... src/src/fuse_functions/rmdir.i"
+	@echo "... src/src/fuse_functions/rmdir.s"
+	@echo "... src/src/fuse_functions/statfs.o"
+	@echo "... src/src/fuse_functions/statfs.i"
+	@echo "... src/src/fuse_functions/statfs.s"
 .PHONY : help
 
 

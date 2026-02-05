@@ -24,7 +24,7 @@ uint64_t hash_path_poly(const char* path) {
 }
 
 bool hash_insert(HashTable* ht, uint64_t hash,
-                 const char* key, int value) {
+                const char* key, int value) {
     int bucket = hash % HASH_SIZE;
 
     for (int i = ht->buckets[bucket]; i != -1; i = ht->entries[i].next) {
