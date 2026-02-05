@@ -1,7 +1,11 @@
 #include "daemon/hash.h"
 #include <string.h>
 
+// Global HashTable instance - mmap'd in main.cpp
+HashTable* g_hash_table = nullptr;
+
 void hash_init(HashTable* ht) {
+    ht->magic = HASH_TABLE_MAGIC;
     for (int i = 0; i < HASH_SIZE; i++)
         ht->buckets[i] = -1;
 

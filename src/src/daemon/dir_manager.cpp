@@ -3,9 +3,9 @@
 #include <cstdio>
 
 void dir_manager_init(DirManager* dm) {
-    hash_init(&dm->hash);
     pthread_rwlock_init(&dm->rwlock, NULL);
 
+    dm->magic = DIR_MANAGER_MAGIC;
     dm->root = 0;
     dm->nodes[0].name[0] = '/';
     dm->nodes[0].parent = -1;
@@ -21,7 +21,11 @@ void dir_manager_init(DirManager* dm) {
     dm->nodes[MAX_NODES - 1].next_free = -1;
 }
 
-int lookup_node(DirManager* dm, const char* path) {
+bool is_dir_manager_initialized(DirManager* dm) {
+    return dm->magic == DIR_MANAGER_MAGIC;
+}
+
+int lookup_node(DirManager* dm, const char* path){
     pthread_rwlock_rdlock(&dm->rwlock);
 
     if (strcmp(path, "/") == 0) {
@@ -30,7 +34,7 @@ int lookup_node(DirManager* dm, const char* path) {
     }
 
     uint64_t h = hash_path_poly(path);
-    int res = hash_lookup(&dm->hash, h, path);
+    int res = hash_lookup(g_hash_table, h, path);
 
     pthread_rwlock_unlock(&dm->rwlock);
     return res;
@@ -58,7 +62,7 @@ int insert_node(DirManager* dm, const char* path) {
                          (int)(p - path), path);
 
                 uint64_t h = hash_path_poly(full_key);
-                int node = hash_lookup(&dm->hash, h, full_key);
+                int node = hash_lookup(g_hash_table, h, full_key);
 
                 if (*p == '\0') {
                     if (node != -1 || dm->free_list == -1) {
@@ -77,7 +81,7 @@ int insert_node(DirManager* dm, const char* path) {
                     n->in_use = true;
 
                     dm->nodes[parent].first_child = new_node;
-                    hash_insert(&dm->hash, h, full_key, new_node);
+                    hash_insert(g_hash_table, h, full_key, new_node);
 
                     pthread_rwlock_unlock(&dm->rwlock);
                     return new_node;
@@ -127,7 +131,7 @@ bool remove_node(DirManager* dm, const char* path) {
     if (*link == node)
         *link = n->next_sibling;
 
-    hash_remove(&dm->hash, h, path);
+    hash_remove(g_hash_table, h, path);
 
     n->in_use = false;
     n->next_free = dm->free_list;

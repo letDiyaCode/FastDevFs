@@ -41,6 +41,7 @@
 #include <iostream>
 
 #include "daemon/dir_manager.h"
+#include "daemon/hash.h"
 #include "fuse_functions/getattr.h"
 #include "fuse_functions/readdir.h"
 #include "fuse_functions/opendir.h"
@@ -48,8 +49,11 @@
 #include "fuse_functions/rmdir.h"
 #include "fuse_functions/access.h"
 #include "fuse_functions/statfs.h"
-
+#include "sys/mman.h"
+#include <unistd.h>
 using namespace std;
+#define DIR_TREE_FILE "dir_tree.dat"
+#define HASH_TABLE_FILE "hash_table.dat"
 
 /*
  * Global DirManager instance.
@@ -86,10 +90,75 @@ static struct fuse_operations fdfs_ops;
 int main(int argc, char* argv[]) {
     cout << "Starting FastDevFS Daemon..." << endl;
 
-    // Initialize directory ADT
-    dir_manager_init(g_dir_manager);
+    // Initialize DirManager with mmap
+    int fd = open(DIR_TREE_FILE, O_RDWR | O_CREAT, 0644);
+    if (fd < 0) {
+        perror("open");
+        exit(1);
+    }
 
+    size_t dir_manager_size = sizeof(DirManager);
 
+    /* ensure file size */
+    if (ftruncate(fd, dir_manager_size) < 0) {
+        perror("ftruncate");
+        exit(1);
+    }
+
+    /* mmap - maps DirManager to shared memory */
+    g_dir_manager = (DirManager*) mmap(
+        NULL,
+        dir_manager_size,
+        PROT_READ | PROT_WRITE,
+        MAP_SHARED,
+        fd,
+        0
+    );
+
+    if (g_dir_manager == MAP_FAILED) {
+        perror("mmap");
+        exit(1);
+    }
+
+    // Initialize directory ADT only if not already initialized
+    if (!is_dir_manager_initialized(g_dir_manager)) {
+        dir_manager_init(g_dir_manager);
+    }
+
+    // Initialize HashTable with separate mmap
+    int hash_fd = open(HASH_TABLE_FILE, O_RDWR | O_CREAT, 0644);
+    if (hash_fd < 0) {
+        perror("open hash_table");
+        exit(1);
+    }
+
+    size_t hash_table_size = sizeof(HashTable);
+
+    /* ensure file size */
+    if (ftruncate(hash_fd, hash_table_size) < 0) {
+        perror("ftruncate hash_table");
+        exit(1);
+    }
+
+    /* mmap - maps HashTable to shared memory */
+    g_hash_table = (HashTable*) mmap(
+        NULL,
+        hash_table_size,
+        PROT_READ | PROT_WRITE,
+        MAP_SHARED,
+        hash_fd,
+        0
+    );
+
+    if (g_hash_table == MAP_FAILED) {
+        perror("mmap hash_table");
+        exit(1);
+    }
+
+    // Initialize hash table only if not already initialized
+    if (g_hash_table->magic != HASH_TABLE_MAGIC) {
+        hash_init(g_hash_table);
+    }
 
     // basic fuse_functions
     fdfs_ops.getattr = fdfs_getattr;

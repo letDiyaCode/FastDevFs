@@ -6,6 +6,7 @@
 #define HASH_SIZE    4096
 #define MAX_ENTRIES  10000
 #define KEY_SIZE     1024   // full path key
+#define HASH_TABLE_MAGIC 0xCAFEBABE
 
 // single hash table entry (chained)
 typedef struct HashEntry {
@@ -17,10 +18,14 @@ typedef struct HashEntry {
 
 // static hash table
 typedef struct HashTable {
+    unsigned int magic;         // Magic number for persistence detection
     int buckets[HASH_SIZE];
     HashEntry entries[MAX_ENTRIES];
     int free_head;
 } HashTable;
+
+// Global mmap'd hash table
+extern HashTable* g_hash_table;
 
 // initialization
 void hash_init(HashTable* ht);
