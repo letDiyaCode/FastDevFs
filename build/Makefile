@@ -224,6 +224,19 @@ test_hash/fast:
 .PHONY : test_hash/fast
 
 #=============================================================================
+# Target rules for targets named test_persistence
+
+# Build rule for target.
+test_persistence: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_persistence
+.PHONY : test_persistence
+
+# fast build rule for target.
+test_persistence/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_persistence.dir/build.make CMakeFiles/test_persistence.dir/build
+.PHONY : test_persistence/fast
+
+#=============================================================================
 # Target rules for targets named gmock
 
 # Build rule for target.
@@ -395,6 +408,30 @@ test/test_hash.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_hash.dir/build.make CMakeFiles/test_hash.dir/test/test_hash.cpp.s
 .PHONY : test/test_hash.cpp.s
 
+test/test_persistence.o: test/test_persistence.cpp.o
+.PHONY : test/test_persistence.o
+
+# target to build an object file
+test/test_persistence.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_persistence.dir/build.make CMakeFiles/test_persistence.dir/test/test_persistence.cpp.o
+.PHONY : test/test_persistence.cpp.o
+
+test/test_persistence.i: test/test_persistence.cpp.i
+.PHONY : test/test_persistence.i
+
+# target to preprocess a source file
+test/test_persistence.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_persistence.dir/build.make CMakeFiles/test_persistence.dir/test/test_persistence.cpp.i
+.PHONY : test/test_persistence.cpp.i
+
+test/test_persistence.s: test/test_persistence.cpp.s
+.PHONY : test/test_persistence.s
+
+# target to generate assembly for a file
+test/test_persistence.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_persistence.dir/build.make CMakeFiles/test_persistence.dir/test/test_persistence.cpp.s
+.PHONY : test/test_persistence.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -416,6 +453,7 @@ help:
 	@echo "... gtest_main"
 	@echo "... test_adt"
 	@echo "... test_hash"
+	@echo "... test_persistence"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
@@ -431,6 +469,9 @@ help:
 	@echo "... test/test_hash.o"
 	@echo "... test/test_hash.i"
 	@echo "... test/test_hash.s"
+	@echo "... test/test_persistence.o"
+	@echo "... test/test_persistence.i"
+	@echo "... test/test_persistence.s"
 .PHONY : help
 
 

@@ -60,7 +60,19 @@ target_include_directories(test_hash PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
 
+# Test executable for Persistence
+add_executable(test_persistence test/test_persistence.cpp)
+target_link_libraries(test_persistence PRIVATE 
+    fastdevfs_adt
+    GTest::gtest
+    GTest::gtest_main
+)
+target_include_directories(test_persistence PRIVATE 
+    ${CMAKE_SOURCE_DIR}/include
+)
+
 # Enable testing
 enable_testing()
 add_test(NAME ADTTests COMMAND test_adt)
 add_test(NAME HashTests COMMAND test_hash)
+add_test(NAME PersistenceTests COMMAND test_persistence)

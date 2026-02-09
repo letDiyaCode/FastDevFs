@@ -1,74 +1,72 @@
-Start testing: Jan 17 20:06 IST
+Start testing: Feb 09 19:41 IST
 ----------------------------------------------------------
-1/2 Testing: ADTTests
-1/2 Test: ADTTests
+1/3 Testing: ADTTests
+1/3 Test: ADTTests
 Command: "/home/bismarck/FastDevFs/build/test_adt"
 Directory: /home/bismarck/FastDevFs/build
-"ADTTests" start time: Jan 17 20:06 IST
+"ADTTests" start time: Feb 09 19:41 IST
 Output:
 ----------------------------------------------------------
 Running main() from /home/bismarck/FastDevFs/build/_deps/googletest-src/googletest/src/gtest_main.cc
-[==========] Running 20 tests from 1 test suite.
+[==========] Running 19 tests from 1 test suite.
 [----------] Global test environment set-up.
-[----------] 20 tests from ADTTest
-[ RUN      ] ADTTest.InitializeSetsCorrectState
-[       OK ] ADTTest.InitializeSetsCorrectState (20 ms)
+[----------] 19 tests from ADTTest
 [ RUN      ] ADTTest.InsertRootNode
-[       OK ] ADTTest.InsertRootNode (8 ms)
+[       OK ] ADTTest.InsertRootNode (47 ms)
 [ RUN      ] ADTTest.InsertChildUnderParent
-[       OK ] ADTTest.InsertChildUnderParent (5 ms)
+[       OK ] ADTTest.InsertChildUnderParent (48 ms)
 [ RUN      ] ADTTest.InsertMultipleChildren
-[       OK ] ADTTest.InsertMultipleChildren (5 ms)
+[       OK ] ADTTest.InsertMultipleChildren (29 ms)
 [ RUN      ] ADTTest.HashindexReturnsCorrectIndex
-[       OK ] ADTTest.HashindexReturnsCorrectIndex (5 ms)
+[       OK ] ADTTest.HashindexReturnsCorrectIndex (27 ms)
 [ RUN      ] ADTTest.HashindexReturnsNegativeForNonExistent
-[       OK ] ADTTest.HashindexReturnsNegativeForNonExistent (5 ms)
+[       OK ] ADTTest.HashindexReturnsNegativeForNonExistent (28 ms)
 [ RUN      ] ADTTest.DeleteLeafNode
-[       OK ] ADTTest.DeleteLeafNode (5 ms)
+[       OK ] ADTTest.DeleteLeafNode (26 ms)
 [ RUN      ] ADTTest.DeleteNodeWithChildrenRecursively
-[       OK ] ADTTest.DeleteNodeWithChildrenRecursively (5 ms)
+[       OK ] ADTTest.DeleteNodeWithChildrenRecursively (27 ms)
 [ RUN      ] ADTTest.CannotDeleteRootNode
-[       OK ] ADTTest.CannotDeleteRootNode (5 ms)
+[       OK ] ADTTest.CannotDeleteRootNode (27 ms)
 [ RUN      ] ADTTest.ChangeParent
-[       OK ] ADTTest.ChangeParent (5 ms)
+[       OK ] ADTTest.ChangeParent (26 ms)
 [ RUN      ] ADTTest.PreventDuplicateInsertions
-[       OK ] ADTTest.PreventDuplicateInsertions (6 ms)
+[       OK ] ADTTest.PreventDuplicateInsertions (27 ms)
 [ RUN      ] ADTTest.NodeAllocationCounter
-[       OK ] ADTTest.NodeAllocationCounter (5 ms)
+[       OK ] ADTTest.NodeAllocationCounter (28 ms)
 [ RUN      ] ADTTest.EmptyFilenameHandling
-[       OK ] ADTTest.EmptyFilenameHandling (5 ms)
+[       OK ] ADTTest.EmptyFilenameHandling (27 ms)
 [ RUN      ] ADTTest.NonExistentParentDefaultsToRoot
-[       OK ] ADTTest.NonExistentParentDefaultsToRoot (5 ms)
+[       OK ] ADTTest.NonExistentParentDefaultsToRoot (27 ms)
 [ RUN      ] ADTTest.ChangeParentPreventsCycles
-[       OK ] ADTTest.ChangeParentPreventsCycles (5 ms)
+[       OK ] ADTTest.ChangeParentPreventsCycles (28 ms)
 [ RUN      ] ADTTest.ThreadSafetyConcurrentInserts
-[       OK ] ADTTest.ThreadSafetyConcurrentInserts (5 ms)
+[       OK ] ADTTest.ThreadSafetyConcurrentInserts (28 ms)
 [ RUN      ] ADTTest.ThreadSafetyConcurrentDeleteAndInsert
-[       OK ] ADTTest.ThreadSafetyConcurrentDeleteAndInsert (5 ms)
+[       OK ] ADTTest.ThreadSafetyConcurrentDeleteAndInsert (27 ms)
 [ RUN      ] ADTTest.FreeListIntegrityAfterDeletions
-[       OK ] ADTTest.FreeListIntegrityAfterDeletions (5 ms)
+[       OK ] ADTTest.FreeListIntegrityAfterDeletions (27 ms)
 [ RUN      ] ADTTest.ChangeParentToSameParentIsNoOp
-[       OK ] ADTTest.ChangeParentToSameParentIsNoOp (5 ms)
+[       OK ] ADTTest.ChangeParentToSameParentIsNoOp (26 ms)
 [ RUN      ] ADTTest.DeepTreeDeletion
-[       OK ] ADTTest.DeepTreeDeletion (5 ms)
-[----------] 20 tests from ADTTest (129 ms total)
+[       OK ] ADTTest.DeepTreeDeletion (28 ms)
+[----------] 19 tests from ADTTest (569 ms total)
 
 [----------] Global test environment tear-down
-[==========] 20 tests from 1 test suite ran. (129 ms total)
-[  PASSED  ] 20 tests.
+[==========] 19 tests from 1 test suite ran. (569 ms total)
+[  PASSED  ] 19 tests.
 <end of output>
-Test time =   0.13 sec
+Test time =   0.58 sec
 ----------------------------------------------------------
 Test Passed.
-"ADTTests" end time: Jan 17 20:06 IST
+"ADTTests" end time: Feb 09 19:41 IST
 "ADTTests" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-2/2 Testing: HashTests
-2/2 Test: HashTests
+2/3 Testing: HashTests
+2/3 Test: HashTests
 Command: "/home/bismarck/FastDevFs/build/test_hash"
 Directory: /home/bismarck/FastDevFs/build
-"HashTests" start time: Jan 17 20:06 IST
+"HashTests" start time: Feb 09 19:41 IST
 Output:
 ----------------------------------------------------------
 Running main() from /home/bismarck/FastDevFs/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -76,44 +74,94 @@ Running main() from /home/bismarck/FastDevFs/build/_deps/googletest-src/googlete
 [----------] Global test environment set-up.
 [----------] 14 tests from HashMapTest
 [ RUN      ] HashMapTest.CreateAndDestroy
-[       OK ] HashMapTest.CreateAndDestroy (0 ms)
+[       OK ] HashMapTest.CreateAndDestroy (21 ms)
 [ RUN      ] HashMapTest.InsertAndGet
-[       OK ] HashMapTest.InsertAndGet (0 ms)
+[       OK ] HashMapTest.InsertAndGet (22 ms)
 [ RUN      ] HashMapTest.HasFunction
-[       OK ] HashMapTest.HasFunction (0 ms)
+[       OK ] HashMapTest.HasFunction (20 ms)
 [ RUN      ] HashMapTest.SetAndGet
-[       OK ] HashMapTest.SetAndGet (0 ms)
+[       OK ] HashMapTest.SetAndGet (21 ms)
 [ RUN      ] HashMapTest.RemoveEntry
-[       OK ] HashMapTest.RemoveEntry (0 ms)
+[       OK ] HashMapTest.RemoveEntry (19 ms)
 [ RUN      ] HashMapTest.RemoveNonExistentKey
-[       OK ] HashMapTest.RemoveNonExistentKey (0 ms)
+[       OK ] HashMapTest.RemoveNonExistentKey (23 ms)
 [ RUN      ] HashMapTest.UpdateExistingValue
-[       OK ] HashMapTest.UpdateExistingValue (0 ms)
+[       OK ] HashMapTest.UpdateExistingValue (19 ms)
 [ RUN      ] HashMapTest.MultipleKeys
-[       OK ] HashMapTest.MultipleKeys (0 ms)
+[       OK ] HashMapTest.MultipleKeys (22 ms)
 [ RUN      ] HashMapTest.GetNonExistentReturnsDefault
-[       OK ] HashMapTest.GetNonExistentReturnsDefault (0 ms)
+[       OK ] HashMapTest.GetNonExistentReturnsDefault (18 ms)
 [ RUN      ] HashMapTest.ClearByRemovingAll
-[       OK ] HashMapTest.ClearByRemovingAll (0 ms)
+[       OK ] HashMapTest.ClearByRemovingAll (22 ms)
 [ RUN      ] HashMapTest.VariousStringLengths
-[       OK ] HashMapTest.VariousStringLengths (0 ms)
+[       OK ] HashMapTest.VariousStringLengths (18 ms)
 [ RUN      ] HashMapTest.CollisionHandling
-[       OK ] HashMapTest.CollisionHandling (0 ms)
+[       OK ] HashMapTest.CollisionHandling (22 ms)
 [ RUN      ] HashMapTest.OperatorBracketCreatesEntry
-[       OK ] HashMapTest.OperatorBracketCreatesEntry (0 ms)
+[       OK ] HashMapTest.OperatorBracketCreatesEntry (18 ms)
 [ RUN      ] HashMapTest.SizeIncreasesCorrectly
-[       OK ] HashMapTest.SizeIncreasesCorrectly (0 ms)
-[----------] 14 tests from HashMapTest (0 ms total)
+[       OK ] HashMapTest.SizeIncreasesCorrectly (22 ms)
+[----------] 14 tests from HashMapTest (295 ms total)
 
 [----------] Global test environment tear-down
-[==========] 14 tests from 1 test suite ran. (0 ms total)
+[==========] 14 tests from 1 test suite ran. (295 ms total)
 [  PASSED  ] 14 tests.
 <end of output>
-Test time =   0.00 sec
+Test time =   0.30 sec
 ----------------------------------------------------------
 Test Passed.
-"HashTests" end time: Jan 17 20:06 IST
+"HashTests" end time: Feb 09 19:41 IST
 "HashTests" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: Jan 17 20:06 IST
+3/3 Testing: PersistenceTests
+3/3 Test: PersistenceTests
+Command: "/home/bismarck/FastDevFs/build/test_persistence"
+Directory: /home/bismarck/FastDevFs/build
+"PersistenceTests" start time: Feb 09 19:41 IST
+Output:
+----------------------------------------------------------
+Running main() from /home/bismarck/FastDevFs/build/_deps/googletest-src/googletest/src/gtest_main.cc
+[==========] Running 13 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 13 tests from PersistenceTest
+[ RUN      ] PersistenceTest.BasicSaveLoad
+[       OK ] PersistenceTest.BasicSaveLoad (172 ms)
+[ RUN      ] PersistenceTest.PersistenceAcrossRestarts
+[       OK ] PersistenceTest.PersistenceAcrossRestarts (175 ms)
+[ RUN      ] PersistenceTest.SaveAfterModifications
+[       OK ] PersistenceTest.SaveAfterModifications (159 ms)
+[ RUN      ] PersistenceTest.LoadNonExistentFile
+[       OK ] PersistenceTest.LoadNonExistentFile (30 ms)
+[ RUN      ] PersistenceTest.LoadCorruptedFile
+[       OK ] PersistenceTest.LoadCorruptedFile (28 ms)
+[ RUN      ] PersistenceTest.InitOrLoadCreatesNew
+[       OK ] PersistenceTest.InitOrLoadCreatesNew (116 ms)
+[ RUN      ] PersistenceTest.InitOrLoadLoadsExisting
+[       OK ] PersistenceTest.InitOrLoadLoadsExisting (163 ms)
+[ RUN      ] PersistenceTest.PersistenceWithDeepTree
+[       OK ] PersistenceTest.PersistenceWithDeepTree (169 ms)
+[ RUN      ] PersistenceTest.PersistenceWithManyNodes
+[       OK ] PersistenceTest.PersistenceWithManyNodes (164 ms)
+[ RUN      ] PersistenceTest.ConcurrentSaveLoad
+[       OK ] PersistenceTest.ConcurrentSaveLoad (3565 ms)
+[ RUN      ] PersistenceTest.HashMapPersistence
+[       OK ] PersistenceTest.HashMapPersistence (128 ms)
+[ RUN      ] PersistenceTest.FreeListPersistence
+[       OK ] PersistenceTest.FreeListPersistence (126 ms)
+[ RUN      ] PersistenceTest.MetadataPersistence
+[       OK ] PersistenceTest.MetadataPersistence (124 ms)
+[----------] 13 tests from PersistenceTest (5126 ms total)
+
+[----------] Global test environment tear-down
+[==========] 13 tests from 1 test suite ran. (5126 ms total)
+[  PASSED  ] 13 tests.
+<end of output>
+Test time =   5.22 sec
+----------------------------------------------------------
+Test Passed.
+"PersistenceTests" end time: Feb 09 19:41 IST
+"PersistenceTests" time elapsed: 00:00:05
+----------------------------------------------------------
+
+End testing: Feb 09 19:41 IST

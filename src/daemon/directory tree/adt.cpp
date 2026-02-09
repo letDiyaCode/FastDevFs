@@ -1,6 +1,11 @@
 #include <iostream>
 #include "../../../include/daemon/directory tree/adt.h"
 #include "../../../include/daemon/directory tree/hash.h"
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <cstring>
 using namespace std;
 
 int hashindex(string filename, treefile &file1){
@@ -104,7 +109,8 @@ void insert(string filename, string parentname, treefile &file1){
     
     // Set node properties
     file1.arr[index].isdeleted = false;
-    file1.arr[index].metadata.name = filename;
+    strncpy(file1.arr[index].metadata.name, filename.c_str(), 255);
+    file1.arr[index].metadata.name[255] = '\0';
     file1.arr[index].firstchild = -1;
     
     // Update nodeallocated counter (but don't count index 0)
@@ -183,7 +189,7 @@ static void delete_subtree_recursive(int index, treefile &file1, int max_depth =
     
     // Clear metadata and tree links
     file1.arr[index].metadata.inode = -1;
-    file1.arr[index].metadata.name = "";
+    file1.arr[index].metadata.name[0] = '\0';
     file1.arr[index].firstchild = -1;
     file1.arr[index].nextsibling = -1;
     file1.arr[index].parent = -1;
@@ -363,7 +369,7 @@ void initialize(treefile &file1){
         file1.arr[i].nextsibling = -1;
         file1.arr[i].parent = -1;
         file1.arr[i].metadata.inode = -1;
-        file1.arr[i].metadata.name = "";
+        file1.arr[i].metadata.name[0] = '\0';
     } 
     // Last node's nextfree should be -1
     if (size > 0) {
@@ -374,3 +380,149 @@ void initialize(treefile &file1){
     file1.head.nodeallocated = 1;  // 0th index is pre-allocated for root
     file1.head.start = -1;  // Initialize start pointer
 }
+
+// Persistence implementation using mmap
+
+// Helper structure for serialization (without mutex and without HashMap wrapper)
+struct header_serializable {
+    int firstfree;
+    int start;
+    int size;
+    int nodeallocated;
+    hashmap_t hashdata;  // Directly store the hashmap_t structure, not the wrapper
+};
+
+struct treefile_serializable {
+    header_serializable head;
+    treenode arr[100000];
+};
+
+bool save_treefile(const char* filepath, treefile &file1) {
+    lock_guard<recursive_mutex> lock(file1.mtx);
+    
+    if (!filepath) return false;
+    
+    // Open file for writing
+    int fd = open(filepath, O_RDWR | O_CREAT | O_TRUNC, 0644);
+    if (fd == -1) {
+        return false;
+    }
+    
+    // Set file size
+    size_t file_size = sizeof(treefile_serializable);
+    if (ftruncate(fd, file_size) == -1) {
+        close(fd);
+        return false;
+    }
+    
+    // Map file to memory
+    void* mapped = mmap(NULL, file_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    if (mapped == MAP_FAILED) {
+        close(fd);
+        return false;
+    }
+    
+    // Copy data to mapped memory (excluding mutex)
+    treefile_serializable* serialized = (treefile_serializable*)mapped;
+    
+    // Copy header fields
+    serialized->head.firstfree = file1.head.firstfree;
+    serialized->head.start = file1.head.start;
+    serialized->head.size = file1.head.size;
+    serialized->head.nodeallocated = file1.head.nodeallocated;
+    
+    // Copy the actual hashmap_t structure (not the wrapper)
+    if (file1.head.hash.m) {
+        memcpy(&serialized->head.hashdata, file1.head.hash.m, sizeof(hashmap_t));
+    }
+    
+    // Copy tree array
+    memcpy(serialized->arr, file1.arr, sizeof(file1.arr));
+    
+    // Sync to disk
+    if (msync(mapped, file_size, MS_SYNC) == -1) {
+        munmap(mapped, file_size);
+        close(fd);
+        return false;
+    }
+    
+    // Cleanup
+    munmap(mapped, file_size);
+    close(fd);
+    
+    return true;
+}
+
+bool load_treefile(const char* filepath, treefile &file1) {
+    lock_guard<recursive_mutex> lock(file1.mtx);
+    
+    if (!filepath) return false;
+    
+    // Check if file exists
+    struct stat st;
+    if (stat(filepath, &st) != 0) {
+        return false;
+    }
+    
+    // Verify file size
+    size_t expected_size = sizeof(treefile_serializable);
+    if ((size_t)st.st_size != expected_size) {
+        return false;
+    }
+    
+    // Open file for reading
+    int fd = open(filepath, O_RDONLY);
+    if (fd == -1) {
+        return false;
+    }
+    
+    // Map file to memory
+    void* mapped = mmap(NULL, expected_size, PROT_READ, MAP_PRIVATE, fd, 0);
+    if (mapped == MAP_FAILED) {
+        close(fd);
+        return false;
+    }
+    
+    // Copy data from mapped memory
+    treefile_serializable* serialized = (treefile_serializable*)mapped;
+    
+    // Copy header fields
+    file1.head.firstfree = serialized->head.firstfree;
+    file1.head.start = serialized->head.start;
+    file1.head.size = serialized->head.size;
+    file1.head.nodeallocated = serialized->head.nodeallocated;
+    
+    // Copy the hashmap_t structure back into the HashMap wrapper
+    if (file1.head.hash.m) {
+        memcpy(file1.head.hash.m, &serialized->head.hashdata, sizeof(hashmap_t));
+    }
+    
+    // Copy tree array
+    memcpy(file1.arr, serialized->arr, sizeof(file1.arr));
+    
+    // Cleanup
+    munmap(mapped, expected_size);
+    close(fd);
+    
+    // Note: mutex is already initialized in the treefile structure
+    // HashMap wrapper already has allocated m pointer from construction
+    
+    return true;
+}
+
+bool init_or_load_treefile(const char* filepath, treefile &file1) {
+    if (!filepath) return false;
+    
+    // Check if file exists
+    struct stat st;
+    if (stat(filepath, &st) == 0) {
+        // File exists - load it
+        return load_treefile(filepath, file1);
+    } else {
+        // File doesn't exist - initialize and save
+        initialize(file1);
+        return save_treefile(filepath, file1);
+    }
+}
+
+

@@ -7,17 +7,33 @@ extern "C" {
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdbool.h>
 
-/* Opaque type for the hash table */
-typedef struct hashmap_t hashmap_t;
+/* Maximum number of hash entries - sized for 100k tree nodes with good load factor */
+#define MAX_HASH_ENTRIES 150000
+#define MAX_KEY_LENGTH 255
+
+/* Hash entry with static key storage */
+typedef struct {
+    char key[MAX_KEY_LENGTH + 1];  /* Fixed-size key storage (null-terminated) */
+    int value;
+    bool occupied;                  /* Whether this slot is occupied */
+    uint64_t hash;                 /* Cached hash value */
+} hash_entry_t;
+
+/* Hash table with static memory */
+typedef struct hashmap_t {
+    size_t size;                           /* Number of entries */
+    hash_entry_t entries[MAX_HASH_ENTRIES]; /* Static array of entries */
+} hashmap_t;
 
 /* Create/destroy */
-hashmap_t *hashmap_create(size_t initial_buckets); /* pass 0 to use default (64) */
+hashmap_t *hashmap_create(size_t initial_buckets); /* initial_buckets ignored, kept for API compatibility */
 void       hashmap_destroy(hashmap_t *m);
 
 /* Return pointer to the integer value for key.
    If key does not exist it is inserted with initial value 0.
-   The returned pointer remains valid until the entry is removed (which is only on destroy for this API). */
+   Returns NULL if table is full or key is too long. */
 int       *hashmap_ref(hashmap_t *m, const char *key);
 
 /* Convenience helpers */
@@ -42,7 +58,14 @@ struct HashMap {
     ~HashMap() { hashmap_destroy(m); }
     /* operator[] returns int& like std::unordered_map */
     int &operator[](const std::string &k) {
-        return *hashmap_ref(m, k.c_str());
+        int *ptr = hashmap_ref(m, k.c_str());
+        if (!ptr) {
+            // Table full or key too long - return reference to dummy static variable
+            // This maintains API compatibility but is an error condition
+            static int dummy = 0;
+            return dummy;
+        }
+        return *ptr;
     }
     /* raw accessors if needed */
     int get(const std::string &k) const { return hashmap_get(m, k.c_str()); }
@@ -55,5 +78,3 @@ struct HashMap {
 #endif /* __cplusplus */
 
 #endif /* SIMPLE_POLY_HASH_H */
-
-

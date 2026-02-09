@@ -8,8 +8,8 @@
 using namespace std;
 
 struct metadate{
-int inode = -1;
-string name = "";
+    int inode = -1;
+    char name[256] = "";  // Fixed-size char array instead of std::string for mmap compatibility
 };
 struct treenode{
     int nextfree= -1;
@@ -39,6 +39,12 @@ void insert(string filename, string parentname, treefile &file1);
 void delete1(string filename, treefile &file1);
 void change_parent(string filename, string newparentname, treefile &file1);
 void initialize(treefile &file1);
+
+// Persistence functions using mmap
+bool save_treefile(const char* filepath, treefile &file1);
+bool load_treefile(const char* filepath, treefile &file1);
+bool init_or_load_treefile(const char* filepath, treefile &file1);
+
 
 #endif /* ADT_H */
 

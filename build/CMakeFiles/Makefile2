@@ -67,6 +67,7 @@ all: CMakeFiles/FastDevFS.dir/all
 all: CMakeFiles/fastdevfs_adt.dir/all
 all: CMakeFiles/test_adt.dir/all
 all: CMakeFiles/test_hash.dir/all
+all: CMakeFiles/test_persistence.dir/all
 all: _deps/googletest-build/all
 .PHONY : all
 
@@ -79,6 +80,7 @@ clean: CMakeFiles/FastDevFS.dir/clean
 clean: CMakeFiles/fastdevfs_adt.dir/clean
 clean: CMakeFiles/test_adt.dir/clean
 clean: CMakeFiles/test_hash.dir/clean
+clean: CMakeFiles/test_persistence.dir/clean
 clean: _deps/googletest-build/clean
 .PHONY : clean
 
@@ -189,9 +191,9 @@ CMakeFiles/fastdevfs_adt.dir/clean:
 # Target rules for target CMakeFiles/test_adt.dir
 
 # All Build rule for target.
+CMakeFiles/test_adt.dir/all: CMakeFiles/fastdevfs_adt.dir/all
 CMakeFiles/test_adt.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 CMakeFiles/test_adt.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
-CMakeFiles/test_adt.dir/all: CMakeFiles/fastdevfs_adt.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_adt.dir/build.make CMakeFiles/test_adt.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_adt.dir/build.make CMakeFiles/test_adt.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=14,15 "Built target test_adt"
@@ -217,9 +219,9 @@ CMakeFiles/test_adt.dir/clean:
 # Target rules for target CMakeFiles/test_hash.dir
 
 # All Build rule for target.
+CMakeFiles/test_hash.dir/all: CMakeFiles/fastdevfs_adt.dir/all
 CMakeFiles/test_hash.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 CMakeFiles/test_hash.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
-CMakeFiles/test_hash.dir/all: CMakeFiles/fastdevfs_adt.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_hash.dir/build.make CMakeFiles/test_hash.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_hash.dir/build.make CMakeFiles/test_hash.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=16,17 "Built target test_hash"
@@ -240,6 +242,34 @@ test_hash: CMakeFiles/test_hash.dir/rule
 CMakeFiles/test_hash.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_hash.dir/build.make CMakeFiles/test_hash.dir/clean
 .PHONY : CMakeFiles/test_hash.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/test_persistence.dir
+
+# All Build rule for target.
+CMakeFiles/test_persistence.dir/all: CMakeFiles/fastdevfs_adt.dir/all
+CMakeFiles/test_persistence.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
+CMakeFiles/test_persistence.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_persistence.dir/build.make CMakeFiles/test_persistence.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_persistence.dir/build.make CMakeFiles/test_persistence.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=18,19 "Built target test_persistence"
+.PHONY : CMakeFiles/test_persistence.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/test_persistence.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bismarck/FastDevFs/build/CMakeFiles 9
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/test_persistence.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bismarck/FastDevFs/build/CMakeFiles 0
+.PHONY : CMakeFiles/test_persistence.dir/rule
+
+# Convenience name for target.
+test_persistence: CMakeFiles/test_persistence.dir/rule
+.PHONY : test_persistence
+
+# clean rule for target.
+CMakeFiles/test_persistence.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_persistence.dir/build.make CMakeFiles/test_persistence.dir/clean
+.PHONY : CMakeFiles/test_persistence.dir/clean
 
 #=============================================================================
 # Target rules for target _deps/googletest-build/googlemock/CMakeFiles/gmock.dir

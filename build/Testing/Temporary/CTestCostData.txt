@@ -1,3 +1,4 @@
-ADTTests 1 0.134526
-HashTests 1 0.00436136
+ADTTests 3 0.192248
+HashTests 6 0.0498543
+PersistenceTests 2 2.61008
 ---
