@@ -1,5 +1,6 @@
-#include "../include/daemon/directory tree/adt.h"
 #include <iostream>
+#include "../../../include/daemon/directory tree/adt.h"
+#include "../../../include/daemon/directory tree/hash.h"
 
 int main() {
     std::cout << "Creating treefile..." << std::endl;

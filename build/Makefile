@@ -237,6 +237,19 @@ test_persistence/fast:
 .PHONY : test_persistence/fast
 
 #=============================================================================
+# Target rules for targets named test_min
+
+# Build rule for target.
+test_min: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_min
+.PHONY : test_min
+
+# fast build rule for target.
+test_min/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_min.dir/build.make CMakeFiles/test_min.dir/build
+.PHONY : test_min/fast
+
+#=============================================================================
 # Target rules for targets named gmock
 
 # Build rule for target.
@@ -360,6 +373,30 @@ src/daemon/directory_tree/hash.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs_adt.dir/build.make CMakeFiles/fastdevfs_adt.dir/src/daemon/directory_tree/hash.cpp.s
 .PHONY : src/daemon/directory_tree/hash.cpp.s
 
+src/daemon/directory_tree/test_min.o: src/daemon/directory_tree/test_min.cpp.o
+.PHONY : src/daemon/directory_tree/test_min.o
+
+# target to build an object file
+src/daemon/directory_tree/test_min.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_min.dir/build.make CMakeFiles/test_min.dir/src/daemon/directory_tree/test_min.cpp.o
+.PHONY : src/daemon/directory_tree/test_min.cpp.o
+
+src/daemon/directory_tree/test_min.i: src/daemon/directory_tree/test_min.cpp.i
+.PHONY : src/daemon/directory_tree/test_min.i
+
+# target to preprocess a source file
+src/daemon/directory_tree/test_min.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_min.dir/build.make CMakeFiles/test_min.dir/src/daemon/directory_tree/test_min.cpp.i
+.PHONY : src/daemon/directory_tree/test_min.cpp.i
+
+src/daemon/directory_tree/test_min.s: src/daemon/directory_tree/test_min.cpp.s
+.PHONY : src/daemon/directory_tree/test_min.s
+
+# target to generate assembly for a file
+src/daemon/directory_tree/test_min.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_min.dir/build.make CMakeFiles/test_min.dir/src/daemon/directory_tree/test_min.cpp.s
+.PHONY : src/daemon/directory_tree/test_min.cpp.s
+
 test/test_adt.o: test/test_adt.cpp.o
 .PHONY : test/test_adt.o
 
@@ -453,6 +490,7 @@ help:
 	@echo "... gtest_main"
 	@echo "... test_adt"
 	@echo "... test_hash"
+	@echo "... test_min"
 	@echo "... test_persistence"
 	@echo "... main.o"
 	@echo "... main.i"
@@ -463,6 +501,9 @@ help:
 	@echo "... src/daemon/directory_tree/hash.o"
 	@echo "... src/daemon/directory_tree/hash.i"
 	@echo "... src/daemon/directory_tree/hash.s"
+	@echo "... src/daemon/directory_tree/test_min.o"
+	@echo "... src/daemon/directory_tree/test_min.i"
+	@echo "... src/daemon/directory_tree/test_min.s"
 	@echo "... test/test_adt.o"
 	@echo "... test/test_adt.i"
 	@echo "... test/test_adt.s"

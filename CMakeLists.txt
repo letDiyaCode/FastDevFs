@@ -71,6 +71,16 @@ target_include_directories(test_persistence PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
 
+# Minimal test executable
+add_executable(test_min "src/daemon/directory tree/test_min.cpp")
+target_link_libraries(test_min PRIVATE 
+    fastdevfs_adt
+)
+target_include_directories(test_min PRIVATE 
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+
 # Enable testing
 enable_testing()
 add_test(NAME ADTTests COMMAND test_adt)

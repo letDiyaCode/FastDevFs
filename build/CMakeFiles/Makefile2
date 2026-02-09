@@ -68,6 +68,7 @@ all: CMakeFiles/fastdevfs_adt.dir/all
 all: CMakeFiles/test_adt.dir/all
 all: CMakeFiles/test_hash.dir/all
 all: CMakeFiles/test_persistence.dir/all
+all: CMakeFiles/test_min.dir/all
 all: _deps/googletest-build/all
 .PHONY : all
 
@@ -81,6 +82,7 @@ clean: CMakeFiles/fastdevfs_adt.dir/clean
 clean: CMakeFiles/test_adt.dir/clean
 clean: CMakeFiles/test_hash.dir/clean
 clean: CMakeFiles/test_persistence.dir/clean
+clean: CMakeFiles/test_min.dir/clean
 clean: _deps/googletest-build/clean
 .PHONY : clean
 
@@ -252,7 +254,7 @@ CMakeFiles/test_persistence.dir/all: _deps/googletest-build/googletest/CMakeFile
 CMakeFiles/test_persistence.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_persistence.dir/build.make CMakeFiles/test_persistence.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_persistence.dir/build.make CMakeFiles/test_persistence.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=18,19 "Built target test_persistence"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=20,21 "Built target test_persistence"
 .PHONY : CMakeFiles/test_persistence.dir/all
 
 # Build rule for subdir invocation for target.
@@ -270,6 +272,32 @@ test_persistence: CMakeFiles/test_persistence.dir/rule
 CMakeFiles/test_persistence.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_persistence.dir/build.make CMakeFiles/test_persistence.dir/clean
 .PHONY : CMakeFiles/test_persistence.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/test_min.dir
+
+# All Build rule for target.
+CMakeFiles/test_min.dir/all: CMakeFiles/fastdevfs_adt.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_min.dir/build.make CMakeFiles/test_min.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_min.dir/build.make CMakeFiles/test_min.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=18,19 "Built target test_min"
+.PHONY : CMakeFiles/test_min.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/test_min.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bismarck/FastDevFs/build/CMakeFiles 5
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/test_min.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bismarck/FastDevFs/build/CMakeFiles 0
+.PHONY : CMakeFiles/test_min.dir/rule
+
+# Convenience name for target.
+test_min: CMakeFiles/test_min.dir/rule
+.PHONY : test_min
+
+# clean rule for target.
+CMakeFiles/test_min.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_min.dir/build.make CMakeFiles/test_min.dir/clean
+.PHONY : CMakeFiles/test_min.dir/clean
 
 #=============================================================================
 # Target rules for target _deps/googletest-build/googlemock/CMakeFiles/gmock.dir
