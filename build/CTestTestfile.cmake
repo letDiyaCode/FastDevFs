@@ -1,6 +1,6 @@
 # CMake generated Testfile for 
-# Source directory: /home/diya_limbani/FastDevFs
-# Build directory: /home/diya_limbani/FastDevFs/build
+# Source directory: /home/devesh-bhardwaj/Desktop/FastDevFS
+# Build directory: /home/devesh-bhardwaj/Desktop/FastDevFS/build
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.

@@ -1,0 +1,110 @@
+[
+{
+  "directory": "/home/devesh-bhardwaj/Desktop/FastDevFS/build",
+  "command": "/usr/bin/g++ -I/usr/include/fuse3 -I/home/devesh-bhardwaj/Desktop/FastDevFS/src/include -g -o CMakeFiles/FastDevFS.dir/main.cpp.o -c /home/devesh-bhardwaj/Desktop/FastDevFS/main.cpp",
+  "file": "/home/devesh-bhardwaj/Desktop/FastDevFS/main.cpp",
+  "output": "CMakeFiles/FastDevFS.dir/main.cpp.o"
+},
+{
+  "directory": "/home/devesh-bhardwaj/Desktop/FastDevFS/build",
+  "command": "/usr/bin/g++ -I/usr/include/fuse3 -I/home/devesh-bhardwaj/Desktop/FastDevFS/src/include -g -o CMakeFiles/FastDevFS.dir/src/src/fuse_functions/getattr.cpp.o -c /home/devesh-bhardwaj/Desktop/FastDevFS/src/src/fuse_functions/getattr.cpp",
+  "file": "/home/devesh-bhardwaj/Desktop/FastDevFS/src/src/fuse_functions/getattr.cpp",
+  "output": "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/getattr.cpp.o"
+},
+{
+  "directory": "/home/devesh-bhardwaj/Desktop/FastDevFS/build",
+  "command": "/usr/bin/g++ -I/usr/include/fuse3 -I/home/devesh-bhardwaj/Desktop/FastDevFS/src/include -g -o CMakeFiles/FastDevFS.dir/src/src/fuse_functions/readdir.cpp.o -c /home/devesh-bhardwaj/Desktop/FastDevFS/src/src/fuse_functions/readdir.cpp",
+  "file": "/home/devesh-bhardwaj/Desktop/FastDevFS/src/src/fuse_functions/readdir.cpp",
+  "output": "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/readdir.cpp.o"
+},
+{
+  "directory": "/home/devesh-bhardwaj/Desktop/FastDevFS/build",
+  "command": "/usr/bin/g++ -I/usr/include/fuse3 -I/home/devesh-bhardwaj/Desktop/FastDevFS/src/include -g -o CMakeFiles/FastDevFS.dir/src/src/fuse_functions/opendir.cpp.o -c /home/devesh-bhardwaj/Desktop/FastDevFS/src/src/fuse_functions/opendir.cpp",
+  "file": "/home/devesh-bhardwaj/Desktop/FastDevFS/src/src/fuse_functions/opendir.cpp",
+  "output": "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/opendir.cpp.o"
+},
+{
+  "directory": "/home/devesh-bhardwaj/Desktop/FastDevFS/build",
+  "command": "/usr/bin/g++ -I/usr/include/fuse3 -I/home/devesh-bhardwaj/Desktop/FastDevFS/src/include -g -o CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.o -c /home/devesh-bhardwaj/Desktop/FastDevFS/src/src/fuse_functions/mkdir.cpp",
+  "file": "/home/devesh-bhardwaj/Desktop/FastDevFS/src/src/fuse_functions/mkdir.cpp",
+  "output": "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/mkdir.cpp.o"
+},
+{
+  "directory": "/home/devesh-bhardwaj/Desktop/FastDevFS/build",
+  "command": "/usr/bin/g++ -I/usr/include/fuse3 -I/home/devesh-bhardwaj/Desktop/FastDevFS/src/include -g -o CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.o -c /home/devesh-bhardwaj/Desktop/FastDevFS/src/src/fuse_functions/rmdir.cpp",
+  "file": "/home/devesh-bhardwaj/Desktop/FastDevFS/src/src/fuse_functions/rmdir.cpp",
+  "output": "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/rmdir.cpp.o"
+},
+{
+  "directory": "/home/devesh-bhardwaj/Desktop/FastDevFS/build",
+  "command": "/usr/bin/g++ -I/usr/include/fuse3 -I/home/devesh-bhardwaj/Desktop/FastDevFS/src/include -g -o CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.o -c /home/devesh-bhardwaj/Desktop/FastDevFS/src/src/fuse_functions/access.cpp",
+  "file": "/home/devesh-bhardwaj/Desktop/FastDevFS/src/src/fuse_functions/access.cpp",
+  "output": "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/access.cpp.o"
+},
+{
+  "directory": "/home/devesh-bhardwaj/Desktop/FastDevFS/build",
+  "command": "/usr/bin/g++ -I/usr/include/fuse3 -I/home/devesh-bhardwaj/Desktop/FastDevFS/src/include -g -o CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.o -c /home/devesh-bhardwaj/Desktop/FastDevFS/src/src/fuse_functions/statfs.cpp",
+  "file": "/home/devesh-bhardwaj/Desktop/FastDevFS/src/src/fuse_functions/statfs.cpp",
+  "output": "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/statfs.cpp.o"
+},
+{
+  "directory": "/home/devesh-bhardwaj/Desktop/FastDevFS/build",
+  "command": "/usr/bin/g++ -I/usr/include/fuse3 -I/home/devesh-bhardwaj/Desktop/FastDevFS/src/include -g -o CMakeFiles/FastDevFS.dir/src/src/fuse_functions/file_funcs.cpp.o -c /home/devesh-bhardwaj/Desktop/FastDevFS/src/src/fuse_functions/file_funcs.cpp",
+  "file": "/home/devesh-bhardwaj/Desktop/FastDevFS/src/src/fuse_functions/file_funcs.cpp",
+  "output": "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/file_funcs.cpp.o"
+},
+{
+  "directory": "/home/devesh-bhardwaj/Desktop/FastDevFS/build",
+  "command": "/usr/bin/g++ -I/usr/include/fuse3 -I/home/devesh-bhardwaj/Desktop/FastDevFS/src/include -g -o CMakeFiles/FastDevFS.dir/src/src/fuse_functions/utimens.cpp.o -c /home/devesh-bhardwaj/Desktop/FastDevFS/src/src/fuse_functions/utimens.cpp",
+  "file": "/home/devesh-bhardwaj/Desktop/FastDevFS/src/src/fuse_functions/utimens.cpp",
+  "output": "CMakeFiles/FastDevFS.dir/src/src/fuse_functions/utimens.cpp.o"
+},
+{
+  "directory": "/home/devesh-bhardwaj/Desktop/FastDevFS/build",
+  "command": "/usr/bin/g++ -I/usr/include/fuse3 -I/home/devesh-bhardwaj/Desktop/FastDevFS/src/include -g -o CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.o -c /home/devesh-bhardwaj/Desktop/FastDevFS/src/src/daemon/dir_manager.cpp",
+  "file": "/home/devesh-bhardwaj/Desktop/FastDevFS/src/src/daemon/dir_manager.cpp",
+  "output": "CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.o"
+},
+{
+  "directory": "/home/devesh-bhardwaj/Desktop/FastDevFS/build",
+  "command": "/usr/bin/g++ -I/usr/include/fuse3 -I/home/devesh-bhardwaj/Desktop/FastDevFS/src/include -g -o CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.o -c /home/devesh-bhardwaj/Desktop/FastDevFS/src/src/daemon/hash.cpp",
+  "file": "/home/devesh-bhardwaj/Desktop/FastDevFS/src/src/daemon/hash.cpp",
+  "output": "CMakeFiles/FastDevFS.dir/src/src/daemon/hash.cpp.o"
+},
+{
+  "directory": "/home/devesh-bhardwaj/Desktop/FastDevFS/build",
+  "command": "/usr/bin/g++ -I/usr/include/fuse3 -I/home/devesh-bhardwaj/Desktop/FastDevFS/src/include -g -o CMakeFiles/FastDevFS.dir/src/src/daemon/file_io.cpp.o -c /home/devesh-bhardwaj/Desktop/FastDevFS/src/src/daemon/file_io.cpp",
+  "file": "/home/devesh-bhardwaj/Desktop/FastDevFS/src/src/daemon/file_io.cpp",
+  "output": "CMakeFiles/FastDevFS.dir/src/src/daemon/file_io.cpp.o"
+},
+{
+  "directory": "/home/devesh-bhardwaj/Desktop/FastDevFS/build",
+  "command": "/usr/bin/g++ -I/home/devesh-bhardwaj/Desktop/FastDevFS/test/../src/include -g -DGTEST_HAS_PTHREAD=1 -o test/CMakeFiles/run_tests.dir/test_dir_manager.cpp.o -c /home/devesh-bhardwaj/Desktop/FastDevFS/test/test_dir_manager.cpp",
+  "file": "/home/devesh-bhardwaj/Desktop/FastDevFS/test/test_dir_manager.cpp",
+  "output": "test/CMakeFiles/run_tests.dir/test_dir_manager.cpp.o"
+},
+{
+  "directory": "/home/devesh-bhardwaj/Desktop/FastDevFS/build",
+  "command": "/usr/bin/g++ -I/home/devesh-bhardwaj/Desktop/FastDevFS/test/../src/include -g -DGTEST_HAS_PTHREAD=1 -o test/CMakeFiles/run_tests.dir/test_hash_store.cpp.o -c /home/devesh-bhardwaj/Desktop/FastDevFS/test/test_hash_store.cpp",
+  "file": "/home/devesh-bhardwaj/Desktop/FastDevFS/test/test_hash_store.cpp",
+  "output": "test/CMakeFiles/run_tests.dir/test_hash_store.cpp.o"
+},
+{
+  "directory": "/home/devesh-bhardwaj/Desktop/FastDevFS/build",
+  "command": "/usr/bin/g++ -I/home/devesh-bhardwaj/Desktop/FastDevFS/test/../src/include -g -DGTEST_HAS_PTHREAD=1 -o test/CMakeFiles/run_tests.dir/persistence_test.cpp.o -c /home/devesh-bhardwaj/Desktop/FastDevFS/test/persistence_test.cpp",
+  "file": "/home/devesh-bhardwaj/Desktop/FastDevFS/test/persistence_test.cpp",
+  "output": "test/CMakeFiles/run_tests.dir/persistence_test.cpp.o"
+},
+{
+  "directory": "/home/devesh-bhardwaj/Desktop/FastDevFS/build",
+  "command": "/usr/bin/g++ -I/home/devesh-bhardwaj/Desktop/FastDevFS/test/../src/include -g -DGTEST_HAS_PTHREAD=1 -o test/CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.o -c /home/devesh-bhardwaj/Desktop/FastDevFS/src/src/daemon/dir_manager.cpp",
+  "file": "/home/devesh-bhardwaj/Desktop/FastDevFS/src/src/daemon/dir_manager.cpp",
+  "output": "test/CMakeFiles/run_tests.dir/__/src/src/daemon/dir_manager.cpp.o"
+},
+{
+  "directory": "/home/devesh-bhardwaj/Desktop/FastDevFS/build",
+  "command": "/usr/bin/g++ -I/home/devesh-bhardwaj/Desktop/FastDevFS/test/../src/include -g -DGTEST_HAS_PTHREAD=1 -o test/CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.o -c /home/devesh-bhardwaj/Desktop/FastDevFS/src/src/daemon/hash.cpp",
+  "file": "/home/devesh-bhardwaj/Desktop/FastDevFS/src/src/daemon/hash.cpp",
+  "output": "test/CMakeFiles/run_tests.dir/__/src/src/daemon/hash.cpp.o"
+}
+]

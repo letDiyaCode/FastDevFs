@@ -2,8 +2,8 @@
 
 #include <sys/types.h>
 
-// Data directory for storing file contents
-#define DATA_DIR "data"
+// Data directory for storing file contents (will be set to absolute path)
+extern char g_data_dir_path[512];
 
 // Helper functions for file I/O operations
 // These functions handle reading/writing file data to the host filesystem

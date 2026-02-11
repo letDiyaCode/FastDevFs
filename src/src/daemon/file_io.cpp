@@ -7,16 +7,29 @@
 #include <errno.h>
 #include <sys/stat.h>
 
+// Global variable to store absolute path to data directory
+char g_data_dir_path[512] = {0};
+
 void get_data_file_path(int inode, char* path_buf, size_t buf_size) {
-    snprintf(path_buf, buf_size, "%s/%d", DATA_DIR, inode);
+    snprintf(path_buf, buf_size, "%s/%d", g_data_dir_path, inode);
 }
 
 int init_data_dir() {
     struct stat st = {0};
     
+    // Get current working directory and construct absolute path
+    char cwd[512];
+    if (getcwd(cwd, sizeof(cwd)) == NULL) {
+        perror("getcwd");
+        return -1;
+    }
+    
+    // Store absolute path to data directory
+    snprintf(g_data_dir_path, sizeof(g_data_dir_path), "%s/data", cwd);
+    
     // Create data directory if it doesn't exist
-    if (stat(DATA_DIR, &st) == -1) {
-        if (mkdir(DATA_DIR, 0755) == -1) {
+    if (stat(g_data_dir_path, &st) == -1) {
+        if (mkdir(g_data_dir_path, 0755) == -1) {
             perror("mkdir data directory");
             return -1;
         }
