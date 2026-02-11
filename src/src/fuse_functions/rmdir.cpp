@@ -3,6 +3,7 @@
 
 #include <cerrno>
 #include <cstring>
+#include <iostream>
 
 /*
  * Global DirManager instance
@@ -14,6 +15,7 @@ int fdfs_rmdir(const char* path)
 {
     // Disallow removing root
     if (strcmp(path, "/") == 0) {
+        std::cout << "fdfs_rmdir: returning -EBUSY (root)" << std::endl;
         return -EBUSY;
     }
 
@@ -24,12 +26,13 @@ int fdfs_rmdir(const char* path)
      */
     bool ok = remove_node(g_dir_manager, path);
     if (!ok) {
-        // int node = lookup_node(&g_dir_manager, path);
         // if (node == -1) {
         //     return -ENOENT;
         // }                      commented bcz of dead locking in lookup_node
+        std::cout << "fdfs_rmdir: returning -ENOTEMPTY" << std::endl;
         return -ENOTEMPTY;
     }
 
+    std::cout << "fdfs_rmdir: returning 0" << std::endl;
     return 0;
 }

@@ -3,6 +3,7 @@
 
 #include <cstring>
 #include <cerrno>
+#include <iostream>
 
 /*
  * Global DirManager instance
@@ -18,8 +19,10 @@ int fdfs_opendir(const char* path,
     // Ask ADT whether directory exists
     int node = lookup_node(g_dir_manager, path);
     if (node == -1) {
+        std::cout << "fdfs_opendir: returning -ENOENT" << std::endl;
         return -ENOENT;
     }
 
+    std::cout << "fdfs_opendir: returning 0" << std::endl;
     return 0;
 }

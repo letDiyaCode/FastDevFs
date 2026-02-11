@@ -16,14 +16,17 @@ add_executable(FastDevFS
     src/src/fuse_functions/rmdir.cpp
     src/src/fuse_functions/access.cpp
     src/src/fuse_functions/statfs.cpp
+    src/src/fuse_functions/file_funcs.cpp
+    src/src/fuse_functions/utimens.cpp
 
     src/src/daemon/dir_manager.cpp
     src/src/daemon/hash.cpp
+    src/src/daemon/file_io.cpp
 )
 
 target_include_directories(FastDevFS PRIVATE 
     ${FUSE3_INCLUDE_DIRS}
-    ${CMAKE_SOURCE_DIR}/src/include 
+    ${CMAKE_SOURCE_DIR}/src/include
 )
 
 target_link_libraries(FastDevFS PRIVATE ${FUSE3_LIBRARIES})

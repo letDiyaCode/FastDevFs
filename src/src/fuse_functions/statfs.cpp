@@ -1,6 +1,7 @@
 #include "fuse_functions/statfs.h"
 
 #include <cstring>
+#include <iostream>
 
 /*
  * We return fake but consistent filesystem stats.
@@ -24,5 +25,6 @@ int fdfs_statfs(const char* path, struct statvfs* stbuf)
 
     stbuf->f_namemax = 255;         // max filename length
 
+    std::cout << "fdfs_statfs: returning 0" << std::endl;
     return 0;
 }

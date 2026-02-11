@@ -42,6 +42,7 @@
 
 #include "daemon/dir_manager.h"
 #include "daemon/hash.h"
+#include "daemon/file_io.h"
 #include "fuse_functions/getattr.h"
 #include "fuse_functions/readdir.h"
 #include "fuse_functions/opendir.h"
@@ -49,6 +50,8 @@
 #include "fuse_functions/rmdir.h"
 #include "fuse_functions/access.h"
 #include "fuse_functions/statfs.h"
+#include "fuse_functions/file_funcs.h"
+#include "fuse_functions/utimens.h"
 #include "sys/mman.h"
 #include <unistd.h>
 using namespace std;
@@ -125,6 +128,12 @@ int main(int argc, char* argv[]) {
         dir_manager_init(g_dir_manager);
     }
 
+    // Initialize data directory for file storage
+    if (init_data_dir() < 0) {
+        cerr << "Failed to initialize data directory" << endl;
+        exit(1);
+    }
+
     // Initialize HashTable with separate mmap
     int hash_fd = open(HASH_TABLE_FILE, O_RDWR | O_CREAT, 0644);
     if (hash_fd < 0) {
@@ -170,12 +179,14 @@ int main(int argc, char* argv[]) {
     fdfs_ops.statfs  = fdfs_statfs;
 
     // file ops
-    // fdfs_ops.open    = fdfs_open;
-    // fdfs_ops.read      = fdfs_read,
-    // fdfs_ops.write     = fdfs_write,
-    // fdfs_ops.create    = fdfs_create,
-    // fdfs_ops.unlink    = fdfs_unlink,
-    // fdfs_ops.truncate  = fdfs_truncate,
+    fdfs_ops.open     = fdfs_open;
+    fdfs_ops.read     = fdfs_read;
+    fdfs_ops.write    = fdfs_write;
+    fdfs_ops.create   = fdfs_create;
+    fdfs_ops.unlink   = fdfs_unlink;
+    fdfs_ops.truncate = fdfs_truncate;
+    fdfs_ops.utimens  = fdfs_utimens;
+
 
     // Start FUSE
     return fuse_main(argc, argv, &fdfs_ops, nullptr);

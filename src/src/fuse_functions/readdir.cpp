@@ -3,7 +3,7 @@
 
 #include <cstring>
 #include <cerrno>
-
+#include <iostream>
 /*
  * Global DirManager instance
  * (defined in main.cpp)
@@ -20,10 +20,10 @@ int fdfs_readdir(const char* path,
     (void) offset;
     (void) fi;
     (void) flags;
-
     // Find directory node
     int dir_node = lookup_node(g_dir_manager, path);
     if (dir_node == -1) {
+        std::cout << "fdfs_readdir: returning -ENOENT" << std::endl;
         return -ENOENT;
     }
 
@@ -42,7 +42,10 @@ int fdfs_readdir(const char* path,
         }
 
         child = n->next_sibling;
+        // std::cout<<"I) am Here";
+        // std::cout.flush();
     }
 
+    std::cout << "fdfs_readdir: returning 0" << std::endl;
     return 0;
 }

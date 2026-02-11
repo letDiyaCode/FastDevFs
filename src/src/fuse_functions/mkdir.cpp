@@ -3,6 +3,7 @@
 
 #include <cstring>
 #include <cerrno>
+#include <iostream>
 
 /*
  * Global DirManager instance
@@ -16,6 +17,7 @@ int fdfs_mkdir(const char* path, mode_t mode)
 
     // Disallow creating root
     if (strcmp(path, "/") == 0) {
+        std::cout << "fdfs_mkdir: returning -EEXIST (root)" << std::endl;
         return -EEXIST;
     }
 
@@ -35,10 +37,13 @@ int fdfs_mkdir(const char* path, mode_t mode)
          * We conservatively return EEXIST or ENOENT.
          */
         if (lookup_node(g_dir_manager, path) != -1) {
+            std::cout << "fdfs_mkdir: returning -EEXIST" << std::endl;
             return -EEXIST;
         }
+        std::cout << "fdfs_mkdir: returning -ENOENT" << std::endl;
         return -ENOENT;
     }
 
+    std::cout << "fdfs_mkdir: returning 0" << std::endl;
     return 0;
 }
