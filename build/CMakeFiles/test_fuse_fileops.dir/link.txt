@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/test_fuse_fileops.dir/test/test_fuse_fileops.cpp.o -o test_fuse_fileops  libfastdevfs_adt.a lib/libgtest.a lib/libgtest_main.a lib/libgtest.a 

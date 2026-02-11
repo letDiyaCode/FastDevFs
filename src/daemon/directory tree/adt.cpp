@@ -15,8 +15,125 @@ int hashindex(string filename, treefile &file1){
     }
     return file1.head.hash[filename];
 }
+void insertfolder(string foldername, string parentname, treefile &file1){
+    lock_guard<recursive_mutex> lock(file1.mtx);
 
-void insert(string filename, string parentname, treefile &file1){
+    // Input validation
+    if (foldername.empty()) {
+        return; // invalid name
+    }
+
+    // Validate treefile
+    if (file1.head.size <= 0 || file1.head.size > 100000) {
+        return;
+    }
+
+    // If name already exists and not deleted, do nothing
+    if (file1.head.hash.has(foldername)) {
+        int existingIndex = file1.head.hash[foldername];
+        if (existingIndex >= 0 && existingIndex < file1.head.size &&
+            !file1.arr[existingIndex].isdeleted) {
+            return; // already exists
+        }
+    }
+
+    // Check space
+    if (file1.head.nodeallocated >= file1.head.size) {
+        return; // full
+    }
+
+    int free = file1.head.firstfree;
+    if (free < 0 || free >= file1.head.size) {
+        // try to find a free node
+        for (int i = 1; i < file1.head.size; ++i) {
+            if (file1.arr[i].isdeleted) {
+                free = i;
+                break;
+            }
+        }
+        if (free < 0 || free >= file1.head.size) {
+            return; // no free space
+        }
+    }
+
+    // validate free node
+    if (free < 0 || free >= file1.head.size || !file1.arr[free].isdeleted) {
+        return;
+    }
+
+    int nextf = file1.arr[free].nextfree;
+    int index = free;
+    file1.head.firstfree = nextf;
+
+    // Add to hash map (with recovery on failure)
+    try {
+        file1.head.hash[foldername] = index;
+    } catch (...) {
+        // restore firstfree on failure
+        file1.head.firstfree = free;
+        return;
+    }
+
+    // Determine parent index (empty -> root at 0)
+    int parentindex = -1;
+    if (parentname.empty()) {
+        parentindex = 0;
+    } else if (file1.head.hash.has(parentname)) {
+        parentindex = file1.head.hash[parentname];
+        if (parentindex < 0 || parentindex >= file1.head.size ||
+            file1.arr[parentindex].isdeleted) {
+            parentindex = 0; // treat deleted/invalid parent as root
+        }
+    } else {
+        parentindex = 0; // default to root
+    }
+
+    // Link into parent's child list
+    if (parentindex >= 0 && parentindex < file1.head.size) {
+        int firstson = file1.arr[parentindex].firstchild;
+        file1.arr[parentindex].firstchild = index;
+
+        file1.arr[index].nextsibling = firstson;
+        file1.arr[index].parent = parentindex;
+    } else {
+        file1.arr[index].parent = -1;
+        file1.arr[index].nextsibling = -1;
+    }
+
+    // Set node properties for a directory
+    file1.arr[index].isdeleted = false;
+    strncpy(file1.arr[index].metadata.name, foldername.c_str(), 255);
+    file1.arr[index].metadata.name[255] = '\0';
+    file1.arr[index].firstchild = -1;
+
+    // POSIX-like directory metadata
+    file1.arr[index].metadata.mode = S_IFDIR | 0755; // directory with rwxr-xr-x
+    file1.arr[index].metadata.uid = getuid();
+    file1.arr[index].metadata.gid = getgid();
+    file1.arr[index].metadata.size = 0;
+    time_t now = time(nullptr);
+    file1.arr[index].metadata.atime = now;
+    file1.arr[index].metadata.mtime = now;
+    file1.arr[index].metadata.ctime = now;
+    file1.arr[index].metadata.nlink = 2; // '.' and referenced from parent
+
+    // If a valid parent (non-root negative check), increment parent's nlink for new directory
+    if (parentindex >= 0 && parentindex < file1.head.size) {
+        // Avoid incrementing if parent is deleted (shouldn't be)
+        if (!file1.arr[parentindex].isdeleted) {
+            // avoid overflow; but typical counters are small
+            file1.arr[parentindex].metadata.nlink++;
+        }
+    }
+
+    // Update allocated counter (0 reserved)
+    if (index != 0) {
+        file1.head.nodeallocated++;
+    }
+}
+
+
+void insertfile(string filename, string parentname, treefile &file1){
     lock_guard<recursive_mutex> lock(file1.mtx);
     
     // Input validation - Single Point of Failure Prevention
@@ -113,6 +230,17 @@ void insert(string filename, string parentname, treefile &file1){
     file1.arr[index].metadata.name[255] = '\0';
     file1.arr[index].firstchild = -1;
     
+    // Initialize POSIX metadata with defaults
+    file1.arr[index].metadata.mode = S_IFREG | 0644;  // Regular file with rw-r--r--
+    file1.arr[index].metadata.uid = getuid();
+    file1.arr[index].metadata.gid = getgid();
+    file1.arr[index].metadata.size = 0;
+    time_t now = time(nullptr);
+    file1.arr[index].metadata.atime = now;
+    file1.arr[index].metadata.mtime = now;
+    file1.arr[index].metadata.ctime = now;
+    file1.arr[index].metadata.nlink = 1;
+    
     // Update nodeallocated counter (but don't count index 0)
     if (index != 0) {
         file1.head.nodeallocated++;
@@ -190,6 +318,14 @@ static void delete_subtree_recursive(int index, treefile &file1, int max_depth =
     // Clear metadata and tree links
     file1.arr[index].metadata.inode = -1;
     file1.arr[index].metadata.name[0] = '\0';
+    file1.arr[index].metadata.mode = 0;
+    file1.arr[index].metadata.uid = 0;
+    file1.arr[index].metadata.gid = 0;
+    file1.arr[index].metadata.size = 0;
+    file1.arr[index].metadata.atime = 0;
+    file1.arr[index].metadata.mtime = 0;
+    file1.arr[index].metadata.ctime = 0;
+    file1.arr[index].metadata.nlink = 0;
     file1.arr[index].firstchild = -1;
     file1.arr[index].nextsibling = -1;
     file1.arr[index].parent = -1;
@@ -370,6 +506,14 @@ void initialize(treefile &file1){
         file1.arr[i].parent = -1;
         file1.arr[i].metadata.inode = -1;
         file1.arr[i].metadata.name[0] = '\0';
+        file1.arr[i].metadata.mode = 0;
+        file1.arr[i].metadata.uid = 0;
+        file1.arr[i].metadata.gid = 0;
+        file1.arr[i].metadata.size = 0;
+        file1.arr[i].metadata.atime = 0;
+        file1.arr[i].metadata.mtime = 0;
+        file1.arr[i].metadata.ctime = 0;
+        file1.arr[i].metadata.nlink = 0;
     } 
     // Last node's nextfree should be -1
     if (size > 0) {

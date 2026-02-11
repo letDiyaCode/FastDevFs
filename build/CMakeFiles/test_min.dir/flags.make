@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/bismarck/FastDevFs/include
+CXX_INCLUDES = -I/home/bismarck/FastDevFs/include -I/usr/include/fuse3
 
 CXX_FLAGS = -std=gnu++17
 

@@ -172,82 +172,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named FastDevFS
+# Target rules for targets named test_open
 
 # Build rule for target.
-FastDevFS: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 FastDevFS
-.PHONY : FastDevFS
+test_open: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_open
+.PHONY : test_open
 
 # fast build rule for target.
-FastDevFS/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/build
-.PHONY : FastDevFS/fast
-
-#=============================================================================
-# Target rules for targets named fastdevfs_adt
-
-# Build rule for target.
-fastdevfs_adt: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 fastdevfs_adt
-.PHONY : fastdevfs_adt
-
-# fast build rule for target.
-fastdevfs_adt/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs_adt.dir/build.make CMakeFiles/fastdevfs_adt.dir/build
-.PHONY : fastdevfs_adt/fast
-
-#=============================================================================
-# Target rules for targets named test_adt
-
-# Build rule for target.
-test_adt: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_adt
-.PHONY : test_adt
-
-# fast build rule for target.
-test_adt/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_adt.dir/build.make CMakeFiles/test_adt.dir/build
-.PHONY : test_adt/fast
-
-#=============================================================================
-# Target rules for targets named test_hash
-
-# Build rule for target.
-test_hash: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_hash
-.PHONY : test_hash
-
-# fast build rule for target.
-test_hash/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_hash.dir/build.make CMakeFiles/test_hash.dir/build
-.PHONY : test_hash/fast
-
-#=============================================================================
-# Target rules for targets named test_persistence
-
-# Build rule for target.
-test_persistence: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_persistence
-.PHONY : test_persistence
-
-# fast build rule for target.
-test_persistence/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_persistence.dir/build.make CMakeFiles/test_persistence.dir/build
-.PHONY : test_persistence/fast
-
-#=============================================================================
-# Target rules for targets named test_min
-
-# Build rule for target.
-test_min: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_min
-.PHONY : test_min
-
-# fast build rule for target.
-test_min/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_min.dir/build.make CMakeFiles/test_min.dir/build
-.PHONY : test_min/fast
+test_open/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_open.dir/build.make CMakeFiles/test_open.dir/build
+.PHONY : test_open/fast
 
 #=============================================================================
 # Target rules for targets named gmock
@@ -301,36 +236,12 @@ gtest_main/fast:
 	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build
 .PHONY : gtest_main/fast
 
-main.o: main.cpp.o
-.PHONY : main.o
-
-# target to build an object file
-main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/main.cpp.o
-.PHONY : main.cpp.o
-
-main.i: main.cpp.i
-.PHONY : main.i
-
-# target to preprocess a source file
-main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/main.cpp.i
-.PHONY : main.cpp.i
-
-main.s: main.cpp.s
-.PHONY : main.s
-
-# target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/main.cpp.s
-.PHONY : main.cpp.s
-
 src/daemon/directory_tree/adt.o: src/daemon/directory_tree/adt.cpp.o
 .PHONY : src/daemon/directory_tree/adt.o
 
 # target to build an object file
 src/daemon/directory_tree/adt.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs_adt.dir/build.make CMakeFiles/fastdevfs_adt.dir/src/daemon/directory_tree/adt.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_open.dir/build.make CMakeFiles/test_open.dir/src/daemon/directory_tree/adt.cpp.o
 .PHONY : src/daemon/directory_tree/adt.cpp.o
 
 src/daemon/directory_tree/adt.i: src/daemon/directory_tree/adt.cpp.i
@@ -338,7 +249,7 @@ src/daemon/directory_tree/adt.i: src/daemon/directory_tree/adt.cpp.i
 
 # target to preprocess a source file
 src/daemon/directory_tree/adt.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs_adt.dir/build.make CMakeFiles/fastdevfs_adt.dir/src/daemon/directory_tree/adt.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_open.dir/build.make CMakeFiles/test_open.dir/src/daemon/directory_tree/adt.cpp.i
 .PHONY : src/daemon/directory_tree/adt.cpp.i
 
 src/daemon/directory_tree/adt.s: src/daemon/directory_tree/adt.cpp.s
@@ -346,7 +257,7 @@ src/daemon/directory_tree/adt.s: src/daemon/directory_tree/adt.cpp.s
 
 # target to generate assembly for a file
 src/daemon/directory_tree/adt.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs_adt.dir/build.make CMakeFiles/fastdevfs_adt.dir/src/daemon/directory_tree/adt.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_open.dir/build.make CMakeFiles/test_open.dir/src/daemon/directory_tree/adt.cpp.s
 .PHONY : src/daemon/directory_tree/adt.cpp.s
 
 src/daemon/directory_tree/hash.o: src/daemon/directory_tree/hash.cpp.o
@@ -354,7 +265,7 @@ src/daemon/directory_tree/hash.o: src/daemon/directory_tree/hash.cpp.o
 
 # target to build an object file
 src/daemon/directory_tree/hash.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs_adt.dir/build.make CMakeFiles/fastdevfs_adt.dir/src/daemon/directory_tree/hash.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_open.dir/build.make CMakeFiles/test_open.dir/src/daemon/directory_tree/hash.cpp.o
 .PHONY : src/daemon/directory_tree/hash.cpp.o
 
 src/daemon/directory_tree/hash.i: src/daemon/directory_tree/hash.cpp.i
@@ -362,7 +273,7 @@ src/daemon/directory_tree/hash.i: src/daemon/directory_tree/hash.cpp.i
 
 # target to preprocess a source file
 src/daemon/directory_tree/hash.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs_adt.dir/build.make CMakeFiles/fastdevfs_adt.dir/src/daemon/directory_tree/hash.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_open.dir/build.make CMakeFiles/test_open.dir/src/daemon/directory_tree/hash.cpp.i
 .PHONY : src/daemon/directory_tree/hash.cpp.i
 
 src/daemon/directory_tree/hash.s: src/daemon/directory_tree/hash.cpp.s
@@ -370,104 +281,56 @@ src/daemon/directory_tree/hash.s: src/daemon/directory_tree/hash.cpp.s
 
 # target to generate assembly for a file
 src/daemon/directory_tree/hash.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs_adt.dir/build.make CMakeFiles/fastdevfs_adt.dir/src/daemon/directory_tree/hash.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_open.dir/build.make CMakeFiles/test_open.dir/src/daemon/directory_tree/hash.cpp.s
 .PHONY : src/daemon/directory_tree/hash.cpp.s
 
-src/daemon/directory_tree/test_min.o: src/daemon/directory_tree/test_min.cpp.o
-.PHONY : src/daemon/directory_tree/test_min.o
+src/daemon/fuse_functions/fs_open.o: src/daemon/fuse_functions/fs_open.cpp.o
+.PHONY : src/daemon/fuse_functions/fs_open.o
 
 # target to build an object file
-src/daemon/directory_tree/test_min.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_min.dir/build.make CMakeFiles/test_min.dir/src/daemon/directory_tree/test_min.cpp.o
-.PHONY : src/daemon/directory_tree/test_min.cpp.o
+src/daemon/fuse_functions/fs_open.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_open.dir/build.make CMakeFiles/test_open.dir/src/daemon/fuse_functions/fs_open.cpp.o
+.PHONY : src/daemon/fuse_functions/fs_open.cpp.o
 
-src/daemon/directory_tree/test_min.i: src/daemon/directory_tree/test_min.cpp.i
-.PHONY : src/daemon/directory_tree/test_min.i
+src/daemon/fuse_functions/fs_open.i: src/daemon/fuse_functions/fs_open.cpp.i
+.PHONY : src/daemon/fuse_functions/fs_open.i
 
 # target to preprocess a source file
-src/daemon/directory_tree/test_min.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_min.dir/build.make CMakeFiles/test_min.dir/src/daemon/directory_tree/test_min.cpp.i
-.PHONY : src/daemon/directory_tree/test_min.cpp.i
+src/daemon/fuse_functions/fs_open.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_open.dir/build.make CMakeFiles/test_open.dir/src/daemon/fuse_functions/fs_open.cpp.i
+.PHONY : src/daemon/fuse_functions/fs_open.cpp.i
 
-src/daemon/directory_tree/test_min.s: src/daemon/directory_tree/test_min.cpp.s
-.PHONY : src/daemon/directory_tree/test_min.s
+src/daemon/fuse_functions/fs_open.s: src/daemon/fuse_functions/fs_open.cpp.s
+.PHONY : src/daemon/fuse_functions/fs_open.s
 
 # target to generate assembly for a file
-src/daemon/directory_tree/test_min.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_min.dir/build.make CMakeFiles/test_min.dir/src/daemon/directory_tree/test_min.cpp.s
-.PHONY : src/daemon/directory_tree/test_min.cpp.s
+src/daemon/fuse_functions/fs_open.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_open.dir/build.make CMakeFiles/test_open.dir/src/daemon/fuse_functions/fs_open.cpp.s
+.PHONY : src/daemon/fuse_functions/fs_open.cpp.s
 
-test/test_adt.o: test/test_adt.cpp.o
-.PHONY : test/test_adt.o
+test/test_open.o: test/test_open.cpp.o
+.PHONY : test/test_open.o
 
 # target to build an object file
-test/test_adt.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_adt.dir/build.make CMakeFiles/test_adt.dir/test/test_adt.cpp.o
-.PHONY : test/test_adt.cpp.o
+test/test_open.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_open.dir/build.make CMakeFiles/test_open.dir/test/test_open.cpp.o
+.PHONY : test/test_open.cpp.o
 
-test/test_adt.i: test/test_adt.cpp.i
-.PHONY : test/test_adt.i
-
-# target to preprocess a source file
-test/test_adt.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_adt.dir/build.make CMakeFiles/test_adt.dir/test/test_adt.cpp.i
-.PHONY : test/test_adt.cpp.i
-
-test/test_adt.s: test/test_adt.cpp.s
-.PHONY : test/test_adt.s
-
-# target to generate assembly for a file
-test/test_adt.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_adt.dir/build.make CMakeFiles/test_adt.dir/test/test_adt.cpp.s
-.PHONY : test/test_adt.cpp.s
-
-test/test_hash.o: test/test_hash.cpp.o
-.PHONY : test/test_hash.o
-
-# target to build an object file
-test/test_hash.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_hash.dir/build.make CMakeFiles/test_hash.dir/test/test_hash.cpp.o
-.PHONY : test/test_hash.cpp.o
-
-test/test_hash.i: test/test_hash.cpp.i
-.PHONY : test/test_hash.i
+test/test_open.i: test/test_open.cpp.i
+.PHONY : test/test_open.i
 
 # target to preprocess a source file
-test/test_hash.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_hash.dir/build.make CMakeFiles/test_hash.dir/test/test_hash.cpp.i
-.PHONY : test/test_hash.cpp.i
+test/test_open.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_open.dir/build.make CMakeFiles/test_open.dir/test/test_open.cpp.i
+.PHONY : test/test_open.cpp.i
 
-test/test_hash.s: test/test_hash.cpp.s
-.PHONY : test/test_hash.s
-
-# target to generate assembly for a file
-test/test_hash.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_hash.dir/build.make CMakeFiles/test_hash.dir/test/test_hash.cpp.s
-.PHONY : test/test_hash.cpp.s
-
-test/test_persistence.o: test/test_persistence.cpp.o
-.PHONY : test/test_persistence.o
-
-# target to build an object file
-test/test_persistence.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_persistence.dir/build.make CMakeFiles/test_persistence.dir/test/test_persistence.cpp.o
-.PHONY : test/test_persistence.cpp.o
-
-test/test_persistence.i: test/test_persistence.cpp.i
-.PHONY : test/test_persistence.i
-
-# target to preprocess a source file
-test/test_persistence.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_persistence.dir/build.make CMakeFiles/test_persistence.dir/test/test_persistence.cpp.i
-.PHONY : test/test_persistence.cpp.i
-
-test/test_persistence.s: test/test_persistence.cpp.s
-.PHONY : test/test_persistence.s
+test/test_open.s: test/test_open.cpp.s
+.PHONY : test/test_open.s
 
 # target to generate assembly for a file
-test/test_persistence.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_persistence.dir/build.make CMakeFiles/test_persistence.dir/test/test_persistence.cpp.s
-.PHONY : test/test_persistence.cpp.s
+test/test_open.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_open.dir/build.make CMakeFiles/test_open.dir/test/test_open.cpp.s
+.PHONY : test/test_open.cpp.s
 
 # Help Target
 help:
@@ -482,37 +345,23 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... test"
-	@echo "... FastDevFS"
-	@echo "... fastdevfs_adt"
 	@echo "... gmock"
 	@echo "... gmock_main"
 	@echo "... gtest"
 	@echo "... gtest_main"
-	@echo "... test_adt"
-	@echo "... test_hash"
-	@echo "... test_min"
-	@echo "... test_persistence"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... test_open"
 	@echo "... src/daemon/directory_tree/adt.o"
 	@echo "... src/daemon/directory_tree/adt.i"
 	@echo "... src/daemon/directory_tree/adt.s"
 	@echo "... src/daemon/directory_tree/hash.o"
 	@echo "... src/daemon/directory_tree/hash.i"
 	@echo "... src/daemon/directory_tree/hash.s"
-	@echo "... src/daemon/directory_tree/test_min.o"
-	@echo "... src/daemon/directory_tree/test_min.i"
-	@echo "... src/daemon/directory_tree/test_min.s"
-	@echo "... test/test_adt.o"
-	@echo "... test/test_adt.i"
-	@echo "... test/test_adt.s"
-	@echo "... test/test_hash.o"
-	@echo "... test/test_hash.i"
-	@echo "... test/test_hash.s"
-	@echo "... test/test_persistence.o"
-	@echo "... test/test_persistence.i"
-	@echo "... test/test_persistence.s"
+	@echo "... src/daemon/fuse_functions/fs_open.o"
+	@echo "... src/daemon/fuse_functions/fs_open.i"
+	@echo "... src/daemon/fuse_functions/fs_open.s"
+	@echo "... test/test_open.o"
+	@echo "... test/test_open.i"
+	@echo "... test/test_open.s"
 .PHONY : help
 
 

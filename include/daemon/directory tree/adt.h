@@ -10,16 +10,22 @@ using namespace std;
 struct metadate{
     int inode = -1;
     char name[256] = "";  // Fixed-size char array instead of std::string for mmap compatibility
+    mode_t mode;        // file type + permissions
+    uid_t  uid;
+    gid_t  gid;
+    off_t  size;
+    time_t atime;
+    time_t mtime;
+    time_t ctime;
+    nlink_t nlink;
 };
 struct treenode{
     int nextfree= -1;
-    
-    bool isdeleted = true;
-    
     int firstchild = -1;
     int nextsibling = -1;
     int parent = -1;
     metadate metadata;
+    bool isdeleted = true;
 };
 struct header{
   int firstfree = 0;
@@ -35,7 +41,8 @@ struct treefile{
 };
 
 int hashindex(string filename, treefile &file1);
-void insert(string filename, string parentname, treefile &file1);
+void insertfile(string filename, string parentname, treefile &file1);
+void insertfolder(string filename, string parentname, treefile &file1);
 void delete1(string filename, treefile &file1);
 void change_parent(string filename, string newparentname, treefile &file1);
 void initialize(treefile &file1);
