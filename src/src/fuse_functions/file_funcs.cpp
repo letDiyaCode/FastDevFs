@@ -105,6 +105,16 @@ int fdfs_read(const char *path, char *buf, size_t size,
 /* WRITE */
 int fdfs_write(const char *path, const char *buf, size_t size,
                off_t offset, struct fuse_file_info *fi) {
+
+    // if (g_config.dedup_enabled)
+    // {
+    //     // call dedup logic
+    // }
+    // else
+    // {
+    //     // normal write_inode_data()
+    // }
+
     pthread_rwlock_wrlock(&g_dir_manager->rwlock);
     std::cout << "fdfs_write: writing " << size << " bytes to " << path << " at offset " << offset << "data: "<<buf<<std::endl;
     int node = lookup_node_nolock(g_dir_manager, path);

@@ -53,6 +53,7 @@
 #include "fuse_functions/file_funcs.h"
 #include "fuse_functions/utimens.h"
 #include "sys/mman.h"
+#include "config.h"
 #include <unistd.h>
 using namespace std;
 #define DIR_TREE_FILE "dir_tree.dat"
@@ -65,7 +66,7 @@ using namespace std;
 DirManager* g_dir_manager = nullptr;
 
 static struct fuse_operations fdfs_ops;
-
+extern FSConfig g_config;
 // static struct fuse_operations fdfs_ops = {
 //     .getattr   = fdfs_getattr,
 //     .readdir   = fdfs_readdir,
@@ -187,7 +188,13 @@ int main(int argc, char* argv[]) {
     fdfs_ops.truncate = fdfs_truncate;
     fdfs_ops.utimens  = fdfs_utimens;
 
-
+    // load config
+    load_config("/home/diya_limbani/FastDevFs/fdfs.conf");
+    if(g_config.dedup_enabled) {
+        // to do
+    }else{
+        cout<<"WARN: We are not using dedup-thread. This can lead to higher memory usage.";
+    }
     // Start FUSE
     return fuse_main(argc, argv, &fdfs_ops, nullptr);
 }

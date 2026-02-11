@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/devesh-bhardwaj/Desktop/FastDevFS
+CMAKE_SOURCE_DIR = /home/diya_limbani/FastDevFs
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/devesh-bhardwaj/Desktop/FastDevFS/build
+CMAKE_BINARY_DIR = /home/diya_limbani/FastDevFs/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -97,9 +97,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/devesh-bhardwaj/Desktop/FastDevFS/build/CMakeFiles /home/devesh-bhardwaj/Desktop/FastDevFS/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/diya_limbani/FastDevFs/build/CMakeFiles /home/diya_limbani/FastDevFs/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/devesh-bhardwaj/Desktop/FastDevFS/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/diya_limbani/FastDevFs/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -175,6 +175,30 @@ main.s: main.cpp.s
 main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/main.cpp.s
 .PHONY : main.cpp.s
+
+src/src/config.o: src/src/config.cpp.o
+.PHONY : src/src/config.o
+
+# target to build an object file
+src/src/config.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/config.cpp.o
+.PHONY : src/src/config.cpp.o
+
+src/src/config.i: src/src/config.cpp.i
+.PHONY : src/src/config.i
+
+# target to preprocess a source file
+src/src/config.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/config.cpp.i
+.PHONY : src/src/config.cpp.i
+
+src/src/config.s: src/src/config.cpp.s
+.PHONY : src/src/config.s
+
+# target to generate assembly for a file
+src/src/config.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FastDevFS.dir/build.make CMakeFiles/FastDevFS.dir/src/src/config.cpp.s
+.PHONY : src/src/config.cpp.s
 
 src/src/daemon/dir_manager.o: src/src/daemon/dir_manager.cpp.o
 .PHONY : src/src/daemon/dir_manager.o
@@ -478,6 +502,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... src/src/config.o"
+	@echo "... src/src/config.i"
+	@echo "... src/src/config.s"
 	@echo "... src/src/daemon/dir_manager.o"
 	@echo "... src/src/daemon/dir_manager.i"
 	@echo "... src/src/daemon/dir_manager.s"

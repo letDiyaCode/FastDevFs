@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/usr/include/fuse3 -I/home/devesh-bhardwaj/Desktop/FastDevFS/src/include
+CXX_INCLUDES = -I/usr/include/fuse3 -I/home/diya_limbani/FastDevFs/src/include
 
 CXX_FLAGS = 
 

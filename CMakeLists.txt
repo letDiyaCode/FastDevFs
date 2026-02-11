@@ -22,6 +22,7 @@ add_executable(FastDevFS
     src/src/daemon/dir_manager.cpp
     src/src/daemon/hash.cpp
     src/src/daemon/file_io.cpp
+    src/src/config.cpp
 )
 
 target_include_directories(FastDevFS PRIVATE 

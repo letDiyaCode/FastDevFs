@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/FastDevFS.dir/main.cpp.o"
   "CMakeFiles/FastDevFS.dir/main.cpp.o.d"
+  "CMakeFiles/FastDevFS.dir/src/src/config.cpp.o"
+  "CMakeFiles/FastDevFS.dir/src/src/config.cpp.o.d"
   "CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.o"
   "CMakeFiles/FastDevFS.dir/src/src/daemon/dir_manager.cpp.o.d"
   "CMakeFiles/FastDevFS.dir/src/src/daemon/file_io.cpp.o"
