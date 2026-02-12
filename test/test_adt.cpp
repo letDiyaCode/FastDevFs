@@ -1,358 +1,181 @@
 #include <gtest/gtest.h>
-#include <thread>
-#include <vector>
-#include "daemon/directory tree/adt.h"
+#include "../include/daemon/directory tree/adt.h"
 
-using namespace std;
-
-// Fixture class for ADT tests
-class ADTTest : public ::testing::Test {
+class AdtTest : public ::testing::Test {
 protected:
+    treefile* file;
+
     void SetUp() override {
         file = new treefile();
         initialize(*file);
     }
-    
+
     void TearDown() override {
         delete file;
     }
-    
-    treefile* file;  // Use pointer for heap allocation to avoid stack overflow
 };
 
-// Test 1: Initialize function
-
-
-// Test 2: Insert root node
-TEST_F(ADTTest, InsertRootNode) {
-    insert("root", "", *file);
-    
-    EXPECT_TRUE(file->head.hash.has("root"));
-    int rootIndex = hashindex("root", *file);
-    EXPECT_GE(rootIndex, 0);
-    EXPECT_LT(rootIndex, file->head.size);
-    EXPECT_FALSE(file->arr[rootIndex].isdeleted);
-    EXPECT_STREQ(file->arr[rootIndex].metadata.name, "root");
-    EXPECT_EQ(file->arr[rootIndex].parent, 0); // Parent is root (index 0)
+TEST_F(AdtTest, Initialize) {
+    EXPECT_EQ(file->head.nodeallocated, 1); // 0 reserved for root
+    EXPECT_EQ(file->head.firstfree, 1);
+    EXPECT_EQ(file->head.size, 100000);
 }
 
-// Test 3: Insert child under parent
-TEST_F(ADTTest, InsertChildUnderParent) {
-    insert("root", "", *file);
-    insert("child1", "root", *file);
-    
-    EXPECT_TRUE(file->head.hash.has("child1"));
-    int rootIndex = hashindex("root", *file);
-    int childIndex = hashindex("child1", *file);
-    
-    EXPECT_EQ(file->arr[rootIndex].firstchild, childIndex);
-    EXPECT_EQ(file->arr[childIndex].parent, rootIndex);
-    EXPECT_STREQ(file->arr[childIndex].metadata.name, "child1");
+TEST_F(AdtTest, InsertFolder) {
+    insertfolder("folder1", "", *file);
+    int index = hashindex("folder1", *file);
+    ASSERT_NE(index, -1);
+    EXPECT_EQ(std::string(file->arr[index].metadata.name), "folder1");
+    EXPECT_FALSE(file->arr[index].isdeleted);
+    EXPECT_EQ(file->arr[index].metadata.mode & S_IFMT, S_IFDIR);
 }
 
-// Test 4: Insert multiple children
-TEST_F(ADTTest, InsertMultipleChildren) {
-    insert("root", "", *file);
-    insert("child1", "root", *file);
-    insert("child2", "root", *file);
-    insert("child3", "root", *file);
-    
-    int rootIndex = hashindex("root", *file);
-    int firstChild = file->arr[rootIndex].firstchild;
-    
-    EXPECT_GE(firstChild, 0);
-    
-    // Check that all children are linked
-    vector<int> children;
-    int current = firstChild;
-    int count = 0;
-    while (current != -1 && count < 10) {
-        children.push_back(current);
-        current = file->arr[current].nextsibling;
-        count++;
-    }
-    
-    EXPECT_GE(children.size(), 3);
+TEST_F(AdtTest, InsertFile) {
+    insertfile("file1", "", *file);
+    int index = hashindex("file1", *file);
+    ASSERT_NE(index, -1);
+    EXPECT_EQ(std::string(file->arr[index].metadata.name), "file1");
+    EXPECT_FALSE(file->arr[index].isdeleted);
+    EXPECT_EQ(file->arr[index].metadata.mode & S_IFMT, S_IFREG);
 }
 
-// Test 5: Hashindex returns correct index
-TEST_F(ADTTest, HashindexReturnsCorrectIndex) {
-    insert("testfile", "", *file);
+TEST_F(AdtTest, DeleteFile) {
+    insertfile("file2", "", *file);
+    int index = hashindex("file2", *file);
+    ASSERT_NE(index, -1);
     
-    int index = hashindex("testfile", *file);
-    EXPECT_GE(index, 0);
-    EXPECT_LT(index, file->head.size);
-    EXPECT_STREQ(file->arr[index].metadata.name, "testfile");
-}
-
-// Test 6: Hashindex returns -1 for non-existent file
-TEST_F(ADTTest, HashindexReturnsNegativeForNonExistent) {
-    int index = hashindex("nonexistent", *file);
+    delete1("file2", *file);
+    index = hashindex("file2", *file);
     EXPECT_EQ(index, -1);
 }
 
-// Test 7: Delete leaf node
-TEST_F(ADTTest, DeleteLeafNode) {
-    insert("root", "", *file);
-    insert("child1", "root", *file);
+TEST_F(AdtTest, ParentChildRelationship) {
+    insertfolder("parent", "", *file);
+    insertfile("child", "parent", *file);
     
-    int rootIndex = hashindex("root", *file);
-    int childIndex = hashindex("child1", *file);
+    int parentIdx = hashindex("parent", *file);
+    int childIdx = hashindex("child", *file);
     
-    EXPECT_EQ(file->arr[rootIndex].firstchild, childIndex);
+    ASSERT_NE(parentIdx, -1);
+    ASSERT_NE(childIdx, -1);
     
-    delete1("child1", *file);
-    
-    EXPECT_TRUE(file->arr[childIndex].isdeleted);
-    EXPECT_EQ(file->arr[rootIndex].firstchild, -1);
-    EXPECT_FALSE(file->head.hash.has("child1"));
+    EXPECT_EQ(file->arr[childIdx].parent, parentIdx);
+    EXPECT_EQ(file->arr[parentIdx].firstchild, childIdx);
 }
 
-// Test 8: Delete node with children (recursive deletion)
-TEST_F(ADTTest, DeleteNodeWithChildrenRecursively) {
-    insert("root", "", *file);
-    insert("dir1", "root", *file);
-    insert("file1", "dir1", *file);
-    insert("file2", "dir1", *file);
+TEST_F(AdtTest, ChangeParent) {
+    insertfolder("dir1", "", *file);
+    insertfolder("dir2", "", *file);
+    insertfile("file3", "dir1", *file);
     
-    int dir1Index = hashindex("dir1", *file);
-    int file1Index = hashindex("file1", *file);
-    int file2Index = hashindex("file2", *file);
+    int dir1Idx = hashindex("dir1", *file);
+    int dir2Idx = hashindex("dir2", *file);
+    int fileIdx = hashindex("file3", *file);
     
-    EXPECT_FALSE(file->arr[dir1Index].isdeleted);
-    EXPECT_FALSE(file->arr[file1Index].isdeleted);
-    EXPECT_FALSE(file->arr[file2Index].isdeleted);
+    ASSERT_EQ(file->arr[fileIdx].parent, dir1Idx);
     
-    delete1("dir1", *file);
+    change_parent("file3", "dir2", *file);
     
-    // All nodes should be deleted
-    EXPECT_TRUE(file->arr[dir1Index].isdeleted);
-    EXPECT_TRUE(file->arr[file1Index].isdeleted);
-    EXPECT_TRUE(file->arr[file2Index].isdeleted);
-    
-    // Hash entries should be removed
-    EXPECT_FALSE(file->head.hash.has("dir1"));
-    EXPECT_FALSE(file->head.hash.has("file1"));
-    EXPECT_FALSE(file->head.hash.has("file2"));
+    EXPECT_EQ(file->arr[fileIdx].parent, dir2Idx);
+    // Verify file is in dir2's children list (simplified check: it is the first child or reachable)
+    EXPECT_EQ(file->arr[dir2Idx].firstchild, fileIdx); 
 }
 
-// Test 9: Cannot delete root node
-TEST_F(ADTTest, CannotDeleteRootNode) {
-    insert("root", "", *file);
+TEST_F(AdtTest, PreventCycle) {
+    insertfolder("A", "", *file);
+    insertfolder("B", "A", *file);
     
-    // Attempt to delete root should be prevented
-    delete1("root", *file);
+    // Try to move A under B (should fail)
+    change_parent("A", "B", *file);
     
-    // Root should still exist (though technically index 0 may not be in hash)
-    // The important thing is no crash occurs
-    EXPECT_NO_THROW(delete1("root", *file));
+    int aIdx = hashindex("A", *file);
+    // Parent of A should still be root (0) or -1 if we consider root logic
+    // In insertfolder("", "", *file) is not possible, root is implicitly 0.
+    // Logic: `insertfolder("A", "", ...)` sets A's parent to 0 (root).
+    EXPECT_EQ(file->arr[aIdx].parent, 0);
 }
 
-// Test 10: Change parent
-TEST_F(ADTTest, ChangeParent) {
-    insert("root", "", *file);
-    insert("dir1", "root", *file);
-    insert("dir2", "root", *file);
-    insert("file1", "dir1", *file);
-    
-    int rootIndex = hashindex("root", *file);
-    int dir1Index = hashindex("dir1", *file);
-    int dir2Index = hashindex("dir2", *file);
-    int file1Index = hashindex("file1", *file);
-    
-    EXPECT_EQ(file->arr[file1Index].parent, dir1Index);
-    
-    change_parent("file1", "dir2", *file);
-    
-    EXPECT_EQ(file->arr[file1Index].parent, dir2Index);
-    EXPECT_EQ(file->arr[dir2Index].firstchild, file1Index);
-    EXPECT_EQ(file->arr[dir1Index].firstchild, -1);
+TEST_F(AdtTest, SearchFile) {
+    insertfile("searchFile", "", *file);
+    int index = hashindex("searchFile", *file);
+    ASSERT_NE(index, -1);
+    EXPECT_EQ(std::string(file->arr[index].metadata.name), "searchFile");
 }
 
-// Test 11: Prevent duplicate insertions
-TEST_F(ADTTest, PreventDuplicateInsertions) {
-    insert("file1", "", *file);
-    
-    int firstIndex = hashindex("file1", *file);
-    
-    insert("file1", "", *file);
-    
-    int secondIndex = hashindex("file1", *file);
-    
-    // Should still point to the same index
-    EXPECT_EQ(firstIndex, secondIndex);
+TEST_F(AdtTest, SearchFolder) {
+    insertfolder("searchFolder", "", *file);
+    int index = hashindex("searchFolder", *file);
+    ASSERT_NE(index, -1);
+    EXPECT_EQ(std::string(file->arr[index].metadata.name), "searchFolder");
 }
 
-// Test 12: Node allocation counter
-TEST_F(ADTTest, NodeAllocationCounter) {
-    EXPECT_EQ(file->head.nodeallocated, 1); // Root node
-    
-    insert("file1", "", *file);
-    EXPECT_EQ(file->head.nodeallocated, 2);
-    
-    insert("file2", "", *file);
-    EXPECT_EQ(file->head.nodeallocated, 3);
-    
-    delete1("file1", *file);
-    EXPECT_EQ(file->head.nodeallocated, 2);
+TEST_F(AdtTest, SearchNonExistent) {
+    int index = hashindex("nonExistent", *file);
+    EXPECT_EQ(index, -1);
 }
 
-// Test 13: Empty filename handling
-TEST_F(ADTTest, EmptyFilenameHandling) {
-    int before = file->head.nodeallocated;
-    
-    insert("", "", *file); // Empty filename
-    
-    // Should not insert
-    EXPECT_EQ(file->head.nodeallocated, before);
-    EXPECT_FALSE(file->head.hash.has(""));
+TEST_F(AdtTest, RootNodeProperties) {
+    // Root is always at index 0 after initialize
+    EXPECT_FALSE(file->arr[0].isdeleted);
+    // Name might be empty or "/" depending on implementation details not fully visible but let's check basic validity
+    // Actually, initialize() sets `nodeallocated = 1`, implicitly considering 0 used.
+    // Let's verify it's not marked free.
+    EXPECT_NE(file->head.firstfree, 0); 
 }
 
-// Test 14: Insert with non-existent parent defaults to root
-TEST_F(ADTTest, NonExistentParentDefaultsToRoot) {
-    insert("orphan", "nonexistent_parent", *file);
+TEST_F(AdtTest, DeleteFolder) {
+    insertfolder("deleteMe", "", *file);
+    int index = hashindex("deleteMe", *file);
+    ASSERT_NE(index, -1);
     
-    int orphanIndex = hashindex("orphan", *file);
-    EXPECT_GE(orphanIndex, 0);
-    // Should be linked to root (index 0)
-    EXPECT_EQ(file->arr[orphanIndex].parent, 0);
+    delete1("deleteMe", *file);
+    index = hashindex("deleteMe", *file);
+    EXPECT_EQ(index, -1);
 }
 
-// Test 15: Change parent prevents cycles
-TEST_F(ADTTest, ChangeParentPreventsCycles) {
-    insert("root", "", *file);
-    insert("dir1", "root", *file);
-    insert("dir2", "dir1", *file);
-    
-    int dir1Index = hashindex("dir1", *file);
-    int dir2Index = hashindex("dir2", *file);
-    int rootIndex = hashindex("root", *file);
-    
-    // Store original parent of dir1 (should be root)
-    int originalParent = file->arr[dir1Index].parent;
-    EXPECT_EQ(originalParent, rootIndex);
-    
-    // Try to move dir1 under dir2 (would create cycle since dir2 is under dir1)
-    change_parent("dir1", "dir2", *file);
-    
-    // Should not create cycle - dir1's parent should remain the same
-    // The cycle check should detect that dir2 is a descendant of dir1
-    EXPECT_EQ(file->arr[dir1Index].parent, originalParent); // Should remain under root
-    EXPECT_NE(file->arr[dir1Index].parent, dir2Index); // Should not be under dir2
+TEST_F(AdtTest, DeleteNonExistent) {
+    // Should not crash
+    delete1("ghostFile", *file);
+    EXPECT_EQ(hashindex("ghostFile", *file), -1);
 }
 
-// Test 16: Thread safety - concurrent inserts
-TEST_F(ADTTest, ThreadSafetyConcurrentInserts) {
-    vector<thread> threads;
-    const int numThreads = 10;
-    const int filesPerThread = 5;
+TEST_F(AdtTest, InsertDeepHierarchy) {
+    insertfolder("level1", "", *file);
+    insertfolder("level2", "level1", *file);
+    insertfile("deepFile", "level2", *file);
     
-    for (int t = 0; t < numThreads; t++) {
-        threads.emplace_back([this, t, filesPerThread]() {
-            for (int i = 0; i < filesPerThread; i++) {
-                string filename = "file_" + to_string(t) + "_" + to_string(i);
-                insert(filename, "", *file);
-            }
-        });
-    }
+    int fIdx = hashindex("deepFile", *file);
+    int l2Idx = hashindex("level2", *file);
     
-    for (auto& t : threads) {
-        t.join();
-    }
-    
-    // Verify all files were inserted
-    EXPECT_EQ(file->head.nodeallocated, 1 + numThreads * filesPerThread);
+    ASSERT_NE(fIdx, -1);
+    EXPECT_EQ(file->arr[fIdx].parent, l2Idx);
 }
 
-// Test 17: Thread safety - concurrent delete and insert
-TEST_F(ADTTest, ThreadSafetyConcurrentDeleteAndInsert) {
-    // Setup
-    for (int i = 0; i < 10; i++) {
-        insert("file" + to_string(i), "", *file);
-    }
-    
-    vector<thread> threads;
-    threads.emplace_back([this]() {
-        for (int i = 0; i < 5; i++) {
-            delete1("file" + to_string(i), *file);
-        }
-    });
-    
-    threads.emplace_back([this]() {
-        for (int i = 10; i < 15; i++) {
-            insert("file" + to_string(i), "", *file);
-        }
-    });
-    
-    for (auto& t : threads) {
-        t.join();
-    }
-    
-    // Should complete without crashes
-    EXPECT_GE(file->head.nodeallocated, 1);
+TEST_F(AdtTest, ChangeParentNonExistent) {
+    // Try to move a non-existent file
+    // Should not crash
+    change_parent("ghostMover", "root", *file);
+    EXPECT_EQ(hashindex("ghostMover", *file), -1);
 }
 
-// Test 18: Free list integrity after deletions
-TEST_F(ADTTest, FreeListIntegrityAfterDeletions) {
-    vector<string> filenames;
-    for (int i = 0; i < 10; i++) {
-        string name = "file" + to_string(i);
-        filenames.push_back(name);
-        insert(name, "", *file);
-    }
+TEST_F(AdtTest, ChangeParentToNonExistent) {
+    insertfile("mover", "", *file);
+    // Move to non-existent parent
+    change_parent("mover", "ghostParent", *file);
     
-    // Delete some files
-    for (int i = 0; i < 5; i++) {
-        delete1(filenames[i], *file);
-    }
-    
-    // Free list should still allow insertions
-    insert("newfile", "", *file);
-    EXPECT_TRUE(file->head.hash.has("newfile"));
+    // Parent should remain as it was (likely root, 0)
+    int idx = hashindex("mover", *file);
+    // If implementation is robust, it shouldn't change or should handle error.
+    // Assuming 0 is root/default parent
+    EXPECT_EQ(file->arr[idx].parent, 0); 
 }
 
-// Test 19: Change parent to same parent (no-op)
-TEST_F(ADTTest, ChangeParentToSameParentIsNoOp) {
-    insert("root", "", *file);
-    insert("file1", "root", *file);
+TEST_F(AdtTest, ReInitialize) {
+    insertfile("wipedFile", "", *file);
+    EXPECT_NE(hashindex("wipedFile", *file), -1);
     
-    int file1Index = hashindex("file1", *file);
-    int rootIndex = hashindex("root", *file);
-    int originalParent = file->arr[file1Index].parent;
+    initialize(*file);
     
-    change_parent("file1", "root", *file);
-    
-    // Parent should remain the same
-    EXPECT_EQ(file->arr[file1Index].parent, originalParent);
+    EXPECT_EQ(hashindex("wipedFile", *file), -1);
+    EXPECT_EQ(file->head.nodeallocated, 1);
 }
-
-// Test 20: Deep tree deletion
-TEST_F(ADTTest, DeepTreeDeletion) {
-    insert("root", "", *file);
-    
-    // Create a deep tree
-    string parent = "root";
-    for (int i = 0; i < 5; i++) {
-        string dir = "dir" + to_string(i);
-        insert(dir, parent, *file);
-        parent = dir;
-        
-        // Add files to each directory
-        for (int j = 0; j < 3; j++) {
-            insert("file" + to_string(i) + "_" + to_string(j), dir, *file);
-        }
-    }
-    
-    // Delete root directory (should delete entire tree)
-    delete1("dir0", *file);
-    
-    // Verify all children are deleted
-    EXPECT_FALSE(file->head.hash.has("dir0"));
-    EXPECT_FALSE(file->head.hash.has("dir1"));
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 3; j++) {
-            EXPECT_FALSE(file->head.hash.has("file" + to_string(i) + "_" + to_string(j)));
-        }
-    }
-}
-

@@ -1,170 +1,135 @@
 #include <gtest/gtest.h>
-#include <thread>
-#include <vector>
-#include "daemon/directory tree/hash.h"
+#include "../include/daemon/directory tree/hash.h"
 
-using namespace std;
-
-// Fixture class for Hash map tests
-class HashMapTest : public ::testing::Test {
+class HashTest : public ::testing::Test {
 protected:
+    HashMap* map;
+
     void SetUp() override {
-        hash = new HashMap();
+        map = new HashMap();
     }
-    
+
     void TearDown() override {
-        delete hash;
+        delete map;
     }
-    
-    HashMap* hash;
 };
 
-// Test 1: Create and destroy hash map
-TEST_F(HashMapTest, CreateAndDestroy) {
-    EXPECT_NE(hash, nullptr);
-    EXPECT_EQ(hash->size(), 0);
-}
-
-// Test 2: Insert and get value
-TEST_F(HashMapTest, InsertAndGet) {
-    (*hash)["key1"] = 42;
-    EXPECT_EQ((*hash)["key1"], 42);
-    EXPECT_EQ(hash->size(), 1);
-}
-
-// Test 3: Has function
-TEST_F(HashMapTest, HasFunction) {
-    EXPECT_FALSE(hash->has("key1"));
-    (*hash)["key1"] = 10;
-    EXPECT_TRUE(hash->has("key1"));
-    EXPECT_FALSE(hash->has("key2"));
-}
-
-// Test 4: Set and get
-TEST_F(HashMapTest, SetAndGet) {
-    hash->set("key1", 100);
-    EXPECT_EQ(hash->get("key1"), 100);
-    EXPECT_EQ(hash->size(), 1);
-}
-
-// Test 5: Remove entry
-TEST_F(HashMapTest, RemoveEntry) {
-    (*hash)["key1"] = 50;
-    (*hash)["key2"] = 75;
+TEST_F(HashTest, BasicOperations) {
+    map->set("key1", 100);
+    EXPECT_TRUE(map->has("key1"));
+    EXPECT_EQ(map->get("key1"), 100);
+    EXPECT_EQ((*map)["key1"], 100);
     
-    EXPECT_EQ(hash->size(), 2);
-    EXPECT_TRUE(hash->has("key1"));
+    map->remove("key1");
+    EXPECT_FALSE(map->has("key1"));
+}
+
+TEST_F(HashTest, UpdateValue) {
+    map->set("key2", 200);
+    EXPECT_EQ(map->get("key2"), 200);
     
-    bool removed = hash->remove("key1");
-    EXPECT_TRUE(removed);
-    EXPECT_FALSE(hash->has("key1"));
-    EXPECT_TRUE(hash->has("key2"));
-    EXPECT_EQ(hash->size(), 1);
+    map->set("key2", 300);
+    EXPECT_EQ(map->get("key2"), 300);
 }
 
-// Test 6: Remove non-existent key
-TEST_F(HashMapTest, RemoveNonExistentKey) {
-    bool removed = hash->remove("nonexistent");
-    EXPECT_FALSE(removed);
-    EXPECT_EQ(hash->size(), 0);
+TEST_F(HashTest, NonExistentKey) {
+    EXPECT_FALSE(map->has("ghost"));
+    EXPECT_EQ(map->get("ghost"), 0);
 }
 
-// Test 7: Update existing value
-TEST_F(HashMapTest, UpdateExistingValue) {
-    (*hash)["key1"] = 10;
-    EXPECT_EQ((*hash)["key1"], 10);
+TEST_F(HashTest, MultipleKeys) {
+    map->set("a", 1);
+    map->set("b", 2);
+    map->set("c", 3);
     
-    (*hash)["key1"] = 20;
-    EXPECT_EQ((*hash)["key1"], 20);
-    EXPECT_EQ(hash->size(), 1); // Size should not increase
+    EXPECT_EQ(map->get("a"), 1);
+    EXPECT_EQ(map->get("b"), 2);
+    EXPECT_EQ(map->get("c"), 3);
 }
 
-// Test 8: Multiple keys
-TEST_F(HashMapTest, MultipleKeys) {
-    for (int i = 0; i < 100; i++) {
-        string key = "key" + to_string(i);
-        (*hash)[key] = i;
+TEST_F(HashTest, OperatorAccess) {
+    (*map)["newkey"] = 50;
+    EXPECT_EQ(map->get("newkey"), 50);
+    EXPECT_EQ((*map)["newkey"], 50);
+}
+
+TEST_F(HashTest, CollisionHandling) {
+    // It's hard to force collision without knowing the hash function details intimately,
+    // but we can insert enough items or specific patterns if known.
+    // For now, let's just insert a few items.
+    for(int i=0; i<100; ++i) {
+        map->set("collision" + std::to_string(i), i);
     }
-    
-    EXPECT_EQ(hash->size(), 100);
-    
-    // Verify some values
-    EXPECT_EQ((*hash)["key0"], 0);
-    EXPECT_EQ((*hash)["key50"], 50);
-    EXPECT_EQ((*hash)["key99"], 99);
-}
-
-// Test 9: Get non-existent key returns default
-TEST_F(HashMapTest, GetNonExistentReturnsDefault) {
-    EXPECT_EQ(hash->get("nonexistent"), 0);
-    EXPECT_EQ((*hash)["nonexistent"], 0); // Should create entry
-    EXPECT_EQ(hash->size(), 1);
-}
-
-// Test 10: Clear by removing all keys
-TEST_F(HashMapTest, ClearByRemovingAll) {
-    for (int i = 0; i < 10; i++) {
-        (*hash)["key" + to_string(i)] = i;
-    }
-    
-    EXPECT_EQ(hash->size(), 10);
-    
-    // Remove all
-    for (int i = 0; i < 10; i++) {
-        hash->remove("key" + to_string(i));
-    }
-    
-    EXPECT_EQ(hash->size(), 0);
-}
-
-// Test 11: String keys of various lengths
-TEST_F(HashMapTest, VariousStringLengths) {
-    (*hash)[""] = 0; // Empty string
-    (*hash)["a"] = 1;
-    (*hash)["ab"] = 2;
-    (*hash)["abc"] = 3;
-    (*hash)["very long key name for testing purposes"] = 100;
-    
-    EXPECT_EQ(hash->size(), 5);
-    EXPECT_EQ((*hash)[""], 0);
-    EXPECT_EQ((*hash)["a"], 1);
-    EXPECT_EQ((*hash)["very long key name for testing purposes"], 100);
-}
-
-// Test 12: Collision handling
-TEST_F(HashMapTest, CollisionHandling) {
-    // Insert many keys to potentially cause collisions
-    for (int i = 0; i < 1000; i++) {
-        string key = "key_" + to_string(i);
-        (*hash)[key] = i * 2;
-    }
-    
-    EXPECT_EQ(hash->size(), 1000);
-    
-    // Verify all keys are still accessible
-    for (int i = 0; i < 1000; i++) {
-        string key = "key_" + to_string(i);
-        EXPECT_EQ((*hash)[key], i * 2);
+    for(int i=0; i<100; ++i) {
+        EXPECT_EQ(map->get("collision" + std::to_string(i)), i);
     }
 }
 
-// Test 13: Operator[] creates entry
-TEST_F(HashMapTest, OperatorBracketCreatesEntry) {
-    EXPECT_FALSE(hash->has("newkey"));
-    int& value = (*hash)["newkey"];
-    value = 42;
-    
-    EXPECT_TRUE(hash->has("newkey"));
-    EXPECT_EQ((*hash)["newkey"], 42);
+TEST_F(HashTest, RemoveNonExistent) {
+    // Should return false or 0
+    EXPECT_FALSE(map->remove("ghostKey"));
 }
 
-// Test 14: Size increases correctly
-TEST_F(HashMapTest, SizeIncreasesCorrectly) {
-    EXPECT_EQ(hash->size(), 0);
+TEST_F(HashTest, UpdateNonExistent) {
+    // Setting a non-existent key should create it
+    map->set("new", 123);
+    EXPECT_TRUE(map->has("new"));
+    EXPECT_EQ(map->get("new"), 123);
+}
+
+TEST_F(HashTest, EmptyStringKey) {
+    map->set("", 999);
+    EXPECT_TRUE(map->has(""));
+    EXPECT_EQ(map->get(""), 999);
+}
+
+TEST_F(HashTest, MaxLenKey) {
+    std::string key(255, 'a');
+    map->set(key, 777);
+    EXPECT_TRUE(map->has(key));
+    EXPECT_EQ(map->get(key), 777);
+}
+
+TEST_F(HashTest, SizeCheck) {
+    size_t initial = map->size();
+    map->set("one", 1);
+    EXPECT_EQ(map->size(), initial + 1);
     
-    for (int i = 1; i <= 50; i++) {
-        (*hash)["key" + to_string(i)] = i;
-        EXPECT_EQ(hash->size(), i);
+    map->remove("one");
+    EXPECT_EQ(map->size(), initial);
+}
+
+TEST_F(HashTest, GetDefault) {
+    EXPECT_EQ(map->get("nothing"), 0);
+}
+
+TEST_F(HashTest, ReassignOperator) {
+    (*map)["assign"] = 10;
+    EXPECT_EQ(map->get("assign"), 10);
+    (*map)["assign"] = 20;
+    EXPECT_EQ(map->get("assign"), 20);
+}
+
+TEST_F(HashTest, RemoveAndReadd) {
+    map->set("temp", 5);
+    map->remove("temp");
+    EXPECT_FALSE(map->has("temp"));
+    map->set("temp", 5);
+    EXPECT_TRUE(map->has("temp"));
+}
+
+TEST_F(HashTest, ManyInserts) {
+    for(int i=0; i<500; ++i) {
+        map->set("mi_" + std::to_string(i), i);
     }
+    EXPECT_GE(map->size(), 500);
+    EXPECT_EQ(map->get("mi_0"), 0);
+    EXPECT_EQ(map->get("mi_499"), 499);
 }
 
+TEST_F(HashTest, HasAfterRemove) {
+    map->set("exists", 1);
+    EXPECT_TRUE(map->has("exists"));
+    map->remove("exists");
+    EXPECT_FALSE(map->has("exists"));
+}

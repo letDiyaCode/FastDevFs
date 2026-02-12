@@ -41,6 +41,7 @@ void       hashmap_set(hashmap_t *m, const char *key, int value); /* sets value 
 int        hashmap_get(hashmap_t *m, const char *key);            /* returns value (0 if not present) */
 int        hashmap_has(hashmap_t *m, const char *key);            /* returns 1 if present, 0 otherwise */
 int        hashmap_remove(hashmap_t *m, const char *key);         /* removes key, returns 1 if removed, 0 if not found */
+void       hashmap_clear(hashmap_t *m);                           /* clears all entries */
 size_t     hashmap_size(hashmap_t *m);
 
 /* For C++ users: header contains a small wrapper class to allow using map["key"] syntax.
@@ -72,6 +73,7 @@ struct HashMap {
     void set(const std::string &k, int v) { hashmap_set(m, k.c_str(), v); }
     bool has(const std::string &k) const { return hashmap_has(m, k.c_str()) != 0; }
     bool remove(const std::string &k) { return hashmap_remove(m, k.c_str()) != 0; }
+    void clear() { hashmap_clear(m); }
     size_t size() const { return hashmap_size(m); }
 };
 

@@ -1,4 +1,6 @@
-ADTTests 3 0.192248
-HashTests 6 0.0498543
-PersistenceTests 2 2.61008
+FuseOpsTests 2 0.386594
+AdtTests 0 0
+HashTests 0 0
 ---
+AdtTests
+HashTests

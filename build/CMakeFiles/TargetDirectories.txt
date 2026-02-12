@@ -1,4 +1,8 @@
-/home/bismarck/FastDevFs/build/CMakeFiles/test_open.dir
+/home/bismarck/FastDevFs/build/CMakeFiles/fastdevfs.dir
+/home/bismarck/FastDevFs/build/CMakeFiles/fastdevfs_adt.dir
+/home/bismarck/FastDevFs/build/CMakeFiles/test_adt.dir
+/home/bismarck/FastDevFs/build/CMakeFiles/test_hash.dir
+/home/bismarck/FastDevFs/build/CMakeFiles/test_fuse_ops.dir
 /home/bismarck/FastDevFs/build/CMakeFiles/test.dir
 /home/bismarck/FastDevFs/build/CMakeFiles/edit_cache.dir
 /home/bismarck/FastDevFs/build/CMakeFiles/rebuild_cache.dir

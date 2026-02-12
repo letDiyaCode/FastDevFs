@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/test_open.dir/test/test_open.cpp.o CMakeFiles/test_open.dir/src/daemon/fuse_functions/fs_open.cpp.o CMakeFiles/test_open.dir/src/daemon/directory_tree/adt.cpp.o CMakeFiles/test_open.dir/src/daemon/directory_tree/hash.cpp.o -o test_open  -lfuse3 -lpthread 

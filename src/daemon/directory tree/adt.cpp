@@ -514,7 +514,7 @@ void initialize(treefile &file1){
         file1.arr[i].metadata.mtime = 0;
         file1.arr[i].metadata.ctime = 0;
         file1.arr[i].metadata.nlink = 0;
-    } 
+    }
     // Last node's nextfree should be -1
     if (size > 0) {
         file1.arr[size - 1].nextfree = -1;
@@ -523,6 +523,28 @@ void initialize(treefile &file1){
     file1.head.firstfree = 1;  // Start free list from index 1
     file1.head.nodeallocated = 1;  // 0th index is pre-allocated for root
     file1.head.start = -1;  // Initialize start pointer
+
+    // Set up root node at index 0
+    file1.arr[0].isdeleted = false;
+    file1.arr[0].parent = -1;
+    strncpy(file1.arr[0].metadata.name, "/", sizeof(file1.arr[0].metadata.name)-1);
+    file1.arr[0].metadata.name[sizeof(file1.arr[0].metadata.name)-1] = '\0';
+    file1.arr[0].metadata.mode = S_IFDIR | 0755;
+    file1.arr[0].metadata.uid = getuid();
+    file1.arr[0].metadata.gid = getgid();
+    file1.arr[0].metadata.size = 0;
+    file1.arr[0].metadata.nlink = 2;
+    time_t now = time(nullptr);
+    file1.arr[0].metadata.atime = now;
+    file1.arr[0].metadata.mtime = now;
+    file1.arr[0].metadata.ctime = now;
+    file1.arr[0].metadata.inode = 1;
+
+    // Clear hash map
+    file1.head.hash.clear();
+
+    // Add "/" to hash map for root
+    file1.head.hash["/"] = 0;
 }
 
 // Persistence implementation using mmap

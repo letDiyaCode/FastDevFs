@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/fastdevfs.dir/src/main.cpp.o -o fastdevfs  libfastdevfs_adt.a -lfuse3 -lpthread 

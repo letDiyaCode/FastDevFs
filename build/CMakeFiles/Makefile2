@@ -63,7 +63,11 @@ CMAKE_BINARY_DIR = /home/bismarck/FastDevFs/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/test_open.dir/all
+all: CMakeFiles/fastdevfs.dir/all
+all: CMakeFiles/fastdevfs_adt.dir/all
+all: CMakeFiles/test_adt.dir/all
+all: CMakeFiles/test_hash.dir/all
+all: CMakeFiles/test_fuse_ops.dir/all
 all: _deps/googletest-build/all
 .PHONY : all
 
@@ -72,7 +76,11 @@ preinstall: _deps/googletest-build/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/test_open.dir/clean
+clean: CMakeFiles/fastdevfs.dir/clean
+clean: CMakeFiles/fastdevfs_adt.dir/clean
+clean: CMakeFiles/test_adt.dir/clean
+clean: CMakeFiles/test_hash.dir/clean
+clean: CMakeFiles/test_fuse_ops.dir/clean
 clean: _deps/googletest-build/clean
 .PHONY : clean
 
@@ -128,30 +136,140 @@ _deps/googletest-build/googletest/clean: _deps/googletest-build/googletest/CMake
 .PHONY : _deps/googletest-build/googletest/clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/test_open.dir
+# Target rules for target CMakeFiles/fastdevfs.dir
 
 # All Build rule for target.
-CMakeFiles/test_open.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_open.dir/build.make CMakeFiles/test_open.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_open.dir/build.make CMakeFiles/test_open.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=9,10,11,12,13 "Built target test_open"
-.PHONY : CMakeFiles/test_open.dir/all
+CMakeFiles/fastdevfs.dir/all: CMakeFiles/fastdevfs_adt.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs.dir/build.make CMakeFiles/fastdevfs.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs.dir/build.make CMakeFiles/fastdevfs.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=1,2 "Built target fastdevfs"
+.PHONY : CMakeFiles/fastdevfs.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/test_open.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/bismarck/FastDevFs/build/CMakeFiles 5
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/test_open.dir/all
+CMakeFiles/fastdevfs.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bismarck/FastDevFs/build/CMakeFiles 20
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/fastdevfs.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/bismarck/FastDevFs/build/CMakeFiles 0
-.PHONY : CMakeFiles/test_open.dir/rule
+.PHONY : CMakeFiles/fastdevfs.dir/rule
 
 # Convenience name for target.
-test_open: CMakeFiles/test_open.dir/rule
-.PHONY : test_open
+fastdevfs: CMakeFiles/fastdevfs.dir/rule
+.PHONY : fastdevfs
 
 # clean rule for target.
-CMakeFiles/test_open.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_open.dir/build.make CMakeFiles/test_open.dir/clean
-.PHONY : CMakeFiles/test_open.dir/clean
+CMakeFiles/fastdevfs.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs.dir/build.make CMakeFiles/fastdevfs.dir/clean
+.PHONY : CMakeFiles/fastdevfs.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/fastdevfs_adt.dir
+
+# All Build rule for target.
+CMakeFiles/fastdevfs_adt.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs_adt.dir/build.make CMakeFiles/fastdevfs_adt.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs_adt.dir/build.make CMakeFiles/fastdevfs_adt.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20 "Built target fastdevfs_adt"
+.PHONY : CMakeFiles/fastdevfs_adt.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/fastdevfs_adt.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bismarck/FastDevFs/build/CMakeFiles 18
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/fastdevfs_adt.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bismarck/FastDevFs/build/CMakeFiles 0
+.PHONY : CMakeFiles/fastdevfs_adt.dir/rule
+
+# Convenience name for target.
+fastdevfs_adt: CMakeFiles/fastdevfs_adt.dir/rule
+.PHONY : fastdevfs_adt
+
+# clean rule for target.
+CMakeFiles/fastdevfs_adt.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs_adt.dir/build.make CMakeFiles/fastdevfs_adt.dir/clean
+.PHONY : CMakeFiles/fastdevfs_adt.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/test_adt.dir
+
+# All Build rule for target.
+CMakeFiles/test_adt.dir/all: CMakeFiles/fastdevfs_adt.dir/all
+CMakeFiles/test_adt.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
+CMakeFiles/test_adt.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_adt.dir/build.make CMakeFiles/test_adt.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_adt.dir/build.make CMakeFiles/test_adt.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=29,30 "Built target test_adt"
+.PHONY : CMakeFiles/test_adt.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/test_adt.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bismarck/FastDevFs/build/CMakeFiles 24
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/test_adt.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bismarck/FastDevFs/build/CMakeFiles 0
+.PHONY : CMakeFiles/test_adt.dir/rule
+
+# Convenience name for target.
+test_adt: CMakeFiles/test_adt.dir/rule
+.PHONY : test_adt
+
+# clean rule for target.
+CMakeFiles/test_adt.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_adt.dir/build.make CMakeFiles/test_adt.dir/clean
+.PHONY : CMakeFiles/test_adt.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/test_hash.dir
+
+# All Build rule for target.
+CMakeFiles/test_hash.dir/all: CMakeFiles/fastdevfs_adt.dir/all
+CMakeFiles/test_hash.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
+CMakeFiles/test_hash.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_hash.dir/build.make CMakeFiles/test_hash.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_hash.dir/build.make CMakeFiles/test_hash.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=33,34 "Built target test_hash"
+.PHONY : CMakeFiles/test_hash.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/test_hash.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bismarck/FastDevFs/build/CMakeFiles 24
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/test_hash.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bismarck/FastDevFs/build/CMakeFiles 0
+.PHONY : CMakeFiles/test_hash.dir/rule
+
+# Convenience name for target.
+test_hash: CMakeFiles/test_hash.dir/rule
+.PHONY : test_hash
+
+# clean rule for target.
+CMakeFiles/test_hash.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_hash.dir/build.make CMakeFiles/test_hash.dir/clean
+.PHONY : CMakeFiles/test_hash.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/test_fuse_ops.dir
+
+# All Build rule for target.
+CMakeFiles/test_fuse_ops.dir/all: CMakeFiles/fastdevfs_adt.dir/all
+CMakeFiles/test_fuse_ops.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
+CMakeFiles/test_fuse_ops.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fuse_ops.dir/build.make CMakeFiles/test_fuse_ops.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fuse_ops.dir/build.make CMakeFiles/test_fuse_ops.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=31,32 "Built target test_fuse_ops"
+.PHONY : CMakeFiles/test_fuse_ops.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/test_fuse_ops.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bismarck/FastDevFs/build/CMakeFiles 24
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/test_fuse_ops.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bismarck/FastDevFs/build/CMakeFiles 0
+.PHONY : CMakeFiles/test_fuse_ops.dir/rule
+
+# Convenience name for target.
+test_fuse_ops: CMakeFiles/test_fuse_ops.dir/rule
+.PHONY : test_fuse_ops
+
+# clean rule for target.
+CMakeFiles/test_fuse_ops.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fuse_ops.dir/build.make CMakeFiles/test_fuse_ops.dir/clean
+.PHONY : CMakeFiles/test_fuse_ops.dir/clean
 
 #=============================================================================
 # Target rules for target _deps/googletest-build/googlemock/CMakeFiles/gmock.dir
@@ -160,7 +278,7 @@ CMakeFiles/test_open.dir/clean:
 _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/build.make _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/build.make _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=1,2 "Built target gmock"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=21,22 "Built target gmock"
 .PHONY : _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/all
 
 # Build rule for subdir invocation for target.
@@ -187,7 +305,7 @@ _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/all: _deps/googletes
 _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build.make _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build.make _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=3,4 "Built target gmock_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=23,24 "Built target gmock_main"
 .PHONY : _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/all
 
 # Build rule for subdir invocation for target.
@@ -213,7 +331,7 @@ _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/clean:
 _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all:
 	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=5,6 "Built target gtest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=25,26 "Built target gtest"
 .PHONY : _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -239,7 +357,7 @@ _deps/googletest-build/googletest/CMakeFiles/gtest.dir/clean:
 _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=7,8 "Built target gtest_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=27,28 "Built target gtest_main"
 .PHONY : _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
 
 # Build rule for subdir invocation for target.

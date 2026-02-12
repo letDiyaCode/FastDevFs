@@ -219,3 +219,15 @@ int hashmap_remove(hashmap_t *m, const char *key) {
 size_t hashmap_size(hashmap_t *m) {
     return m ? m->size : 0;
 }
+
+void hashmap_clear(hashmap_t *m) {
+    if (!m) return;
+    
+    m->size = 0;
+    for (size_t i = 0; i < MAX_HASH_ENTRIES; i++) {
+        m->entries[i].occupied = false;
+        m->entries[i].key[0] = '\0';
+        m->entries[i].value = 0;
+        m->entries[i].hash = 0;
+    }
+}
