@@ -85,8 +85,8 @@ int fdfs_read(const char *path, char *buf, size_t size,
 
     pthread_rwlock_unlock(&g_dir_manager->rwlock);
     
-    // Read data from host filesystem using inode number
-    ssize_t bytes_read = read_inode_data(node, buf, to_read, offset);
+    // Read data from host filesystem using file path
+    ssize_t bytes_read = read_inode_data(path, buf, to_read, offset);
     if (bytes_read < 0) {
         std::cout << "fdfs_read: returning -EIO" << std::endl;
         return -EIO;
@@ -126,8 +126,8 @@ int fdfs_write(const char *path, const char *buf, size_t size,
 
     pthread_rwlock_unlock(&g_dir_manager->rwlock);
     
-    // Write data to host filesystem using inode number
-    ssize_t bytes_written = write_inode_data(node, buf, size, offset);
+    // Write data to host filesystem using file path
+    ssize_t bytes_written = write_inode_data(path, buf, size, offset);
     if (bytes_written < 0) {
         std::cout << "fdfs_write: returning -EIO" << std::endl;
         return -EIO;
@@ -163,7 +163,7 @@ int fdfs_truncate(const char *path, off_t size,
     pthread_rwlock_unlock(&g_dir_manager->rwlock);
     
     // Truncate the data file on host filesystem
-    if (truncate_inode_data(node, size) < 0) {
+    if (truncate_inode_data(path, size) < 0) {
         std::cout << "fdfs_truncate: returning -EIO" << std::endl;
         return -EIO;
     }
@@ -193,7 +193,7 @@ int fdfs_unlink(const char *path) {
     pthread_rwlock_unlock(&g_dir_manager->rwlock);
     
     // Delete the data file from host filesystem
-    delete_inode_data(node);
+    delete_inode_data(path);
 
     if (!remove_node(g_dir_manager, path)) {
         std::cout << "fdfs_unlink: returning -ENOENT (remove failed)" << std::endl;

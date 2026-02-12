@@ -5,6 +5,9 @@ project(FastDevFS)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(FUSE3 REQUIRED fuse3)
 
+# Find OpenSSL for SHA-256 hashing
+find_package(OpenSSL REQUIRED)
+
 
 add_executable(FastDevFS 
     main.cpp
@@ -30,7 +33,10 @@ target_include_directories(FastDevFS PRIVATE
     ${CMAKE_SOURCE_DIR}/src/include
 )
 
-target_link_libraries(FastDevFS PRIVATE ${FUSE3_LIBRARIES})
+target_link_libraries(FastDevFS PRIVATE 
+    ${FUSE3_LIBRARIES}
+    OpenSSL::Crypto
+)
 target_compile_options(FastDevFS PRIVATE ${FUSE3_CFLAGS_OTHER})
 
 enable_testing()

@@ -6,12 +6,27 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/stat.h>
+#include <openssl/sha.h>
 
 // Global variable to store absolute path to data directory
 char g_data_dir_path[512] = {0};
 
-void get_data_file_path(int inode, char* path_buf, size_t buf_size) {
-    snprintf(path_buf, buf_size, "%s/%d", g_data_dir_path, inode);
+// SHA-256 hash function for file paths
+static void hash_path_sha256(const char* path, char* output) {
+    unsigned char hash[SHA256_DIGEST_LENGTH];
+    SHA256((unsigned char*)path, strlen(path), hash);
+    
+    // Convert to hex string
+    for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+        sprintf(output + (i * 2), "%02x", hash[i]);
+    }
+    output[SHA256_DIGEST_LENGTH * 2] = '\0';
+}
+
+void get_data_file_path(const char* file_path, char* path_buf, size_t buf_size) {
+    char hash[SHA256_DIGEST_LENGTH * 2 + 1];
+    hash_path_sha256(file_path, hash);
+    snprintf(path_buf, buf_size, "%s/%s", g_data_dir_path, hash);
 }
 
 int init_data_dir() {
@@ -38,9 +53,9 @@ int init_data_dir() {
     return 0;
 }
 
-ssize_t read_inode_data(int inode, char* buf, size_t size, off_t offset) {
+ssize_t read_inode_data(const char* file_path, char* buf, size_t size, off_t offset) {
     char path[256];
-    get_data_file_path(inode, path, sizeof(path));
+    get_data_file_path(file_path, path, sizeof(path));
     
     int fd = open(path, O_RDONLY);
     if (fd < 0) {
@@ -65,9 +80,9 @@ ssize_t read_inode_data(int inode, char* buf, size_t size, off_t offset) {
     return bytes_read;
 }
 
-ssize_t write_inode_data(int inode, const char* buf, size_t size, off_t offset) {
+ssize_t write_inode_data(const char* file_path, const char* buf, size_t size, off_t offset) {
     char path[256];
-    get_data_file_path(inode, path, sizeof(path));
+    get_data_file_path(file_path, path, sizeof(path));
     
     // Open with O_CREAT to create file if it doesn't exist
     int fd = open(path, O_WRONLY | O_CREAT, 0644);
@@ -89,9 +104,9 @@ ssize_t write_inode_data(int inode, const char* buf, size_t size, off_t offset) 
     return bytes_written;
 }
 
-int truncate_inode_data(int inode, off_t new_size) {
+int truncate_inode_data(const char* file_path, off_t new_size) {
     char path[256];
-    get_data_file_path(inode, path, sizeof(path));
+    get_data_file_path(file_path, path, sizeof(path));
     
     // If truncating to 0, we can just delete the file
     if (new_size == 0) {
@@ -107,9 +122,9 @@ int truncate_inode_data(int inode, off_t new_size) {
     return 0;
 }
 
-int delete_inode_data(int inode) {
+int delete_inode_data(const char* file_path) {
     char path[256];
-    get_data_file_path(inode, path, sizeof(path));
+    get_data_file_path(file_path, path, sizeof(path));
     
     // Delete the data file
     if (unlink(path) < 0 && errno != ENOENT) {
