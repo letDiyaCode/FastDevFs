@@ -17,7 +17,8 @@ typedef struct {
 typedef struct {
     uint64_t poly_hash;  // poly hash of SHA256
     uint32_t file_node_index;  // index of file node in Dir_Manager
-    int next;            // linked list chaining for collision resolution
+    int next;                // linked list chaining for collision resolution
+    uint32_t ref_count;
 } DedupChainEntry;
 
 // Dedup hash table

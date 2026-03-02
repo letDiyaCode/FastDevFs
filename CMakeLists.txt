@@ -18,6 +18,26 @@ add_executable(FastDevFS
     src/src/fuse_functions/statfs.cpp
     src/src/fuse_functions/file_funcs.cpp
     src/src/fuse_functions/utimens.cpp
+    src/src/services/dedup/dedup_table.cpp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 
     src/src/daemon/dir_manager.cpp
     src/src/daemon/hash.cpp
