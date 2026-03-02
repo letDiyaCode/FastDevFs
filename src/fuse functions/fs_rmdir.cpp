@@ -40,5 +40,6 @@ int fs_rmdir(const char *path) {
 
     delete1(path_str, file1);
     
+    persist(file1);
     return 0;
 }

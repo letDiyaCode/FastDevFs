@@ -240,6 +240,7 @@ void insertfile(string filename, string parentname, treefile &file1){
     file1.arr[index].metadata.mtime = now;
     file1.arr[index].metadata.ctime = now;
     file1.arr[index].metadata.nlink = 1;
+    memset(file1.arr[index].data, 0, MAX_FILE_DATA);
     
     // Update nodeallocated counter (but don't count index 0)
     if (index != 0) {
@@ -329,6 +330,7 @@ static void delete_subtree_recursive(int index, treefile &file1, int max_depth =
     file1.arr[index].firstchild = -1;
     file1.arr[index].nextsibling = -1;
     file1.arr[index].parent = -1;
+    memset(file1.arr[index].data, 0, MAX_FILE_DATA);
     
     // Update nodeallocated counter (but keep 0th index reserved)
     if (index != 0) {
@@ -514,6 +516,7 @@ void initialize(treefile &file1){
         file1.arr[i].metadata.mtime = 0;
         file1.arr[i].metadata.ctime = 0;
         file1.arr[i].metadata.nlink = 0;
+        memset(file1.arr[i].data, 0, MAX_FILE_DATA);
     }
     // Last node's nextfree should be -1
     if (size > 0) {
@@ -548,48 +551,79 @@ void initialize(treefile &file1){
 }
 
 // Persistence implementation using mmap
+// (header_serializable and treefile_serializable are defined in adt.h)
 
-// Helper structure for serialization (without mutex and without HashMap wrapper)
-struct header_serializable {
-    int firstfree;
-    int start;
-    int size;
-    int nodeallocated;
-    hashmap_t hashdata;  // Directly store the hashmap_t structure, not the wrapper
-};
+// Persistent mmap state — kept open for the process lifetime to avoid
+// repeated open/mmap/munmap/close overhead on every save.
+static int    persist_fd   = -1;
+static void*  persist_map  = nullptr;
+static size_t persist_size = 0;
 
-struct treefile_serializable {
-    header_serializable head;
-    treenode arr[100000];
-};
+// Helper: check whether the cached mapping is still valid.
+static bool persist_mapping_valid(const char* filepath) {
+    if (persist_map == nullptr || persist_fd == -1) return false;
+
+    // Was the backing file deleted (nlink dropped to 0)?
+    struct stat fd_st;
+    if (fstat(persist_fd, &fd_st) != 0 || fd_st.st_nlink == 0) return false;
+
+    // Is the inode at 'filepath' still the same one our fd refers to?
+    struct stat path_st;
+    if (stat(filepath, &path_st) != 0) return false;
+    if (fd_st.st_dev != path_st.st_dev || fd_st.st_ino != path_st.st_ino)
+        return false;
+
+    return true;
+}
+
+static void persist_close() {
+    if (persist_map && persist_map != MAP_FAILED) {
+        munmap(persist_map, persist_size);
+    }
+    if (persist_fd != -1) close(persist_fd);
+    persist_map  = nullptr;
+    persist_fd   = -1;
+    persist_size = 0;
+}
 
 bool save_treefile(const char* filepath, treefile &file1) {
     lock_guard<recursive_mutex> lock(file1.mtx);
     
     if (!filepath) return false;
     
-    // Open file for writing
-    int fd = open(filepath, O_RDWR | O_CREAT | O_TRUNC, 0644);
-    if (fd == -1) {
-        return false;
-    }
-    
-    // Set file size
     size_t file_size = sizeof(treefile_serializable);
-    if (ftruncate(fd, file_size) == -1) {
-        close(fd);
-        return false;
-    }
-    
-    // Map file to memory
-    void* mapped = mmap(NULL, file_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    if (mapped == MAP_FAILED) {
-        close(fd);
-        return false;
+
+    // Re-establish the mapping if it's stale or doesn't exist yet.
+    if (!persist_mapping_valid(filepath)) {
+        persist_close();
+
+        persist_fd = open(filepath, O_RDWR | O_CREAT, 0644);
+        if (persist_fd == -1) return false;
+
+        // Ensure correct size
+        struct stat st;
+        if (fstat(persist_fd, &st) == -1 ||
+            (size_t)st.st_size != file_size) {
+            if (ftruncate(persist_fd, file_size) == -1) {
+                close(persist_fd);
+                persist_fd = -1;
+                return false;
+            }
+        }
+
+        persist_map = mmap(NULL, file_size, PROT_READ | PROT_WRITE,
+                           MAP_SHARED, persist_fd, 0);
+        if (persist_map == MAP_FAILED) {
+            persist_map = nullptr;
+            close(persist_fd);
+            persist_fd = -1;
+            return false;
+        }
+        persist_size = file_size;
     }
     
     // Copy data to mapped memory (excluding mutex)
-    treefile_serializable* serialized = (treefile_serializable*)mapped;
+    treefile_serializable* serialized = (treefile_serializable*)persist_map;
     
     // Copy header fields
     serialized->head.firstfree = file1.head.firstfree;
@@ -605,16 +639,10 @@ bool save_treefile(const char* filepath, treefile &file1) {
     // Copy tree array
     memcpy(serialized->arr, file1.arr, sizeof(file1.arr));
     
-    // Sync to disk
-    if (msync(mapped, file_size, MS_SYNC) == -1) {
-        munmap(mapped, file_size);
-        close(fd);
-        return false;
-    }
-    
-    // Cleanup
-    munmap(mapped, file_size);
-    close(fd);
+    // Async sync — the kernel will write back dirty pages in the background.
+    // Data safety: on clean unmount the destroy callback does a final save,
+    // and the kernel flushes MAP_SHARED pages on munmap/process-exit anyway.
+    msync(persist_map, persist_size, MS_ASYNC);
     
     return true;
 }

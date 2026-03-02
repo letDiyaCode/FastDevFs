@@ -1,10 +1,10 @@
-Start testing: Feb 12 20:00 IST
+Start testing: Mar 02 22:37 IST
 ----------------------------------------------------------
-1/3 Testing: AdtTests
-1/3 Test: AdtTests
+1/4 Testing: AdtTests
+1/4 Test: AdtTests
 Command: "/home/bismarck/FastDevFs/build/test_adt"
 Directory: /home/bismarck/FastDevFs/build
-"AdtTests" start time: Feb 12 20:00 IST
+"AdtTests" start time: Mar 02 22:37 IST
 Output:
 ----------------------------------------------------------
 Running main() from /home/bismarck/FastDevFs/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -12,67 +12,57 @@ Running main() from /home/bismarck/FastDevFs/build/_deps/googletest-src/googlete
 [----------] Global test environment set-up.
 [----------] 17 tests from AdtTest
 [ RUN      ] AdtTest.Initialize
-[       OK ] AdtTest.Initialize (36 ms)
+[       OK ] AdtTest.Initialize (357 ms)
 [ RUN      ] AdtTest.InsertFolder
-[       OK ] AdtTest.InsertFolder (34 ms)
+[       OK ] AdtTest.InsertFolder (358 ms)
 [ RUN      ] AdtTest.InsertFile
-[       OK ] AdtTest.InsertFile (34 ms)
+[       OK ] AdtTest.InsertFile (344 ms)
 [ RUN      ] AdtTest.DeleteFile
-[       OK ] AdtTest.DeleteFile (35 ms)
+[       OK ] AdtTest.DeleteFile (300 ms)
 [ RUN      ] AdtTest.ParentChildRelationship
-[       OK ] AdtTest.ParentChildRelationship (35 ms)
+[       OK ] AdtTest.ParentChildRelationship (281 ms)
 [ RUN      ] AdtTest.ChangeParent
-[       OK ] AdtTest.ChangeParent (34 ms)
+[       OK ] AdtTest.ChangeParent (301 ms)
 [ RUN      ] AdtTest.PreventCycle
-[       OK ] AdtTest.PreventCycle (35 ms)
+[       OK ] AdtTest.PreventCycle (296 ms)
 [ RUN      ] AdtTest.SearchFile
-[       OK ] AdtTest.SearchFile (37 ms)
+[       OK ] AdtTest.SearchFile (293 ms)
 [ RUN      ] AdtTest.SearchFolder
-[       OK ] AdtTest.SearchFolder (35 ms)
+[       OK ] AdtTest.SearchFolder (230 ms)
 [ RUN      ] AdtTest.SearchNonExistent
-[       OK ] AdtTest.SearchNonExistent (33 ms)
+[       OK ] AdtTest.SearchNonExistent (208 ms)
 [ RUN      ] AdtTest.RootNodeProperties
-[       OK ] AdtTest.RootNodeProperties (36 ms)
+[       OK ] AdtTest.RootNodeProperties (206 ms)
 [ RUN      ] AdtTest.DeleteFolder
-[       OK ] AdtTest.DeleteFolder (34 ms)
+[       OK ] AdtTest.DeleteFolder (203 ms)
 [ RUN      ] AdtTest.DeleteNonExistent
-[       OK ] AdtTest.DeleteNonExistent (34 ms)
+[       OK ] AdtTest.DeleteNonExistent (208 ms)
 [ RUN      ] AdtTest.InsertDeepHierarchy
-[       OK ] AdtTest.InsertDeepHierarchy (35 ms)
+[       OK ] AdtTest.InsertDeepHierarchy (208 ms)
 [ RUN      ] AdtTest.ChangeParentNonExistent
-[       OK ] AdtTest.ChangeParentNonExistent (33 ms)
+[       OK ] AdtTest.ChangeParentNonExistent (209 ms)
 [ RUN      ] AdtTest.ChangeParentToNonExistent
-[       OK ] AdtTest.ChangeParentToNonExistent (36 ms)
+[       OK ] AdtTest.ChangeParentToNonExistent (209 ms)
 [ RUN      ] AdtTest.ReInitialize
-/home/bismarck/FastDevFs/test/test_adt.cpp:179: Failure
-Expected equality of these values:
-  hashindex("wipedFile", *file)
-    Which is: 1
-  -1
-
-[  FAILED  ] AdtTest.ReInitialize (37 ms)
-[----------] 17 tests from AdtTest (602 ms total)
+[       OK ] AdtTest.ReInitialize (251 ms)
+[----------] 17 tests from AdtTest (4472 ms total)
 
 [----------] Global test environment tear-down
-[==========] 17 tests from 1 test suite ran. (602 ms total)
-[  PASSED  ] 16 tests.
-[  FAILED  ] 1 test, listed below:
-[  FAILED  ] AdtTest.ReInitialize
-
- 1 FAILED TEST
+[==========] 17 tests from 1 test suite ran. (4472 ms total)
+[  PASSED  ] 17 tests.
 <end of output>
-Test time =   0.60 sec
+Test time =   4.48 sec
 ----------------------------------------------------------
-Test Failed.
-"AdtTests" end time: Feb 12 20:00 IST
-"AdtTests" time elapsed: 00:00:00
+Test Passed.
+"AdtTests" end time: Mar 02 22:37 IST
+"AdtTests" time elapsed: 00:00:04
 ----------------------------------------------------------
 
-2/3 Testing: HashTests
-2/3 Test: HashTests
+2/4 Testing: HashTests
+2/4 Test: HashTests
 Command: "/home/bismarck/FastDevFs/build/test_hash"
 Directory: /home/bismarck/FastDevFs/build
-"HashTests" start time: Feb 12 20:00 IST
+"HashTests" start time: Mar 02 22:37 IST
 Output:
 ----------------------------------------------------------
 Running main() from /home/bismarck/FastDevFs/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -80,810 +70,299 @@ Running main() from /home/bismarck/FastDevFs/build/_deps/googletest-src/googlete
 [----------] Global test environment set-up.
 [----------] 16 tests from HashTest
 [ RUN      ] HashTest.BasicOperations
-[       OK ] HashTest.BasicOperations (16 ms)
+[       OK ] HashTest.BasicOperations (17 ms)
 [ RUN      ] HashTest.UpdateValue
-[       OK ] HashTest.UpdateValue (16 ms)
+[       OK ] HashTest.UpdateValue (15 ms)
 [ RUN      ] HashTest.NonExistentKey
-[       OK ] HashTest.NonExistentKey (15 ms)
+[       OK ] HashTest.NonExistentKey (14 ms)
 [ RUN      ] HashTest.MultipleKeys
 [       OK ] HashTest.MultipleKeys (15 ms)
 [ RUN      ] HashTest.OperatorAccess
 [       OK ] HashTest.OperatorAccess (14 ms)
 [ RUN      ] HashTest.CollisionHandling
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 1
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 2
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 3
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 4
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 5
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 6
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 7
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 8
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 9
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 10
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 11
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 12
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 13
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 14
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 15
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 16
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 17
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 18
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 19
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 20
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 21
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 22
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 23
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 24
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 25
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 26
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 27
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 28
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 29
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 30
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 31
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 32
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 33
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 34
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 35
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 36
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 37
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 38
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 39
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 40
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 41
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 42
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 43
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 44
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 45
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 46
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 47
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 48
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 49
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 50
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 51
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 52
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 53
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 54
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 55
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 56
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 57
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 58
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 59
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 60
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 61
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 62
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 63
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 64
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 65
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 66
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 67
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 68
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 69
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 70
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 71
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 72
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 73
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 74
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 75
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 76
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 77
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 78
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 79
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 80
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 81
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 82
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 83
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 84
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 85
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 86
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 87
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 88
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 89
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 90
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 91
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 92
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 93
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 94
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 95
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 96
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 97
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 98
-
-/home/bismarck/FastDevFs/test/test_hash.cpp:61: Failure
-Expected equality of these values:
-  map->get("collision" + std::to_string(i))
-    Which is: 0
-  i
-    Which is: 99
-
-[  FAILED  ] HashTest.CollisionHandling (15 ms)
+[       OK ] HashTest.CollisionHandling (15 ms)
 [ RUN      ] HashTest.RemoveNonExistent
-[       OK ] HashTest.RemoveNonExistent (16 ms)
+[       OK ] HashTest.RemoveNonExistent (14 ms)
 [ RUN      ] HashTest.UpdateNonExistent
-[       OK ] HashTest.UpdateNonExistent (15 ms)
+[       OK ] HashTest.UpdateNonExistent (14 ms)
 [ RUN      ] HashTest.EmptyStringKey
-[       OK ] HashTest.EmptyStringKey (17 ms)
+[       OK ] HashTest.EmptyStringKey (13 ms)
 [ RUN      ] HashTest.MaxLenKey
-[       OK ] HashTest.MaxLenKey (16 ms)
+[       OK ] HashTest.MaxLenKey (14 ms)
 [ RUN      ] HashTest.SizeCheck
-[       OK ] HashTest.SizeCheck (15 ms)
+[       OK ] HashTest.SizeCheck (13 ms)
 [ RUN      ] HashTest.GetDefault
-[       OK ] HashTest.GetDefault (16 ms)
+[       OK ] HashTest.GetDefault (14 ms)
 [ RUN      ] HashTest.ReassignOperator
-[       OK ] HashTest.ReassignOperator (16 ms)
+[       OK ] HashTest.ReassignOperator (13 ms)
 [ RUN      ] HashTest.RemoveAndReadd
-[       OK ] HashTest.RemoveAndReadd (15 ms)
+[       OK ] HashTest.RemoveAndReadd (14 ms)
 [ RUN      ] HashTest.ManyInserts
-[       OK ] HashTest.ManyInserts (16 ms)
+[       OK ] HashTest.ManyInserts (13 ms)
 [ RUN      ] HashTest.HasAfterRemove
 [       OK ] HashTest.HasAfterRemove (14 ms)
-[----------] 16 tests from HashTest (255 ms total)
+[----------] 16 tests from HashTest (232 ms total)
 
 [----------] Global test environment tear-down
-[==========] 16 tests from 1 test suite ran. (256 ms total)
-[  PASSED  ] 15 tests.
-[  FAILED  ] 1 test, listed below:
-[  FAILED  ] HashTest.CollisionHandling
-
- 1 FAILED TEST
+[==========] 16 tests from 1 test suite ran. (233 ms total)
+[  PASSED  ] 16 tests.
 <end of output>
-Test time =   0.26 sec
+Test time =   0.24 sec
 ----------------------------------------------------------
-Test Failed.
-"HashTests" end time: Feb 12 20:00 IST
+Test Passed.
+"HashTests" end time: Mar 02 22:37 IST
 "HashTests" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-3/3 Testing: FuseOpsTests
-3/3 Test: FuseOpsTests
+3/4 Testing: FuseOpsTests
+3/4 Test: FuseOpsTests
 Command: "/home/bismarck/FastDevFs/build/test_fuse_ops"
 Directory: /home/bismarck/FastDevFs/build
-"FuseOpsTests" start time: Feb 12 20:00 IST
+"FuseOpsTests" start time: Mar 02 22:37 IST
 Output:
 ----------------------------------------------------------
-[==========] Running 21 tests from 1 test suite.
+[==========] Running 63 tests from 1 test suite.
 [----------] Global test environment set-up.
-[----------] 21 tests from FuseOpsTest
+[----------] 63 tests from FuseOpsTest
 [ RUN      ] FuseOpsTest.GetAttrRoot
-[       OK ] FuseOpsTest.GetAttrRoot (34 ms)
+[       OK ] FuseOpsTest.GetAttrRoot (204 ms)
+[ RUN      ] FuseOpsTest.GetAttrRootReturnsStoredMode
+[       OK ] FuseOpsTest.GetAttrRootReturnsStoredMode (229 ms)
 [ RUN      ] FuseOpsTest.MkDir
-[       OK ] FuseOpsTest.MkDir (33 ms)
+[       OK ] FuseOpsTest.MkDir (484 ms)
+[ RUN      ] FuseOpsTest.MkDirDuplicate
+[       OK ] FuseOpsTest.MkDirDuplicate (502 ms)
 [ RUN      ] FuseOpsTest.CreateAndOpen
-[       OK ] FuseOpsTest.CreateAndOpen (34 ms)
+[       OK ] FuseOpsTest.CreateAndOpen (475 ms)
 [ RUN      ] FuseOpsTest.Access
-[       OK ] FuseOpsTest.Access (33 ms)
+[       OK ] FuseOpsTest.Access (505 ms)
+[ RUN      ] FuseOpsTest.AccessRootUser
+[       OK ] FuseOpsTest.AccessRootUser (603 ms)
+[ RUN      ] FuseOpsTest.AccessExistenceOnly
+[       OK ] FuseOpsTest.AccessExistenceOnly (498 ms)
+[ RUN      ] FuseOpsTest.AccessNonExistent
+[       OK ] FuseOpsTest.AccessNonExistent (207 ms)
+[ RUN      ] FuseOpsTest.AccessRoot
+[       OK ] FuseOpsTest.AccessRoot (213 ms)
 [ RUN      ] FuseOpsTest.WriteAndTruncate
-[       OK ] FuseOpsTest.WriteAndTruncate (36 ms)
+[       OK ] FuseOpsTest.WriteAndTruncate (1079 ms)
 [ RUN      ] FuseOpsTest.Unlink
-[       OK ] FuseOpsTest.Unlink (37 ms)
+[       OK ] FuseOpsTest.Unlink (766 ms)
 [ RUN      ] FuseOpsTest.Rmdir
-[       OK ] FuseOpsTest.Rmdir (40 ms)
+[       OK ] FuseOpsTest.Rmdir (1315 ms)
 [ RUN      ] FuseOpsTest.ReadDir
-[       OK ] FuseOpsTest.ReadDir (38 ms)
+[       OK ] FuseOpsTest.ReadDir (1030 ms)
 [ RUN      ] FuseOpsTest.ReadTest
-[       OK ] FuseOpsTest.ReadTest (41 ms)
+[       OK ] FuseOpsTest.ReadTest (773 ms)
 [ RUN      ] FuseOpsTest.UtimensTest
-[       OK ] FuseOpsTest.UtimensTest (37 ms)
+[       OK ] FuseOpsTest.UtimensTest (788 ms)
 [ RUN      ] FuseOpsTest.StatfsTest
-[       OK ] FuseOpsTest.StatfsTest (35 ms)
+[       OK ] FuseOpsTest.StatfsTest (205 ms)
 [ RUN      ] FuseOpsTest.OpenDir
-[       OK ] FuseOpsTest.OpenDir (36 ms)
+[       OK ] FuseOpsTest.OpenDir (795 ms)
 [ RUN      ] FuseOpsTest.CreateExcl
-[       OK ] FuseOpsTest.CreateExcl (38 ms)
+[       OK ] FuseOpsTest.CreateExcl (461 ms)
 [ RUN      ] FuseOpsTest.GetAttrNested
-[       OK ] FuseOpsTest.GetAttrNested (41 ms)
+[       OK ] FuseOpsTest.GetAttrNested (1306 ms)
 [ RUN      ] FuseOpsTest.ReadOffset
-[       OK ] FuseOpsTest.ReadOffset (38 ms)
+[       OK ] FuseOpsTest.ReadOffset (479 ms)
 [ RUN      ] FuseOpsTest.WriteAppend
-[       OK ] FuseOpsTest.WriteAppend (34 ms)
+[       OK ] FuseOpsTest.WriteAppend (1024 ms)
 [ RUN      ] FuseOpsTest.TruncateExpand
-[       OK ] FuseOpsTest.TruncateExpand (34 ms)
+[       OK ] FuseOpsTest.TruncateExpand (791 ms)
 [ RUN      ] FuseOpsTest.AccessWriteProtect
-[       OK ] FuseOpsTest.AccessWriteProtect (34 ms)
+[       OK ] FuseOpsTest.AccessWriteProtect (542 ms)
 [ RUN      ] FuseOpsTest.UnlinkMissing
-[       OK ] FuseOpsTest.UnlinkMissing (36 ms)
+[       OK ] FuseOpsTest.UnlinkMissing (210 ms)
 [ RUN      ] FuseOpsTest.UtimensNull
-[       OK ] FuseOpsTest.UtimensNull (34 ms)
+[       OK ] FuseOpsTest.UtimensNull (859 ms)
 [ RUN      ] FuseOpsTest.StatfsCheck
-[       OK ] FuseOpsTest.StatfsCheck (37 ms)
-[----------] 21 tests from FuseOpsTest (770 ms total)
+[       OK ] FuseOpsTest.StatfsCheck (206 ms)
+[ RUN      ] FuseOpsTest.ChmodBasic
+[       OK ] FuseOpsTest.ChmodBasic (804 ms)
+[ RUN      ] FuseOpsTest.ChmodPreservesType
+[       OK ] FuseOpsTest.ChmodPreservesType (762 ms)
+[ RUN      ] FuseOpsTest.ChmodDeniedNonOwner
+[       OK ] FuseOpsTest.ChmodDeniedNonOwner (481 ms)
+[ RUN      ] FuseOpsTest.ChmodAllowedByRoot
+[       OK ] FuseOpsTest.ChmodAllowedByRoot (746 ms)
+[ RUN      ] FuseOpsTest.ChmodNonExistent
+[       OK ] FuseOpsTest.ChmodNonExistent (204 ms)
+[ RUN      ] FuseOpsTest.ChmodRoot
+[       OK ] FuseOpsTest.ChmodRoot (530 ms)
+[ RUN      ] FuseOpsTest.ChownBasic
+[       OK ] FuseOpsTest.ChownBasic (798 ms)
+[ RUN      ] FuseOpsTest.ChownDeniedNonOwner
+[       OK ] FuseOpsTest.ChownDeniedNonOwner (498 ms)
+[ RUN      ] FuseOpsTest.ChownChangeGroupOnly
+[       OK ] FuseOpsTest.ChownChangeGroupOnly (788 ms)
+[ RUN      ] FuseOpsTest.ChownNonExistent
+[       OK ] FuseOpsTest.ChownNonExistent (206 ms)
+[ RUN      ] FuseOpsTest.MkDirDeniedNoWriteOnParent
+[       OK ] FuseOpsTest.MkDirDeniedNoWriteOnParent (502 ms)
+[ RUN      ] FuseOpsTest.CreateDeniedNoWriteOnParent
+[       OK ] FuseOpsTest.CreateDeniedNoWriteOnParent (463 ms)
+[ RUN      ] FuseOpsTest.OpenDeniedNoReadPerm
+[       OK ] FuseOpsTest.OpenDeniedNoReadPerm (479 ms)
+[ RUN      ] FuseOpsTest.TruncateDeniedNoWritePerm
+[       OK ] FuseOpsTest.TruncateDeniedNoWritePerm (497 ms)
+[ RUN      ] FuseOpsTest.UnlinkDeniedNoWriteOnParent
+[       OK ] FuseOpsTest.UnlinkDeniedNoWriteOnParent (1304 ms)
+[ RUN      ] FuseOpsTest.RmdirDeniedNoWriteOnParent
+[       OK ] FuseOpsTest.RmdirDeniedNoWriteOnParent (1296 ms)
+[ RUN      ] FuseOpsTest.UtimensDeniedNonOwner
+[       OK ] FuseOpsTest.UtimensDeniedNonOwner (514 ms)
+[ RUN      ] FuseOpsTest.UtimensOnRoot
+[       OK ] FuseOpsTest.UtimensOnRoot (504 ms)
+[ RUN      ] FuseOpsTest.OpendirDeniedNoReadPerm
+[       OK ] FuseOpsTest.OpendirDeniedNoReadPerm (501 ms)
+[ RUN      ] FuseOpsTest.GroupPermissions
+[       OK ] FuseOpsTest.GroupPermissions (503 ms)
+[ RUN      ] FuseOpsTest.OtherPermissions
+[       OK ] FuseOpsTest.OtherPermissions (449 ms)
+[ RUN      ] FuseOpsTest.WriteReadRoundTrip
+[       OK ] FuseOpsTest.WriteReadRoundTrip (768 ms)
+[ RUN      ] FuseOpsTest.ReadPastEOF
+[       OK ] FuseOpsTest.ReadPastEOF (762 ms)
+[ RUN      ] FuseOpsTest.WriteAtOffset
+[       OK ] FuseOpsTest.WriteAtOffset (1005 ms)
+[ RUN      ] FuseOpsTest.WriteBeyondCurrentSize
+[       OK ] FuseOpsTest.WriteBeyondCurrentSize (779 ms)
+[ RUN      ] FuseOpsTest.TruncateClearsData
+[       OK ] FuseOpsTest.TruncateClearsData (1269 ms)
+[ RUN      ] FuseOpsTest.OpenWithTrunc
+[       OK ] FuseOpsTest.OpenWithTrunc (1024 ms)
+[ RUN      ] FuseOpsTest.CreateReOpenExisting
+[       OK ] FuseOpsTest.CreateReOpenExisting (1036 ms)
+[ RUN      ] FuseOpsTest.CreateReOpenPreservesData
+[       OK ] FuseOpsTest.CreateReOpenPreservesData (742 ms)
+[ RUN      ] FuseOpsTest.LargeWriteClamped
+[       OK ] FuseOpsTest.LargeWriteClamped (787 ms)
+[ RUN      ] FuseOpsTest.WritePastBufferReturnsEFBIG
+[       OK ] FuseOpsTest.WritePastBufferReturnsEFBIG (504 ms)
+[ RUN      ] FuseOpsTest.TruncateBeyondMaxReturnsEFBIG
+[       OK ] FuseOpsTest.TruncateBeyondMaxReturnsEFBIG (499 ms)
+[ RUN      ] FuseOpsTest.ReadOnDir
+[       OK ] FuseOpsTest.ReadOnDir (504 ms)
+[ RUN      ] FuseOpsTest.WriteOnDir
+[       OK ] FuseOpsTest.WriteOnDir (469 ms)
+[ RUN      ] FuseOpsTest.UnlinkClearsData
+[       OK ] FuseOpsTest.UnlinkClearsData (1295 ms)
+[ RUN      ] FuseOpsTest.MultipleFilesIndependent
+[       OK ] FuseOpsTest.MultipleFilesIndependent (1294 ms)
+[----------] 63 tests from FuseOpsTest (42144 ms total)
 
 [----------] Global test environment tear-down
-[==========] 21 tests from 1 test suite ran. (770 ms total)
-[  PASSED  ] 21 tests.
+[==========] 63 tests from 1 test suite ran. (42144 ms total)
+[  PASSED  ] 63 tests.
 <end of output>
-Test time =   0.77 sec
+Test time =  42.15 sec
 ----------------------------------------------------------
 Test Passed.
-"FuseOpsTests" end time: Feb 12 20:00 IST
-"FuseOpsTests" time elapsed: 00:00:00
+"FuseOpsTests" end time: Mar 02 22:38 IST
+"FuseOpsTests" time elapsed: 00:00:42
 ----------------------------------------------------------
 
-End testing: Feb 12 20:00 IST
+4/4 Testing: PersistenceTests
+4/4 Test: PersistenceTests
+Command: "/home/bismarck/FastDevFs/build/test_persistence"
+Directory: /home/bismarck/FastDevFs/build
+"PersistenceTests" start time: Mar 02 22:38 IST
+Output:
+----------------------------------------------------------
+Running main() from /home/bismarck/FastDevFs/build/_deps/googletest-src/googletest/src/gtest_main.cc
+[==========] Running 39 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 39 tests from PersistenceTest
+[ RUN      ] PersistenceTest.BasicSaveLoad
+[       OK ] PersistenceTest.BasicSaveLoad (864 ms)
+[ RUN      ] PersistenceTest.PersistenceAcrossRestarts
+[       OK ] PersistenceTest.PersistenceAcrossRestarts (868 ms)
+[ RUN      ] PersistenceTest.SaveAfterModifications
+[       OK ] PersistenceTest.SaveAfterModifications (695 ms)
+[ RUN      ] PersistenceTest.LoadNonExistentFile
+[       OK ] PersistenceTest.LoadNonExistentFile (211 ms)
+[ RUN      ] PersistenceTest.LoadCorruptedFile
+[       OK ] PersistenceTest.LoadCorruptedFile (209 ms)
+[ RUN      ] PersistenceTest.InitOrLoadCreatesNew
+[       OK ] PersistenceTest.InitOrLoadCreatesNew (600 ms)
+[ RUN      ] PersistenceTest.InitOrLoadLoadsExisting
+[       OK ] PersistenceTest.InitOrLoadLoadsExisting (869 ms)
+[ RUN      ] PersistenceTest.PersistenceWithDeepTree
+[       OK ] PersistenceTest.PersistenceWithDeepTree (887 ms)
+[ RUN      ] PersistenceTest.PersistenceWithManyNodes
+[       OK ] PersistenceTest.PersistenceWithManyNodes (894 ms)
+[ RUN      ] PersistenceTest.ConcurrentSaveLoad
+[       OK ] PersistenceTest.ConcurrentSaveLoad (14497 ms)
+[ RUN      ] PersistenceTest.HashMapPersistence
+[       OK ] PersistenceTest.HashMapPersistence (898 ms)
+[ RUN      ] PersistenceTest.FreeListPersistence
+[       OK ] PersistenceTest.FreeListPersistence (885 ms)
+[ RUN      ] PersistenceTest.MetadataPersistence
+[       OK ] PersistenceTest.MetadataPersistence (867 ms)
+[ RUN      ] PersistenceTest.MmapDirectDataInspection
+[       OK ] PersistenceTest.MmapDirectDataInspection (594 ms)
+[ RUN      ] PersistenceTest.UnmountRemountNodeArrayIntegrity
+[       OK ] PersistenceTest.UnmountRemountNodeArrayIntegrity (1067 ms)
+[ RUN      ] PersistenceTest.UnmountRemountHashMapIntegrity
+[       OK ] PersistenceTest.UnmountRemountHashMapIntegrity (911 ms)
+[ RUN      ] PersistenceTest.UnmountRemountFullCycle
+[       OK ] PersistenceTest.UnmountRemountFullCycle (900 ms)
+[ RUN      ] PersistenceTest.MultipleUnmountRemountCycles
+[       OK ] PersistenceTest.MultipleUnmountRemountCycles (1987 ms)
+[ RUN      ] PersistenceTest.MmapOnDiskMatchesLoadedState
+[       OK ] PersistenceTest.MmapOnDiskMatchesLoadedState (920 ms)
+[ RUN      ] PersistenceTest.MmapSiblingChainPersistence
+[       OK ] PersistenceTest.MmapSiblingChainPersistence (628 ms)
+[ RUN      ] PersistenceTest.MmapDeletedNodesMarkedOnDisk
+[       OK ] PersistenceTest.MmapDeletedNodesMarkedOnDisk (594 ms)
+[ RUN      ] PersistenceTest.MmapFreeListChainOnDisk
+[       OK ] PersistenceTest.MmapFreeListChainOnDisk (615 ms)
+[ RUN      ] PersistenceTest.MmapRootNodePersistence
+[       OK ] PersistenceTest.MmapRootNodePersistence (593 ms)
+[ RUN      ] PersistenceTest.MmapNodeArrayPartialComparison
+[       OK ] PersistenceTest.MmapNodeArrayPartialComparison (621 ms)
+[ RUN      ] PersistenceTest.MmapOverwriteSavePersistence
+[       OK ] PersistenceTest.MmapOverwriteSavePersistence (895 ms)
+[ RUN      ] PersistenceTest.MmapHashmapSizeOnDisk
+[       OK ] PersistenceTest.MmapHashmapSizeOnDisk (622 ms)
+[ RUN      ] PersistenceTest.MmapDeepTreeParentChainOnDisk
+[       OK ] PersistenceTest.MmapDeepTreeParentChainOnDisk (622 ms)
+[ RUN      ] PersistenceTest.MmapFileModeBitsOnDisk
+[       OK ] PersistenceTest.MmapFileModeBitsOnDisk (617 ms)
+[ RUN      ] PersistenceTest.MmapTimestampsOnDisk
+[       OK ] PersistenceTest.MmapTimestampsOnDisk (625 ms)
+[ RUN      ] PersistenceTest.MmapUidGidOnDisk
+[       OK ] PersistenceTest.MmapUidGidOnDisk (623 ms)
+[ RUN      ] PersistenceTest.MmapNlinkOnDisk
+[       OK ] PersistenceTest.MmapNlinkOnDisk (591 ms)
+[ RUN      ] PersistenceTest.MmapFileSizeOnDisk
+[       OK ] PersistenceTest.MmapFileSizeOnDisk (604 ms)
+[ RUN      ] PersistenceTest.MmapRemountThenMutateAndVerify
+[       OK ] PersistenceTest.MmapRemountThenMutateAndVerify (1161 ms)
+[ RUN      ] PersistenceTest.MmapHashEntryLookupOnDisk
+[       OK ] PersistenceTest.MmapHashEntryLookupOnDisk (622 ms)
+[ RUN      ] PersistenceTest.MmapDeletedNodeRecycledAfterRemount
+[       OK ] PersistenceTest.MmapDeletedNodeRecycledAfterRemount (1175 ms)
+[ RUN      ] PersistenceTest.MmapChangeParentPersistence
+[       OK ] PersistenceTest.MmapChangeParentPersistence (597 ms)
+[ RUN      ] PersistenceTest.MmapEmptyFsOnDisk
+[       OK ] PersistenceTest.MmapEmptyFsOnDisk (597 ms)
+[ RUN      ] PersistenceTest.MmapSubtreeDeletionOnDisk
+[       OK ] PersistenceTest.MmapSubtreeDeletionOnDisk (602 ms)
+[ RUN      ] PersistenceTest.MmapBulkInsertDeleteRemount
+[       OK ] PersistenceTest.MmapBulkInsertDeleteRemount (922 ms)
+[----------] 39 tests from PersistenceTest (43570 ms total)
+
+[----------] Global test environment tear-down
+[==========] 39 tests from 1 test suite ran. (43570 ms total)
+[  PASSED  ] 39 tests.
+<end of output>
+Test time =  43.60 sec
+----------------------------------------------------------
+Test Passed.
+"PersistenceTests" end time: Mar 02 22:38 IST
+"PersistenceTests" time elapsed: 00:00:43
+----------------------------------------------------------
+
+End testing: Mar 02 22:38 IST

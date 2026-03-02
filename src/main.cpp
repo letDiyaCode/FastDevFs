@@ -10,8 +10,11 @@
 treefile file1;
 
 int main(int argc, char *argv[]) {
-    // Initialize the file system tree
-    initialize(file1);
+    // Initialize or load the file system tree from disk
+    if (!init_or_load_treefile(FASTDEVFS_PERSIST_PATH, file1)) {
+        std::cerr << "Warning: Could not load or create persistence file, initializing fresh." << std::endl;
+        initialize(file1);
+    }
 
     // Initialize FUSE operations
     struct fuse_operations ops;
@@ -19,5 +22,13 @@ int main(int argc, char *argv[]) {
 
     // Run FUSE main loop
     // We pass the global treefile instance as user_data
-    return fuse_main(argc, argv, &ops, &file1);
+    int ret = fuse_main(argc, argv, &ops, &file1);
+
+    // Safety-net save after FUSE exits (destroy callback should have saved already,
+    // but this covers abnormal exits where destroy might not fire)
+    if (!save_treefile(FASTDEVFS_PERSIST_PATH, file1)) {
+        std::cerr << "Warning: Final save_treefile failed." << std::endl;
+    }
+
+    return ret;
 }

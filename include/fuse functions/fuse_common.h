@@ -37,4 +37,13 @@ inline std::string get_filename(const std::string& path) {
     return path.substr(last_slash + 1);
 }
 
+// Persistence path — single source of truth
+#define FASTDEVFS_PERSIST_PATH "/tmp/fastdevfs.mmap"
+
+// Helper: persist treefile to disk after every mutating operation.
+// Uses mmap+msync so only dirty pages are actually written — fast enough.
+inline void persist(treefile& file1) {
+    save_treefile(FASTDEVFS_PERSIST_PATH, file1);
+}
+
 #endif // FUSE_COMMON_H

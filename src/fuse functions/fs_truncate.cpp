@@ -22,10 +22,31 @@ int fs_truncate(const char *path, off_t size, struct fuse_file_info *fi) {
 
     if (!allowed) return -EACCES;
 
-    // Update size
+    if (size < 0) return -EINVAL;
+    if (size > MAX_FILE_DATA) return -EFBIG;
+
+    off_t old_size = meta.size;
+
+    if (size < old_size) {
+        // Shrinking: zero out the truncated region
+        size_t clear_from = (size_t)size;
+        size_t clear_to = (old_size < MAX_FILE_DATA) ? (size_t)old_size : MAX_FILE_DATA;
+        if (clear_from < clear_to) {
+            memset(file1.arr[index].data + clear_from, 0, clear_to - clear_from);
+        }
+    } else if (size > old_size) {
+        // Growing: zero-fill the gap (POSIX: reads as NUL)
+        size_t fill_from = (old_size < MAX_FILE_DATA) ? (size_t)old_size : MAX_FILE_DATA;
+        size_t fill_to = ((size_t)size < MAX_FILE_DATA) ? (size_t)size : MAX_FILE_DATA;
+        if (fill_from < fill_to) {
+            memset(file1.arr[index].data + fill_from, 0, fill_to - fill_from);
+        }
+    }
+
     meta.size = size;
     meta.mtime = time(NULL);
     meta.ctime = time(NULL);
 
+    persist(file1);
     return 0;
 }

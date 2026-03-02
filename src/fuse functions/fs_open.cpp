@@ -38,5 +38,19 @@ int fs_open(const char *path, struct fuse_file_info *fi) {
     if ((flags == O_WRONLY) && !w_ok) return -EACCES;
     if ((flags == O_RDWR) && (!r_ok || !w_ok)) return -EACCES;
 
+    // Handle O_TRUNC: truncate file to zero length
+    if (fi->flags & O_TRUNC) {
+        if (!w_ok && ctx->uid != 0) return -EACCES;
+        size_t clear_size = ((size_t)meta.size < MAX_FILE_DATA)
+                            ? (size_t)meta.size : MAX_FILE_DATA;
+        if (clear_size > 0) {
+            memset(file1.arr[index].data, 0, clear_size);
+        }
+        meta.size = 0;
+        meta.mtime = time(NULL);
+        meta.ctime = time(NULL);
+        persist(file1);
+    }
+
     return 0;
 }

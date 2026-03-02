@@ -2,9 +2,6 @@
 
 int fs_read(const char *path, char *buf, size_t size, off_t offset,
             struct fuse_file_info *fi) {
-    (void) buf;
-    (void) size;
-    (void) offset;
     (void) fi;
 
     treefile& file1 = get_treefile();
@@ -19,7 +16,28 @@ int fs_read(const char *path, char *buf, size_t size, off_t offset,
         return -EISDIR;
     }
 
-    // No data storage implemented yet.
-    // Return 0 bytes read (EOF).
-    return 0;
+    metadate& meta = file1.arr[index].metadata;
+
+    // Past end of file → EOF
+    if (offset >= meta.size) {
+        return 0;
+    }
+
+    // Clamp read to available data
+    size_t available = meta.size - offset;
+    size_t read_size = (size < available) ? size : available;
+
+    // Also clamp to the physical buffer limit
+    if ((size_t)offset + read_size > MAX_FILE_DATA) {
+        if ((size_t)offset >= MAX_FILE_DATA) {
+            return 0;
+        }
+        read_size = MAX_FILE_DATA - offset;
+    }
+
+    memcpy(buf, file1.arr[index].data + offset, read_size);
+
+    meta.atime = time(NULL);
+
+    return read_size;
 }

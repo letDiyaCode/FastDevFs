@@ -11,6 +11,8 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/bismarck/FastDevFs/src/daemon/directory tree/adt.cpp" "CMakeFiles/fastdevfs_adt.dir/src/daemon/directory_tree/adt.cpp.o" "gcc" "CMakeFiles/fastdevfs_adt.dir/src/daemon/directory_tree/adt.cpp.o.d"
   "/home/bismarck/FastDevFs/src/daemon/directory tree/hash.cpp" "CMakeFiles/fastdevfs_adt.dir/src/daemon/directory_tree/hash.cpp.o" "gcc" "CMakeFiles/fastdevfs_adt.dir/src/daemon/directory_tree/hash.cpp.o.d"
   "/home/bismarck/FastDevFs/src/fuse functions/fs_access.cpp" "CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_access.cpp.o" "gcc" "CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_access.cpp.o.d"
+  "/home/bismarck/FastDevFs/src/fuse functions/fs_chmod.cpp" "CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.o" "gcc" "CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.o.d"
+  "/home/bismarck/FastDevFs/src/fuse functions/fs_chown.cpp" "CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.o" "gcc" "CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.o.d"
   "/home/bismarck/FastDevFs/src/fuse functions/fs_create.cpp" "CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_create.cpp.o" "gcc" "CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_create.cpp.o.d"
   "/home/bismarck/FastDevFs/src/fuse functions/fs_getattr.cpp" "CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_getattr.cpp.o" "gcc" "CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_getattr.cpp.o.d"
   "/home/bismarck/FastDevFs/src/fuse functions/fs_mkdir.cpp" "CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_mkdir.cpp.o" "gcc" "CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_mkdir.cpp.o.d"

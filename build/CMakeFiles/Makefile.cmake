@@ -84,6 +84,7 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/fastdevfs_adt.dir/DependInfo.cmake"
   "CMakeFiles/test_adt.dir/DependInfo.cmake"
   "CMakeFiles/test_hash.dir/DependInfo.cmake"
+  "CMakeFiles/test_persistence.dir/DependInfo.cmake"
   "CMakeFiles/test_fuse_ops.dir/DependInfo.cmake"
   "_deps/googletest-build/googlemock/CMakeFiles/gmock.dir/DependInfo.cmake"
   "_deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/DependInfo.cmake"

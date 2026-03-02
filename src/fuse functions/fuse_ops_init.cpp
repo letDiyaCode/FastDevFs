@@ -13,6 +13,19 @@
 #include "../../include/fuse functions/fs_write.h"
 #include "../../include/fuse functions/fs_truncate.h"
 #include "../../include/fuse functions/fs_unlink.h"
+#include "../../include/fuse functions/fs_chmod.h"
+#include "../../include/fuse functions/fs_chown.h"
+
+// Called by FUSE on clean unmount (fusermount -u / umount)
+static void fs_destroy(void *private_data) {
+    if (!private_data) return;
+    treefile& file1 = *static_cast<treefile*>(private_data);
+    if (!save_treefile(FASTDEVFS_PERSIST_PATH, file1)) {
+        std::cerr << "[fastdevfs] ERROR: Failed to save treefile on unmount!" << std::endl;
+    } else {
+        std::cerr << "[fastdevfs] Treefile saved successfully on unmount." << std::endl;
+    }
+}
 
 void init_fuse_operations(struct fuse_operations& ops) {
     memset(&ops, 0, sizeof(struct fuse_operations));
@@ -31,4 +44,7 @@ void init_fuse_operations(struct fuse_operations& ops) {
     ops.write = fs_write;
     ops.truncate = fs_truncate;
     ops.unlink = fs_unlink;
+    ops.chmod = fs_chmod;
+    ops.chown = fs_chown;
+    ops.destroy = fs_destroy;
 }

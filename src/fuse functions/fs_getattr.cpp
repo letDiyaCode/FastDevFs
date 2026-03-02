@@ -9,20 +9,21 @@ int fs_getattr(const char *path, struct stat *stbuf, struct fuse_file_info *fi) 
     // Initialize stbuf
     memset(stbuf, 0, sizeof(struct stat));
 
-    if (strcmp(path, "/") == 0) {
-        stbuf->st_mode = S_IFDIR | 0755;
-        stbuf->st_nlink = 2;
-        return 0;
-    }
-
+    // Resolve path to index — root "/" is always at index 0
     std::string path_str(path);
-    int index = hashindex(path_str, file1);
+    int index;
+    if (path_str == "/") {
+        index = 0;
+    } else {
+        index = hashindex(path_str, file1);
+    }
 
     if (index == -1) {
         return -ENOENT;
     }
 
     metadate& meta = file1.arr[index].metadata;
+    stbuf->st_ino  = index;  // Use array index as inode number
     stbuf->st_mode = meta.mode;
     stbuf->st_nlink = meta.nlink;
     stbuf->st_uid = meta.uid;

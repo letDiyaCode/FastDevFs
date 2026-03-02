@@ -224,6 +224,19 @@ test_hash/fast:
 .PHONY : test_hash/fast
 
 #=============================================================================
+# Target rules for targets named test_persistence
+
+# Build rule for target.
+test_persistence: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_persistence
+.PHONY : test_persistence
+
+# fast build rule for target.
+test_persistence/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_persistence.dir/build.make CMakeFiles/test_persistence.dir/build
+.PHONY : test_persistence/fast
+
+#=============================================================================
 # Target rules for targets named test_fuse_ops
 
 # Build rule for target.
@@ -359,6 +372,54 @@ src/fuse_functions/fs_access.s: src/fuse_functions/fs_access.cpp.s
 src/fuse_functions/fs_access.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs_adt.dir/build.make CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_access.cpp.s
 .PHONY : src/fuse_functions/fs_access.cpp.s
+
+src/fuse_functions/fs_chmod.o: src/fuse_functions/fs_chmod.cpp.o
+.PHONY : src/fuse_functions/fs_chmod.o
+
+# target to build an object file
+src/fuse_functions/fs_chmod.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs_adt.dir/build.make CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.o
+.PHONY : src/fuse_functions/fs_chmod.cpp.o
+
+src/fuse_functions/fs_chmod.i: src/fuse_functions/fs_chmod.cpp.i
+.PHONY : src/fuse_functions/fs_chmod.i
+
+# target to preprocess a source file
+src/fuse_functions/fs_chmod.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs_adt.dir/build.make CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.i
+.PHONY : src/fuse_functions/fs_chmod.cpp.i
+
+src/fuse_functions/fs_chmod.s: src/fuse_functions/fs_chmod.cpp.s
+.PHONY : src/fuse_functions/fs_chmod.s
+
+# target to generate assembly for a file
+src/fuse_functions/fs_chmod.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs_adt.dir/build.make CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.s
+.PHONY : src/fuse_functions/fs_chmod.cpp.s
+
+src/fuse_functions/fs_chown.o: src/fuse_functions/fs_chown.cpp.o
+.PHONY : src/fuse_functions/fs_chown.o
+
+# target to build an object file
+src/fuse_functions/fs_chown.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs_adt.dir/build.make CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.o
+.PHONY : src/fuse_functions/fs_chown.cpp.o
+
+src/fuse_functions/fs_chown.i: src/fuse_functions/fs_chown.cpp.i
+.PHONY : src/fuse_functions/fs_chown.i
+
+# target to preprocess a source file
+src/fuse_functions/fs_chown.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs_adt.dir/build.make CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.i
+.PHONY : src/fuse_functions/fs_chown.cpp.i
+
+src/fuse_functions/fs_chown.s: src/fuse_functions/fs_chown.cpp.s
+.PHONY : src/fuse_functions/fs_chown.s
+
+# target to generate assembly for a file
+src/fuse_functions/fs_chown.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/fastdevfs_adt.dir/build.make CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.s
+.PHONY : src/fuse_functions/fs_chown.cpp.s
 
 src/fuse_functions/fs_create.o: src/fuse_functions/fs_create.cpp.o
 .PHONY : src/fuse_functions/fs_create.o
@@ -792,6 +853,30 @@ test/test_hash.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_hash.dir/build.make CMakeFiles/test_hash.dir/test/test_hash.cpp.s
 .PHONY : test/test_hash.cpp.s
 
+test/test_persistence.o: test/test_persistence.cpp.o
+.PHONY : test/test_persistence.o
+
+# target to build an object file
+test/test_persistence.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_persistence.dir/build.make CMakeFiles/test_persistence.dir/test/test_persistence.cpp.o
+.PHONY : test/test_persistence.cpp.o
+
+test/test_persistence.i: test/test_persistence.cpp.i
+.PHONY : test/test_persistence.i
+
+# target to preprocess a source file
+test/test_persistence.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_persistence.dir/build.make CMakeFiles/test_persistence.dir/test/test_persistence.cpp.i
+.PHONY : test/test_persistence.cpp.i
+
+test/test_persistence.s: test/test_persistence.cpp.s
+.PHONY : test/test_persistence.s
+
+# target to generate assembly for a file
+test/test_persistence.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_persistence.dir/build.make CMakeFiles/test_persistence.dir/test/test_persistence.cpp.s
+.PHONY : test/test_persistence.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -814,6 +899,7 @@ help:
 	@echo "... test_adt"
 	@echo "... test_fuse_ops"
 	@echo "... test_hash"
+	@echo "... test_persistence"
 	@echo "... src/daemon/directory_tree/adt.o"
 	@echo "... src/daemon/directory_tree/adt.i"
 	@echo "... src/daemon/directory_tree/adt.s"
@@ -823,6 +909,12 @@ help:
 	@echo "... src/fuse_functions/fs_access.o"
 	@echo "... src/fuse_functions/fs_access.i"
 	@echo "... src/fuse_functions/fs_access.s"
+	@echo "... src/fuse_functions/fs_chmod.o"
+	@echo "... src/fuse_functions/fs_chmod.i"
+	@echo "... src/fuse_functions/fs_chmod.s"
+	@echo "... src/fuse_functions/fs_chown.o"
+	@echo "... src/fuse_functions/fs_chown.i"
+	@echo "... src/fuse_functions/fs_chown.s"
 	@echo "... src/fuse_functions/fs_create.o"
 	@echo "... src/fuse_functions/fs_create.i"
 	@echo "... src/fuse_functions/fs_create.s"
@@ -877,6 +969,9 @@ help:
 	@echo "... test/test_hash.o"
 	@echo "... test/test_hash.i"
 	@echo "... test/test_hash.s"
+	@echo "... test/test_persistence.o"
+	@echo "... test/test_persistence.i"
+	@echo "... test/test_persistence.s"
 .PHONY : help
 
 

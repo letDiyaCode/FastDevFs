@@ -7,6 +7,8 @@
 #include "hash.h"
 using namespace std;
 
+#define MAX_FILE_DATA 4096   // Maximum inline file data per node (4 KB)
+
 struct metadate{
     int inode = -1;
     char name[256] = "";  // Fixed-size char array instead of std::string for mmap compatibility
@@ -26,6 +28,7 @@ struct treenode{
     int parent = -1;
     metadate metadata;
     bool isdeleted = true;
+    char data[MAX_FILE_DATA];   // Inline file content (persisted via mmap)
 };
 struct header{
   int firstfree = 0;
@@ -47,6 +50,20 @@ void delete1(string filename, treefile &file1);
 void change_parent(string filename, string newparentname, treefile &file1);
 void initialize(treefile &file1);
 
+// Serializable versions for mmap persistence (excludes mutex and HashMap wrapper)
+struct header_serializable {
+    int firstfree;
+    int start;
+    int size;
+    int nodeallocated;
+    hashmap_t hashdata;  // Directly store the hashmap_t structure, not the wrapper
+};
+
+struct treefile_serializable {
+    header_serializable head;
+    treenode arr[100000];
+};
+
 // Persistence functions using mmap
 bool save_treefile(const char* filepath, treefile &file1);
 bool load_treefile(const char* filepath, treefile &file1);
@@ -54,4 +71,3 @@ bool init_or_load_treefile(const char* filepath, treefile &file1);
 
 
 #endif /* ADT_H */
-

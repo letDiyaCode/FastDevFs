@@ -307,6 +307,34 @@ CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_unlink.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_unlink.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/bismarck/FastDevFs/src/fuse functions/fs_unlink.cpp" -o CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_unlink.cpp.s
 
+CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.o: CMakeFiles/fastdevfs_adt.dir/flags.make
+CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.o: ../src/fuse\ functions/fs_chmod.cpp
+CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.o: CMakeFiles/fastdevfs_adt.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.o -MF CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.o.d -o CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.o -c "/home/bismarck/FastDevFs/src/fuse functions/fs_chmod.cpp"
+
+CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/bismarck/FastDevFs/src/fuse functions/fs_chmod.cpp" > CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.i
+
+CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/bismarck/FastDevFs/src/fuse functions/fs_chmod.cpp" -o CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.s
+
+CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.o: CMakeFiles/fastdevfs_adt.dir/flags.make
+CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.o: ../src/fuse\ functions/fs_chown.cpp
+CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.o: CMakeFiles/fastdevfs_adt.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.o -MF CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.o.d -o CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.o -c "/home/bismarck/FastDevFs/src/fuse functions/fs_chown.cpp"
+
+CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/bismarck/FastDevFs/src/fuse functions/fs_chown.cpp" > CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.i
+
+CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/bismarck/FastDevFs/src/fuse functions/fs_chown.cpp" -o CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.s
+
 # Object files for target fastdevfs_adt
 fastdevfs_adt_OBJECTS = \
 "CMakeFiles/fastdevfs_adt.dir/src/daemon/directory_tree/adt.cpp.o" \
@@ -325,7 +353,9 @@ fastdevfs_adt_OBJECTS = \
 "CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_write.cpp.o" \
 "CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_create.cpp.o" \
 "CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_truncate.cpp.o" \
-"CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_unlink.cpp.o"
+"CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_unlink.cpp.o" \
+"CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.o" \
+"CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.o"
 
 # External object files for target fastdevfs_adt
 fastdevfs_adt_EXTERNAL_OBJECTS =
@@ -347,9 +377,11 @@ libfastdevfs_adt.a: CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_write.cpp
 libfastdevfs_adt.a: CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_create.cpp.o
 libfastdevfs_adt.a: CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_truncate.cpp.o
 libfastdevfs_adt.a: CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_unlink.cpp.o
+libfastdevfs_adt.a: CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chmod.cpp.o
+libfastdevfs_adt.a: CMakeFiles/fastdevfs_adt.dir/src/fuse_functions/fs_chown.cpp.o
 libfastdevfs_adt.a: CMakeFiles/fastdevfs_adt.dir/build.make
 libfastdevfs_adt.a: CMakeFiles/fastdevfs_adt.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Linking CXX static library libfastdevfs_adt.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/bismarck/FastDevFs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Linking CXX static library libfastdevfs_adt.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/fastdevfs_adt.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/fastdevfs_adt.dir/link.txt --verbose=$(VERBOSE)
 

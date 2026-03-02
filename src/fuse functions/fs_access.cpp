@@ -5,19 +5,32 @@ int fs_access(const char *path, int mask) {
     std::lock_guard<std::recursive_mutex> lock(file1.mtx);
 
     std::string path_str(path);
-    int index = hashindex(path_str, file1);
+    int index;
+    if (path_str == "/") {
+        index = 0;
+    } else {
+        index = hashindex(path_str, file1);
+    }
 
     if (index == -1) {
         return -ENOENT;
     }
 
-    metadate& meta = file1.arr[index].metadata;
+    // F_OK just checks existence — already found above
+    if (mask == F_OK) {
+        return 0;
+    }
+
     struct fuse_context* ctx = fuse_get_context();
 
-    // If root, always accessible?
-    // Check permissions
+    // Superuser (uid 0) can access everything
+    if (ctx->uid == 0) {
+        return 0;
+    }
+
+    metadate& meta = file1.arr[index].metadata;
     int mode = meta.mode;
-    
+
     // Check owner
     if (ctx->uid == meta.uid) {
         if ((mask & R_OK) && !(mode & S_IRUSR)) return -EACCES;

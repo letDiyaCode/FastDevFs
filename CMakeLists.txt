@@ -51,6 +51,8 @@ add_library(fastdevfs_adt STATIC
     "src/fuse functions/fs_create.cpp"
     "src/fuse functions/fs_truncate.cpp"
     "src/fuse functions/fs_unlink.cpp"
+    "src/fuse functions/fs_chmod.cpp"
+    "src/fuse functions/fs_chown.cpp"
 )
 target_include_directories(fastdevfs_adt PUBLIC
     ${CMAKE_SOURCE_DIR}/include
@@ -81,7 +83,15 @@ target_include_directories(test_hash PRIVATE
 )
 
 # Test executable for Persistence
-
+add_executable(test_persistence test/test_persistence.cpp)
+target_link_libraries(test_persistence PRIVATE 
+    fastdevfs_adt
+    GTest::gtest
+    GTest::gtest_main
+)
+target_include_directories(test_persistence PRIVATE 
+    ${CMAKE_SOURCE_DIR}/include
+)
 
 # Minimal test executable
 
@@ -123,3 +133,4 @@ target_compile_options(test_fuse_ops PRIVATE ${FUSE3_CFLAGS_OTHER} -Wno-narrowin
 add_test(NAME AdtTests COMMAND test_adt)
 add_test(NAME HashTests COMMAND test_hash)
 add_test(NAME FuseOpsTests COMMAND test_fuse_ops)
+add_test(NAME PersistenceTests COMMAND test_persistence)

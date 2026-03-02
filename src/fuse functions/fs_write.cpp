@@ -3,7 +3,6 @@
 
 int fs_write(const char *path, const char *buf, size_t size, off_t offset,
              struct fuse_file_info *fi) {
-    (void) buf;
     (void) fi;
     
     treefile& file1 = get_treefile();
@@ -19,14 +18,33 @@ int fs_write(const char *path, const char *buf, size_t size, off_t offset,
         return -EISDIR;
     }
 
-    // Mock write: update size if offset + size > current size
     metadate& meta = file1.arr[index].metadata;
-    if (offset + size > (size_t)meta.size) {
-        meta.size = offset + size;
+
+    // Clamp writes to the in-line buffer
+    if (offset >= MAX_FILE_DATA) {
+        return -EFBIG;
     }
-    
+
+    size_t write_size = size;
+    if ((size_t)offset + write_size > MAX_FILE_DATA) {
+        write_size = MAX_FILE_DATA - offset;
+    }
+
+    if (write_size == 0) {
+        return 0;
+    }
+
+    // Actually store the data
+    memcpy(file1.arr[index].data + offset, buf, write_size);
+
+    // Extend logical size when writing past current EOF
+    if ((off_t)(offset + write_size) > meta.size) {
+        meta.size = offset + write_size;
+    }
+
     meta.mtime = time(NULL);
     meta.ctime = time(NULL);
 
-    return size; // Pretend we wrote everything
+    persist(file1);
+    return write_size;
 }
