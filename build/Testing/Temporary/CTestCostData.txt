@@ -1,5 +1,0 @@
-FuseOpsTests 19 2.21846
-AdtTests 17 0.263289
-HashTests 17 0.0138755
-PersistenceTests 14 3.11405
----

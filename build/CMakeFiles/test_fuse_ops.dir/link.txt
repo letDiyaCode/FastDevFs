@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/test_fuse_ops.dir/test/test_fuse_ops.cpp.o -o test_fuse_ops  libfastdevfs_adt.a lib/libgtest.a lib/libgtest_main.a -lfuse3 -lpthread lib/libgtest.a 
