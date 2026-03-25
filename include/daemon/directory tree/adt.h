@@ -11,7 +11,7 @@ using namespace std;
 
 struct metadate{
     int inode = -1;
-    char name[256] = "";  // Fixed-size char array for mmap compatibility
+    char name[300] = "";  // Full absolute path (e.g. "/dir/file.txt")
     mode_t mode;
     uid_t  uid;
     gid_t  gid;
@@ -47,11 +47,12 @@ struct treefile{
 extern recursive_mutex treefile_mtx;
 
 // ADT operations (all take treefile& pointing into mmap'd memory)
-int hashindex(string filename, treefile &file1);
-void insertfile(string filename, string parentname, treefile &file1);
-void insertfolder(string filename, string parentname, treefile &file1);
-void delete1(string filename, treefile &file1);
-void change_parent(string filename, string newparentname, treefile &file1);
+// All path arguments are full absolute paths (e.g. "/dir/file.txt")
+int hashindex(string filepath, treefile &file1);
+void insertfile(string filepath, string parentpath, treefile &file1);
+void insertfolder(string folderpath, string parentpath, treefile &file1);
+void delete1(string filepath, treefile &file1);
+void change_parent(string filepath, string newparentpath, treefile &file1);
 void initialize(treefile &file1);
 
 // mmap persistence

@@ -11,7 +11,7 @@ extern "C" {
 
 /* Maximum number of hash entries - sized for 100k tree nodes with good load factor */
 #define MAX_HASH_ENTRIES 150000
-#define MAX_KEY_LENGTH 255
+#define MAX_KEY_LENGTH 299
 
 /* Hash entry with static key storage */
 typedef struct {

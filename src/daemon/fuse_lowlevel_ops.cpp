@@ -28,27 +28,20 @@ static treefile* get_treefile(fuse_req_t req) {
     return (treefile*)fuse_req_userdata(req);
 }
 
-// Build the full path of a node by walking parent pointers.
-// Example: arr[0]="/" -> arr[3]="dir" -> arr[5]="file" => "/dir/file"
+// Build the full path of a node — now just returns metadata.name directly
+// since we store full absolute paths in each node.
 static string build_full_path(int index, treefile& tf) {
     if (index < 0 || index >= tf.size) return "";
-    if (index == 0) return "/";
+    return tf.arr[index].metadata.name;
+}
 
-    vector<string> parts;
-    int cur = index;
-    int safety = tf.size;
-    while (cur > 0 && cur < tf.size && safety-- > 0) {
-        parts.push_back(tf.arr[cur].metadata.name);
-        cur = tf.arr[cur].parent;
+// Extract the basename from a full path (e.g. "/dir/file.txt" -> "file.txt")
+static string basename_of(const char* path) {
+    const char* last_slash = strrchr(path, '/');
+    if (last_slash && *(last_slash + 1) != '\0') {
+        return string(last_slash + 1);
     }
-    reverse(parts.begin(), parts.end());
-
-    string path = "/";
-    for (size_t i = 0; i < parts.size(); i++) {
-        if (i > 0) path += "/";
-        path += parts[i];
-    }
-    return path;
+    return string(path);
 }
 
 // Build host-FS data file path for a tree array index.
@@ -82,7 +75,8 @@ static void fill_entry(struct fuse_entry_param* e, const treenode& node, int ind
     fill_stat(&e->attr, node, index);
 }
 
-// Find a child of parent_index by name.
+// Find a child of parent_index by basename.
+// Compares the basename portion of each child's full-path metadata.name.
 // Returns the child's array index, or -1 if not found.
 static int find_child_by_name(int parent_index, const char* name, treefile& tf) {
     if (parent_index < 0 || parent_index >= tf.size) return -1;
@@ -91,9 +85,11 @@ static int find_child_by_name(int parent_index, const char* name, treefile& tf) 
     int child = tf.arr[parent_index].firstchild;
     int safety = tf.size;
     while (child >= 0 && child < tf.size && safety-- > 0) {
-        if (!tf.arr[child].isdeleted &&
-            strcmp(tf.arr[child].metadata.name, name) == 0) {
-            return child;
+        if (!tf.arr[child].isdeleted) {
+            string child_basename = basename_of(tf.arr[child].metadata.name);
+            if (child_basename == name) {
+                return child;
+            }
         }
         child = tf.arr[child].nextsibling;
     }
@@ -260,13 +256,17 @@ static void ll_mkdir(fuse_req_t req, fuse_ino_t parent, const char* name,
         return;
     }
 
-    // ADT uses bare names as hashmap keys.
-    // Parent key: root is "/", others use metadata.name
-    string parent_key = (parent_idx == 0) ? "/" : string(tf->arr[parent_idx].metadata.name);
-    string child_name(name);
+    // Build full path for the new directory
+    string parent_path = build_full_path(parent_idx, *tf);
+    string child_path;
+    if (parent_path == "/") {
+        child_path = "/" + string(name);
+    } else {
+        child_path = parent_path + "/" + string(name);
+    }
 
-    // Insert into the directory tree (ADT manages hashmap internally)
-    insertfolder(child_name, parent_key, *tf);
+    // Insert into the directory tree using full paths
+    insertfolder(child_path, parent_path, *tf);
 
     // Find the newly inserted node
     int child_idx = find_child_by_name(parent_idx, name, *tf);
@@ -311,8 +311,9 @@ static void ll_unlink(fuse_req_t req, fuse_ino_t parent, const char* name) {
     string data_path = host_data_path(child_idx);
     unlink(data_path.c_str()); // OK if it doesn't exist
 
-    // ADT uses bare name as hashmap key
-    delete1(string(name), *tf);
+    // Build full path and delete by full path
+    string child_path = build_full_path(child_idx, *tf);
+    delete1(child_path, *tf);
 
     fuse_reply_err(req, 0);
 }
@@ -343,8 +344,9 @@ static void ll_rmdir(fuse_req_t req, fuse_ino_t parent, const char* name) {
         return;
     }
 
-    // ADT uses bare name as hashmap key
-    delete1(string(name), *tf);
+    // Build full path and delete by full path
+    string child_path = build_full_path(child_idx, *tf);
+    delete1(child_path, *tf);
 
     // Decrement parent nlink
     if (tf->arr[parent_idx].metadata.nlink > 2) {
@@ -392,12 +394,17 @@ static void ll_create(fuse_req_t req, fuse_ino_t parent, const char* name,
         return;
     }
 
-    // ADT uses bare names as hashmap keys
-    string parent_key = (parent_idx == 0) ? "/" : string(tf->arr[parent_idx].metadata.name);
-    string child_name(name);
+    // Build full path for the new file
+    string parent_path = build_full_path(parent_idx, *tf);
+    string child_path;
+    if (parent_path == "/") {
+        child_path = "/" + string(name);
+    } else {
+        child_path = parent_path + "/" + string(name);
+    }
 
-    // Insert file into directory tree (ADT manages hashmap internally)
-    insertfile(child_name, parent_key, *tf);
+    // Insert file into directory tree using full paths
+    insertfile(child_path, parent_path, *tf);
 
     // Find the newly created node
     int child_idx = find_child_by_name(parent_idx, name, *tf);
@@ -606,7 +613,7 @@ static void ll_readdir(fuse_req_t req, fuse_ino_t ino, size_t size, off_t off,
         while (child >= 0 && child < tf->size && safety-- > 0) {
             if (!tf->arr[child].isdeleted) {
                 dir_entry de;
-                de.name = tf->arr[child].metadata.name;
+                de.name = basename_of(tf->arr[child].metadata.name);
                 fill_stat(&de.st, tf->arr[child], child);
                 entries.push_back(de);
             }
@@ -701,13 +708,14 @@ static void ll_rename(fuse_req_t req, fuse_ino_t parent, const char* name,
         if (S_ISREG(tf->arr[dst_idx].metadata.mode)) {
             unlink(host_data_path(dst_idx).c_str());
         }
-        // ADT uses bare name as hashmap key
-        string dst_name(tf->arr[dst_idx].metadata.name);
-        delete1(dst_name, *tf);
+        // Delete by full path
+        string dst_path(tf->arr[dst_idx].metadata.name);
+        delete1(dst_path, *tf);
     }
 
-    // Remove old hashmap entry (bare name)
-    hashmap_remove(&tf->hashdata, name);
+    // Remove old hashmap entry (full path)
+    string old_path = build_full_path(src_idx, *tf);
+    hashmap_remove(&tf->hashdata, old_path.c_str());
 
     // Unlink from old parent's sibling list (O(1) via prevsibling)
     {
@@ -723,9 +731,18 @@ static void ll_rename(fuse_req_t req, fuse_ino_t parent, const char* name,
         }
     }
 
-    // Update the name
-    strncpy(tf->arr[src_idx].metadata.name, newname, 255);
-    tf->arr[src_idx].metadata.name[255] = '\0';
+    // Build new full path
+    string new_parent_path = build_full_path(newparent_idx, *tf);
+    string new_full_path;
+    if (new_parent_path == "/") {
+        new_full_path = "/" + string(newname);
+    } else {
+        new_full_path = new_parent_path + "/" + string(newname);
+    }
+
+    // Update the name to new full path
+    strncpy(tf->arr[src_idx].metadata.name, new_full_path.c_str(), 299);
+    tf->arr[src_idx].metadata.name[299] = '\0';
 
     // Prepend to new parent's child list
     int old_first = tf->arr[newparent_idx].firstchild;
@@ -744,8 +761,8 @@ static void ll_rename(fuse_req_t req, fuse_ino_t parent, const char* name,
         tf->arr[newparent_idx].metadata.nlink++;
     }
 
-    // Add new hashmap entry (bare name)
-    hashmap_set(&tf->hashdata, newname, src_idx);
+    // Add new hashmap entry (full path)
+    hashmap_set(&tf->hashdata, new_full_path.c_str(), src_idx);
 
     tf->arr[src_idx].metadata.ctime = time(nullptr);
 

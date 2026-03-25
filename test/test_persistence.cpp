@@ -27,7 +27,6 @@ protected:
 // ==========================================================================
 
 // Test 1: MmapCreateAndOpen
-// Verify that mmap_init_treefile creates a new file and initializes it
 TEST_F(PersistenceTest, MmapCreateAndOpen) {
     treefile* ptr = nullptr;
     int fd = -1;
@@ -36,12 +35,10 @@ TEST_F(PersistenceTest, MmapCreateAndOpen) {
     ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
     ASSERT_NE(ptr, nullptr);
 
-    // File should exist on disk with correct size
     struct stat st;
     ASSERT_EQ(stat(test_file, &st), 0);
     EXPECT_EQ((size_t)st.st_size, sizeof(treefile));
 
-    // Tree should be initialized
     EXPECT_EQ(ptr->size, TREEFILE_MAX_NODES);
     EXPECT_EQ(ptr->nodeallocated, 1);
     EXPECT_EQ(ptr->firstfree, -1);
@@ -51,67 +48,61 @@ TEST_F(PersistenceTest, MmapCreateAndOpen) {
 }
 
 // Test 2: PersistenceAcrossRestarts
-// Create tree, close (unmount), reopen (remount), verify data persists
 TEST_F(PersistenceTest, PersistenceAcrossRestarts) {
     int savedNodeCount = 0;
 
-    // First "run" — create and populate
     {
         treefile* ptr = nullptr;
         int fd = -1;
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
-        insertfolder("projects", "/", *ptr);
-        insertfolder("src", "projects", *ptr);
-        insertfile("main.cpp", "src", *ptr);
-        insertfile("readme.md", "projects", *ptr);
+        insertfolder("/projects", "/", *ptr);
+        insertfolder("/projects/src", "/projects", *ptr);
+        insertfile("/projects/src/main.cpp", "/projects/src", *ptr);
+        insertfile("/projects/readme.md", "/projects", *ptr);
 
         savedNodeCount = ptr->nodeallocated;
         mmap_close_treefile(ptr, fd, mapsize);
     }
 
-    // Second "run" — load and verify
     {
         treefile* ptr = nullptr;
         int fd = -1;
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
-        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "projects"));
-        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "src"));
-        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "main.cpp"));
-        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "readme.md"));
+        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "/projects"));
+        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "/projects/src"));
+        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "/projects/src/main.cpp"));
+        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "/projects/readme.md"));
         EXPECT_EQ(ptr->nodeallocated, savedNodeCount);
 
-        // Can continue operations after reload
-        insertfile("new_after_load.txt", "projects", *ptr);
-        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "new_after_load.txt"));
+        insertfile("/projects/new_after_load.txt", "/projects", *ptr);
+        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "/projects/new_after_load.txt"));
 
         mmap_close_treefile(ptr, fd, mapsize);
     }
 }
 
 // Test 3: UnmountRemountNodeIntegrity
-// Build a filesystem tree, unmount, remount, verify byte-level node integrity
 TEST_F(PersistenceTest, UnmountRemountNodeIntegrity) {
     int mainIdx_saved = -1;
 
-    // MOUNT and build
     {
         treefile* ptr = nullptr;
         int fd = -1;
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
-        insertfolder("home", "/", *ptr);
-        insertfolder("user", "home", *ptr);
-        insertfile(".bashrc", "user", *ptr);
-        insertfile(".profile", "user", *ptr);
-        insertfolder("projects", "user", *ptr);
-        insertfile("main.cpp", "projects", *ptr);
+        insertfolder("/home", "/", *ptr);
+        insertfolder("/home/user", "/home", *ptr);
+        insertfile("/home/user/.bashrc", "/home/user", *ptr);
+        insertfile("/home/user/.profile", "/home/user", *ptr);
+        insertfolder("/home/user/projects", "/home/user", *ptr);
+        insertfile("/home/user/projects/main.cpp", "/home/user/projects", *ptr);
 
-        mainIdx_saved = hashmap_get(&ptr->hashdata, "main.cpp");
+        mainIdx_saved = hashmap_get(&ptr->hashdata, "/home/user/projects/main.cpp");
         ptr->arr[mainIdx_saved].metadata.size = 2048;
         ptr->arr[mainIdx_saved].metadata.inode = 100;
         ptr->arr[mainIdx_saved].metadata.atime = 1700000000;
@@ -119,33 +110,30 @@ TEST_F(PersistenceTest, UnmountRemountNodeIntegrity) {
         mmap_close_treefile(ptr, fd, mapsize);
     }
 
-    // REMOUNT and verify
     {
         treefile* ptr = nullptr;
         int fd = -1;
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
-        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "home"));
-        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "main.cpp"));
+        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "/home"));
+        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "/home/user/projects/main.cpp"));
 
-        int mainIdx = hashmap_get(&ptr->hashdata, "main.cpp");
+        int mainIdx = hashmap_get(&ptr->hashdata, "/home/user/projects/main.cpp");
         EXPECT_EQ(mainIdx, mainIdx_saved);
         EXPECT_EQ(ptr->arr[mainIdx].metadata.size, 2048);
         EXPECT_EQ(ptr->arr[mainIdx].metadata.inode, 100);
         EXPECT_EQ(ptr->arr[mainIdx].metadata.atime, 1700000000);
 
         // Parent chain intact
-        int userIdx = hashmap_get(&ptr->hashdata, "user");
         EXPECT_EQ(ptr->arr[mainIdx_saved].parent,
-                  hashmap_get(&ptr->hashdata, "projects"));
+                  hashmap_get(&ptr->hashdata, "/home/user/projects"));
 
         mmap_close_treefile(ptr, fd, mapsize);
     }
 }
 
 // Test 4: MultipleRestartCycles
-// Mount → modify → unmount → remount → modify → unmount → remount
 TEST_F(PersistenceTest, MultipleRestartCycles) {
     // Cycle 1
     {
@@ -153,8 +141,8 @@ TEST_F(PersistenceTest, MultipleRestartCycles) {
         int fd = -1;
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
-        insertfolder("cycle1_dir", "/", *ptr);
-        insertfile("cycle1_file", "cycle1_dir", *ptr);
+        insertfolder("/cycle1_dir", "/", *ptr);
+        insertfile("/cycle1_dir/cycle1_file", "/cycle1_dir", *ptr);
         mmap_close_treefile(ptr, fd, mapsize);
     }
 
@@ -164,10 +152,10 @@ TEST_F(PersistenceTest, MultipleRestartCycles) {
         int fd = -1;
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
-        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "cycle1_dir"));
-        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "cycle1_file"));
-        insertfolder("cycle2_dir", "/", *ptr);
-        insertfile("cycle2_file", "cycle2_dir", *ptr);
+        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "/cycle1_dir"));
+        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "/cycle1_dir/cycle1_file"));
+        insertfolder("/cycle2_dir", "/", *ptr);
+        insertfile("/cycle2_dir/cycle2_file", "/cycle2_dir", *ptr);
         mmap_close_treefile(ptr, fd, mapsize);
     }
 
@@ -177,10 +165,10 @@ TEST_F(PersistenceTest, MultipleRestartCycles) {
         int fd = -1;
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
-        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "cycle1_dir"));
-        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "cycle2_dir"));
-        delete1("cycle1_file", *ptr);
-        insertfile("cycle3_file", "cycle1_dir", *ptr);
+        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "/cycle1_dir"));
+        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "/cycle2_dir"));
+        delete1("/cycle1_dir/cycle1_file", *ptr);
+        insertfile("/cycle1_dir/cycle3_file", "/cycle1_dir", *ptr);
         mmap_close_treefile(ptr, fd, mapsize);
     }
 
@@ -191,14 +179,14 @@ TEST_F(PersistenceTest, MultipleRestartCycles) {
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
-        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "cycle1_dir"));
-        EXPECT_FALSE(hashmap_has(&ptr->hashdata, "cycle1_file")); // deleted
-        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "cycle2_dir"));
-        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "cycle2_file"));
-        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "cycle3_file"));
+        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "/cycle1_dir"));
+        EXPECT_FALSE(hashmap_has(&ptr->hashdata, "/cycle1_dir/cycle1_file")); // deleted
+        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "/cycle2_dir"));
+        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "/cycle2_dir/cycle2_file"));
+        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "/cycle1_dir/cycle3_file"));
 
-        int c3fIdx = hashmap_get(&ptr->hashdata, "cycle3_file");
-        int c1dIdx = hashmap_get(&ptr->hashdata, "cycle1_dir");
+        int c3fIdx = hashmap_get(&ptr->hashdata, "/cycle1_dir/cycle3_file");
+        int c1dIdx = hashmap_get(&ptr->hashdata, "/cycle1_dir");
         EXPECT_EQ(ptr->arr[c3fIdx].parent, c1dIdx);
 
         mmap_close_treefile(ptr, fd, mapsize);
@@ -206,7 +194,6 @@ TEST_F(PersistenceTest, MultipleRestartCycles) {
 }
 
 // Test 5: LoadNonExistentCreatesNew
-// init_or_load on a non-existent path should create a fresh tree
 TEST_F(PersistenceTest, LoadNonExistentCreatesNew) {
     treefile* ptr = nullptr;
     int fd = -1;
@@ -233,8 +220,14 @@ TEST_F(PersistenceTest, DeepTreePersistence) {
         std::string parent = "/";
         for (int i = 0; i < 10; i++) {
             std::string name = "dir" + std::to_string(i);
-            insertfolder(name, parent, *ptr);
-            parent = name;
+            std::string fullpath;
+            if (parent == "/") {
+                fullpath = "/" + name;
+            } else {
+                fullpath = parent + "/" + name;
+            }
+            insertfolder(fullpath, parent, *ptr);
+            parent = fullpath;
         }
         mmap_close_treefile(ptr, fd, mapsize);
     }
@@ -245,15 +238,19 @@ TEST_F(PersistenceTest, DeepTreePersistence) {
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
+        // Rebuild full paths to verify
+        std::string path = "";
         for (int i = 0; i < 10; i++) {
-            std::string name = "dir" + std::to_string(i);
-            EXPECT_TRUE(hashmap_has(&ptr->hashdata, name.c_str()));
-            int idx = hashmap_get(&ptr->hashdata, name.c_str());
+            path += "/dir" + std::to_string(i);
+            EXPECT_TRUE(hashmap_has(&ptr->hashdata, path.c_str()));
+            int idx = hashmap_get(&ptr->hashdata, path.c_str());
             EXPECT_FALSE(ptr->arr[idx].isdeleted);
         }
 
         // Verify parent chain: dir9 -> dir8 -> ... -> dir0 -> root
-        int idx = hashmap_get(&ptr->hashdata, "dir9");
+        std::string deepest = "";
+        for (int i = 0; i < 10; i++) deepest += "/dir" + std::to_string(i);
+        int idx = hashmap_get(&ptr->hashdata, deepest.c_str());
         int depth = 0;
         while (idx > 0 && depth < 20) {
             idx = ptr->arr[idx].parent;
@@ -274,7 +271,7 @@ TEST_F(PersistenceTest, ManyNodesPersistence) {
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
         for (int i = 0; i < 1000; i++) {
-            insertfile("file_" + std::to_string(i), "/", *ptr);
+            insertfile("/file_" + std::to_string(i), "/", *ptr);
         }
         EXPECT_EQ(ptr->nodeallocated, 1001);
         mmap_close_treefile(ptr, fd, mapsize);
@@ -288,7 +285,7 @@ TEST_F(PersistenceTest, ManyNodesPersistence) {
 
         EXPECT_EQ(ptr->nodeallocated, 1001);
         for (int i = 0; i < 1000; i += 100) {
-            std::string name = "file_" + std::to_string(i);
+            std::string name = "/file_" + std::to_string(i);
             EXPECT_TRUE(hashmap_has(&ptr->hashdata, name.c_str()));
         }
         mmap_close_treefile(ptr, fd, mapsize);
@@ -296,7 +293,6 @@ TEST_F(PersistenceTest, ManyNodesPersistence) {
 }
 
 // Test 8: FreeListPersistence
-// Insert, delete (create free list), save, reload, verify free list works
 TEST_F(PersistenceTest, FreeListPersistence) {
     int srcAllocated = 0;
 
@@ -307,11 +303,10 @@ TEST_F(PersistenceTest, FreeListPersistence) {
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
         for (int i = 0; i < 10; i++)
-            insertfile("fl_" + std::to_string(i), "/", *ptr);
+            insertfile("/fl_" + std::to_string(i), "/", *ptr);
         for (int i = 0; i < 5; i++)
-            delete1("fl_" + std::to_string(i), *ptr);
+            delete1("/fl_" + std::to_string(i), *ptr);
 
-        // free list should have 5 entries
         EXPECT_NE(ptr->firstfree, -1);
         srcAllocated = ptr->nodeallocated;
         mmap_close_treefile(ptr, fd, mapsize);
@@ -323,14 +318,11 @@ TEST_F(PersistenceTest, FreeListPersistence) {
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
-        // nodeallocated preserved (high-water mark)
         EXPECT_EQ(ptr->nodeallocated, srcAllocated);
-        // free list preserved
         EXPECT_NE(ptr->firstfree, -1);
 
-        // Can allocate from free list after reload
-        insertfile("after_load_alloc", "/", *ptr);
-        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "after_load_alloc"));
+        insertfile("/after_load_alloc", "/", *ptr);
+        EXPECT_TRUE(hashmap_has(&ptr->hashdata, "/after_load_alloc"));
 
         mmap_close_treefile(ptr, fd, mapsize);
     }
@@ -344,8 +336,8 @@ TEST_F(PersistenceTest, MetadataPersistence) {
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
-        insertfile("meta_file", "/", *ptr);
-        int idx = hashmap_get(&ptr->hashdata, "meta_file");
+        insertfile("/meta_file", "/", *ptr);
+        int idx = hashmap_get(&ptr->hashdata, "/meta_file");
         ptr->arr[idx].metadata.inode = 12345;
         ptr->arr[idx].metadata.size = 4096;
         ptr->arr[idx].metadata.mode = S_IFREG | 0755;
@@ -361,8 +353,8 @@ TEST_F(PersistenceTest, MetadataPersistence) {
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
-        int idx = hashmap_get(&ptr->hashdata, "meta_file");
-        ASSERT_NE(idx, 0); // not root
+        int idx = hashmap_get(&ptr->hashdata, "/meta_file");
+        ASSERT_NE(idx, 0);
         EXPECT_EQ(ptr->arr[idx].metadata.inode, 12345);
         EXPECT_EQ(ptr->arr[idx].metadata.size, 4096);
         EXPECT_EQ(ptr->arr[idx].metadata.mode, (mode_t)(S_IFREG | 0755));
@@ -384,13 +376,12 @@ TEST_F(PersistenceTest, MmapSiblingChainPersistence) {
     size_t mapsize = 0;
     ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
-    insertfolder("parent_dir", "/", *ptr);
+    insertfolder("/parent_dir", "/", *ptr);
     for (int i = 0; i < 5; i++)
-        insertfile("sib_" + std::to_string(i), "parent_dir", *ptr);
+        insertfile("/parent_dir/sib_" + std::to_string(i), "/parent_dir", *ptr);
 
-    int parentIdx = hashmap_get(&ptr->hashdata, "parent_dir");
+    int parentIdx = hashmap_get(&ptr->hashdata, "/parent_dir");
 
-    // Walk the sibling chain forward and verify prevsibling links
     int count = 0;
     int prev = -1;
     int cur = ptr->arr[parentIdx].firstchild;
@@ -414,25 +405,24 @@ TEST_F(PersistenceTest, MmapDeletedNodesOnDisk) {
     size_t mapsize = 0;
     ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
-    insertfile("alive", "/", *ptr);
-    insertfile("dead1", "/", *ptr);
-    insertfile("dead2", "/", *ptr);
+    insertfile("/alive", "/", *ptr);
+    insertfile("/dead1", "/", *ptr);
+    insertfile("/dead2", "/", *ptr);
 
-    int aliveIdx = hashmap_get(&ptr->hashdata, "alive");
-    int dead1Idx = hashmap_get(&ptr->hashdata, "dead1");
-    int dead2Idx = hashmap_get(&ptr->hashdata, "dead2");
+    int aliveIdx = hashmap_get(&ptr->hashdata, "/alive");
+    int dead1Idx = hashmap_get(&ptr->hashdata, "/dead1");
+    int dead2Idx = hashmap_get(&ptr->hashdata, "/dead2");
 
-    delete1("dead1", *ptr);
-    delete1("dead2", *ptr);
+    delete1("/dead1", *ptr);
+    delete1("/dead2", *ptr);
 
-    // Since writes go directly to mmap, verify on the same mapping
     EXPECT_TRUE(ptr->arr[dead1Idx].isdeleted);
     EXPECT_TRUE(ptr->arr[dead2Idx].isdeleted);
     EXPECT_EQ(ptr->arr[dead1Idx].metadata.name[0], '\0');
     EXPECT_EQ(ptr->arr[dead2Idx].metadata.name[0], '\0');
 
     EXPECT_FALSE(ptr->arr[aliveIdx].isdeleted);
-    EXPECT_STREQ(ptr->arr[aliveIdx].metadata.name, "alive");
+    EXPECT_STREQ(ptr->arr[aliveIdx].metadata.name, "/alive");
 
     mmap_close_treefile(ptr, fd, mapsize);
 }
@@ -445,11 +435,10 @@ TEST_F(PersistenceTest, MmapFreeListChainOnDisk) {
     ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
     for (int i = 0; i < 20; i++)
-        insertfile("fl_" + std::to_string(i), "/", *ptr);
+        insertfile("/fl_" + std::to_string(i), "/", *ptr);
     for (int i = 0; i < 10; i++)
-        delete1("fl_" + std::to_string(i), *ptr);
+        delete1("/fl_" + std::to_string(i), *ptr);
 
-    // Walk free list and count
     int freeCount = 0;
     int f = ptr->firstfree;
     int limit = TREEFILE_MAX_NODES;
@@ -465,7 +454,6 @@ TEST_F(PersistenceTest, MmapFreeListChainOnDisk) {
 }
 
 // Test 13: PrevSiblingPersistenceAfterRestart
-// Verify prevsibling survives unmount/remount
 TEST_F(PersistenceTest, PrevSiblingPersistenceAfterRestart) {
     int parentIdx_saved = -1;
 
@@ -475,12 +463,12 @@ TEST_F(PersistenceTest, PrevSiblingPersistenceAfterRestart) {
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
-        insertfolder("parent", "/", *ptr);
-        insertfile("c1", "parent", *ptr);
-        insertfile("c2", "parent", *ptr);
-        insertfile("c3", "parent", *ptr);
+        insertfolder("/parent", "/", *ptr);
+        insertfile("/parent/c1", "/parent", *ptr);
+        insertfile("/parent/c2", "/parent", *ptr);
+        insertfile("/parent/c3", "/parent", *ptr);
 
-        parentIdx_saved = hashmap_get(&ptr->hashdata, "parent");
+        parentIdx_saved = hashmap_get(&ptr->hashdata, "/parent");
         mmap_close_treefile(ptr, fd, mapsize);
     }
 
@@ -490,10 +478,9 @@ TEST_F(PersistenceTest, PrevSiblingPersistenceAfterRestart) {
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
-        int parentIdx = hashmap_get(&ptr->hashdata, "parent");
+        int parentIdx = hashmap_get(&ptr->hashdata, "/parent");
         EXPECT_EQ(parentIdx, parentIdx_saved);
 
-        // Walk forward and verify prevsibling chain
         int count = 0;
         int prev = -1;
         int cur = ptr->arr[parentIdx].firstchild;
@@ -520,7 +507,7 @@ TEST_F(PersistenceTest, HashMapPersistence) {
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
         for (int i = 0; i < 100; i++) {
-            std::string name = "hash_node_" + std::to_string(i);
+            std::string name = "/hash_node_" + std::to_string(i);
             insertfile(name, "/", *ptr);
             int idx = hashmap_get(&ptr->hashdata, name.c_str());
             ASSERT_NE(idx, 0);
@@ -547,7 +534,6 @@ TEST_F(PersistenceTest, HashMapPersistence) {
 }
 
 // Test 15: ConcurrentAccess
-// Multiple threads inserting concurrently — mutex should protect
 TEST_F(PersistenceTest, ConcurrentAccess) {
     treefile* ptr = nullptr;
     int fd = -1;
@@ -556,12 +542,11 @@ TEST_F(PersistenceTest, ConcurrentAccess) {
 
     std::atomic<int> successCount(0);
 
-    // 5 threads each inserting 10 files
     std::vector<std::thread> threads;
     for (int t = 0; t < 5; t++) {
         threads.emplace_back([&, t]() {
             for (int i = 0; i < 10; i++) {
-                std::string name = "t" + std::to_string(t) +
+                std::string name = "/t" + std::to_string(t) +
                                    "_f" + std::to_string(i);
                 insertfile(name, "/", *ptr);
                 successCount++;
@@ -574,10 +559,9 @@ TEST_F(PersistenceTest, ConcurrentAccess) {
 
     EXPECT_EQ(successCount.load(), 50);
 
-    // All 50 files should exist
     for (int t = 0; t < 5; t++) {
         for (int i = 0; i < 10; i++) {
-            std::string name = "t" + std::to_string(t) +
+            std::string name = "/t" + std::to_string(t) +
                                "_f" + std::to_string(i);
             EXPECT_TRUE(hashmap_has(&ptr->hashdata, name.c_str()))
                 << "Missing: " << name;
@@ -588,7 +572,6 @@ TEST_F(PersistenceTest, ConcurrentAccess) {
 }
 
 // Test 16: DeleteAndRecyclePersistence
-// Delete nodes, close, reopen, verify free list works for recycling
 TEST_F(PersistenceTest, DeleteAndRecyclePersistence) {
     {
         treefile* ptr = nullptr;
@@ -596,9 +579,8 @@ TEST_F(PersistenceTest, DeleteAndRecyclePersistence) {
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
-        insertfile("recycle_me", "/", *ptr);
-        int deletedIdx = hashmap_get(&ptr->hashdata, "recycle_me");
-        delete1("recycle_me", *ptr);
+        insertfile("/recycle_me", "/", *ptr);
+        delete1("/recycle_me", *ptr);
         mmap_close_treefile(ptr, fd, mapsize);
     }
 
@@ -608,13 +590,11 @@ TEST_F(PersistenceTest, DeleteAndRecyclePersistence) {
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
-        // Free list should have the deleted node
         EXPECT_NE(ptr->firstfree, -1);
 
-        // New node should recycle the deleted slot
-        insertfile("recycled", "/", *ptr);
-        int newIdx = hashmap_get(&ptr->hashdata, "recycled");
-        EXPECT_NE(newIdx, 0); // Not root
+        insertfile("/recycled", "/", *ptr);
+        int newIdx = hashmap_get(&ptr->hashdata, "/recycled");
+        EXPECT_NE(newIdx, 0);
         EXPECT_FALSE(ptr->arr[newIdx].isdeleted);
 
         mmap_close_treefile(ptr, fd, mapsize);
@@ -622,7 +602,6 @@ TEST_F(PersistenceTest, DeleteAndRecyclePersistence) {
 }
 
 // Test 17: FileMetadataSizePersistence
-// Set file size metadata, close, reopen, verify it persists
 TEST_F(PersistenceTest, FileMetadataSizePersistence) {
     {
         treefile* ptr = nullptr;
@@ -630,9 +609,9 @@ TEST_F(PersistenceTest, FileMetadataSizePersistence) {
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
-        insertfile("data_file", "/", *ptr);
-        int idx = hashmap_get(&ptr->hashdata, "data_file");
-        ptr->arr[idx].metadata.size = 24; // Simulated file size
+        insertfile("/data_file", "/", *ptr);
+        int idx = hashmap_get(&ptr->hashdata, "/data_file");
+        ptr->arr[idx].metadata.size = 24;
 
         mmap_close_treefile(ptr, fd, mapsize);
     }
@@ -643,7 +622,7 @@ TEST_F(PersistenceTest, FileMetadataSizePersistence) {
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
-        int idx = hashmap_get(&ptr->hashdata, "data_file");
+        int idx = hashmap_get(&ptr->hashdata, "/data_file");
         EXPECT_EQ(ptr->arr[idx].metadata.size, (off_t)24);
 
         mmap_close_treefile(ptr, fd, mapsize);
@@ -651,7 +630,6 @@ TEST_F(PersistenceTest, FileMetadataSizePersistence) {
 }
 
 // Test 18: BumpAllocatorPersistence
-// Verify nodeallocated (bump pointer) persists correctly
 TEST_F(PersistenceTest, BumpAllocatorPersistence) {
     {
         treefile* ptr = nullptr;
@@ -660,15 +638,14 @@ TEST_F(PersistenceTest, BumpAllocatorPersistence) {
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
         for (int i = 0; i < 50; i++)
-            insertfile("bump_" + std::to_string(i), "/", *ptr);
+            insertfile("/bump_" + std::to_string(i), "/", *ptr);
 
-        EXPECT_EQ(ptr->nodeallocated, 51); // 1 root + 50 files
+        EXPECT_EQ(ptr->nodeallocated, 51);
 
-        // Delete some — nodeallocated should NOT change
         for (int i = 0; i < 25; i++)
-            delete1("bump_" + std::to_string(i), *ptr);
+            delete1("/bump_" + std::to_string(i), *ptr);
 
-        EXPECT_EQ(ptr->nodeallocated, 51); // unchanged
+        EXPECT_EQ(ptr->nodeallocated, 51);
 
         mmap_close_treefile(ptr, fd, mapsize);
     }
@@ -679,7 +656,7 @@ TEST_F(PersistenceTest, BumpAllocatorPersistence) {
         size_t mapsize = 0;
         ASSERT_TRUE(mmap_init_treefile(test_file, ptr, fd, mapsize));
 
-        EXPECT_EQ(ptr->nodeallocated, 51); // persisted as high-water mark
+        EXPECT_EQ(ptr->nodeallocated, 51);
 
         mmap_close_treefile(ptr, fd, mapsize);
     }

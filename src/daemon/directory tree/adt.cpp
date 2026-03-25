@@ -11,23 +11,26 @@ using namespace std;
 // Global mutex definition
 recursive_mutex treefile_mtx;
 
-int hashindex(string filename, treefile &file1){
+// Max length for the path buffer in metadata.name
+static constexpr size_t NAME_BUF_SIZE = 300;
+
+int hashindex(string filepath, treefile &file1){
     lock_guard<recursive_mutex> lock(treefile_mtx);
-    if (!hashmap_has(&file1.hashdata, filename.c_str())) {
+    if (!hashmap_has(&file1.hashdata, filepath.c_str())) {
         return -1;
     }
-    return hashmap_get(&file1.hashdata, filename.c_str());
+    return hashmap_get(&file1.hashdata, filepath.c_str());
 }
 
-void insertfolder(string foldername, string parentname, treefile &file1){
+void insertfolder(string folderpath, string parentpath, treefile &file1){
     lock_guard<recursive_mutex> lock(treefile_mtx);
 
-    if (foldername.empty()) return;
+    if (folderpath.empty()) return;
     if (file1.size <= 0 || file1.size > TREEFILE_MAX_NODES) return;
 
-    // If name already exists and not deleted, do nothing
-    if (hashmap_has(&file1.hashdata, foldername.c_str())) {
-        int existingIndex = hashmap_get(&file1.hashdata, foldername.c_str());
+    // If path already exists and not deleted, do nothing
+    if (hashmap_has(&file1.hashdata, folderpath.c_str())) {
+        int existingIndex = hashmap_get(&file1.hashdata, folderpath.c_str());
         if (existingIndex >= 0 && existingIndex < file1.size &&
             !file1.arr[existingIndex].isdeleted) {
             return;
@@ -46,13 +49,13 @@ void insertfolder(string foldername, string parentname, treefile &file1){
         return; // full
     }
 
-    // Add to hash map
-    hashmap_set(&file1.hashdata, foldername.c_str(), index);
+    // Add to hash map using full path as key
+    hashmap_set(&file1.hashdata, folderpath.c_str(), index);
 
-    // Determine parent index (empty -> root at 0)
+    // Determine parent index
     int parentindex = 0;
-    if (!parentname.empty() && hashmap_has(&file1.hashdata, parentname.c_str())) {
-        parentindex = hashmap_get(&file1.hashdata, parentname.c_str());
+    if (!parentpath.empty() && hashmap_has(&file1.hashdata, parentpath.c_str())) {
+        parentindex = hashmap_get(&file1.hashdata, parentpath.c_str());
         if (parentindex < 0 || parentindex >= file1.size ||
             file1.arr[parentindex].isdeleted) {
             parentindex = 0;
@@ -79,8 +82,8 @@ void insertfolder(string foldername, string parentname, treefile &file1){
     // Set node properties for a directory
     file1.arr[index].isdeleted = false;
     file1.arr[index].nextfree = -1;
-    strncpy(file1.arr[index].metadata.name, foldername.c_str(), 255);
-    file1.arr[index].metadata.name[255] = '\0';
+    strncpy(file1.arr[index].metadata.name, folderpath.c_str(), NAME_BUF_SIZE - 1);
+    file1.arr[index].metadata.name[NAME_BUF_SIZE - 1] = '\0';
     file1.arr[index].firstchild = -1;
 
     file1.arr[index].metadata.mode = S_IFDIR | 0755;
@@ -100,15 +103,15 @@ void insertfolder(string foldername, string parentname, treefile &file1){
     }
 }
 
-void insertfile(string filename, string parentname, treefile &file1){
+void insertfile(string filepath, string parentpath, treefile &file1){
     lock_guard<recursive_mutex> lock(treefile_mtx);
 
-    if (filename.empty()) return;
+    if (filepath.empty()) return;
     if (file1.size <= 0 || file1.size > TREEFILE_MAX_NODES) return;
 
-    // Check if filename already exists
-    if (hashmap_has(&file1.hashdata, filename.c_str())) {
-        int existingIndex = hashmap_get(&file1.hashdata, filename.c_str());
+    // Check if path already exists
+    if (hashmap_has(&file1.hashdata, filepath.c_str())) {
+        int existingIndex = hashmap_get(&file1.hashdata, filepath.c_str());
         if (existingIndex >= 0 && existingIndex < file1.size &&
             !file1.arr[existingIndex].isdeleted) {
             return;
@@ -127,13 +130,13 @@ void insertfile(string filename, string parentname, treefile &file1){
         return; // full
     }
 
-    // Add to hash map
-    hashmap_set(&file1.hashdata, filename.c_str(), index);
+    // Add to hash map using full path as key
+    hashmap_set(&file1.hashdata, filepath.c_str(), index);
 
-    // Get parent index (empty parentname means root node at index 0)
+    // Get parent index
     int parentindex = 0;
-    if (!parentname.empty() && hashmap_has(&file1.hashdata, parentname.c_str())) {
-        parentindex = hashmap_get(&file1.hashdata, parentname.c_str());
+    if (!parentpath.empty() && hashmap_has(&file1.hashdata, parentpath.c_str())) {
+        parentindex = hashmap_get(&file1.hashdata, parentpath.c_str());
         if (parentindex < 0 || parentindex >= file1.size ||
             file1.arr[parentindex].isdeleted) {
             parentindex = 0;
@@ -160,8 +163,8 @@ void insertfile(string filename, string parentname, treefile &file1){
     // Set node properties for a file
     file1.arr[index].isdeleted = false;
     file1.arr[index].nextfree = -1;
-    strncpy(file1.arr[index].metadata.name, filename.c_str(), 255);
-    file1.arr[index].metadata.name[255] = '\0';
+    strncpy(file1.arr[index].metadata.name, filepath.c_str(), NAME_BUF_SIZE - 1);
+    file1.arr[index].metadata.name[NAME_BUF_SIZE - 1] = '\0';
     file1.arr[index].firstchild = -1;
 
     file1.arr[index].metadata.mode = S_IFREG | 0644;
@@ -193,8 +196,8 @@ static void delete_subtree_recursive(int index, treefile &file1, int max_depth =
         child = nextSibling;
     }
 
-    // Get filename before clearing metadata
-    string filename = file1.arr[index].metadata.name;
+    // Get full path before clearing metadata (used as hash key)
+    string filepath = file1.arr[index].metadata.name;
 
     // O(1) unlink from parent's sibling list using prevsibling
     int parentIndex = file1.arr[index].parent;
@@ -213,9 +216,9 @@ static void delete_subtree_recursive(int index, treefile &file1, int max_depth =
         }
     }
 
-    // Remove from hash map
-    if (!filename.empty()) {
-        hashmap_remove(&file1.hashdata, filename.c_str());
+    // Remove from hash map using full path key
+    if (!filepath.empty()) {
+        hashmap_remove(&file1.hashdata, filepath.c_str());
     }
 
     // Push to free list head
@@ -242,15 +245,15 @@ static void delete_subtree_recursive(int index, treefile &file1, int max_depth =
     // Note: nodeallocated is NOT decremented (it's a bump allocator high-water mark)
 }
 
-void delete1(string filename, treefile &file1){
+void delete1(string filepath, treefile &file1){
     lock_guard<recursive_mutex> lock(treefile_mtx);
 
-    if (filename.empty()) return;
+    if (filepath.empty()) return;
     if (file1.size <= 0 || file1.size > TREEFILE_MAX_NODES) return;
 
-    if (!hashmap_has(&file1.hashdata, filename.c_str())) return;
+    if (!hashmap_has(&file1.hashdata, filepath.c_str())) return;
 
-    int index = hashmap_get(&file1.hashdata, filename.c_str());
+    int index = hashmap_get(&file1.hashdata, filepath.c_str());
     if (index < 0 || index >= file1.size) return;
 
     // Prevent deletion of root node (index 0)
@@ -258,7 +261,7 @@ void delete1(string filename, treefile &file1){
 
     if (file1.arr[index].isdeleted) {
         // Node already deleted but hash entry exists — cleanup
-        hashmap_remove(&file1.hashdata, filename.c_str());
+        hashmap_remove(&file1.hashdata, filepath.c_str());
         return;
     }
 
@@ -266,15 +269,41 @@ void delete1(string filename, treefile &file1){
     delete_subtree_recursive(index, file1, file1.size);
 }
 
-void change_parent(string filename, string newparentname, treefile &file1){
+// Helper: recursively update paths of all descendants after a move/rename
+static void update_descendant_paths(int index, const string& old_prefix, const string& new_prefix, treefile &file1) {
+    int child = file1.arr[index].firstchild;
+    int safety = file1.size;
+    while (child >= 0 && child < file1.size && safety-- > 0) {
+        if (!file1.arr[child].isdeleted) {
+            string old_path = file1.arr[child].metadata.name;
+
+            // Build new path by replacing the old_prefix with new_prefix
+            string new_path = new_prefix + old_path.substr(old_prefix.size());
+
+            // Update hash: remove old key, add new key
+            hashmap_remove(&file1.hashdata, old_path.c_str());
+            hashmap_set(&file1.hashdata, new_path.c_str(), child);
+
+            // Update metadata.name
+            strncpy(file1.arr[child].metadata.name, new_path.c_str(), NAME_BUF_SIZE - 1);
+            file1.arr[child].metadata.name[NAME_BUF_SIZE - 1] = '\0';
+
+            // Recurse into children
+            update_descendant_paths(child, old_prefix, new_prefix, file1);
+        }
+        child = file1.arr[child].nextsibling;
+    }
+}
+
+void change_parent(string filepath, string newparentpath, treefile &file1){
     lock_guard<recursive_mutex> lock(treefile_mtx);
 
-    if (filename.empty()) return;
+    if (filepath.empty()) return;
     if (file1.size <= 0 || file1.size > TREEFILE_MAX_NODES) return;
 
-    if (!hashmap_has(&file1.hashdata, filename.c_str())) return;
+    if (!hashmap_has(&file1.hashdata, filepath.c_str())) return;
 
-    int index = hashmap_get(&file1.hashdata, filename.c_str());
+    int index = hashmap_get(&file1.hashdata, filepath.c_str());
     if (index < 0 || index >= file1.size || file1.arr[index].isdeleted) return;
 
     // Cannot change parent of root node
@@ -282,10 +311,10 @@ void change_parent(string filename, string newparentname, treefile &file1){
 
     // Get new parent index (empty means root at index 0)
     int newparentindex = -1;
-    if (newparentname.empty()) {
+    if (newparentpath.empty()) {
         newparentindex = 0;
-    } else if (hashmap_has(&file1.hashdata, newparentname.c_str())) {
-        newparentindex = hashmap_get(&file1.hashdata, newparentname.c_str());
+    } else if (hashmap_has(&file1.hashdata, newparentpath.c_str())) {
+        newparentindex = hashmap_get(&file1.hashdata, newparentpath.c_str());
         if (newparentindex < 0 || newparentindex >= file1.size ||
             file1.arr[newparentindex].isdeleted) {
             return;
@@ -306,6 +335,27 @@ void change_parent(string filename, string newparentname, treefile &file1){
         if (check == index) return;
         check = file1.arr[check].parent;
         depth_limit--;
+    }
+
+    // Save old path for descendant updates
+    string old_path = file1.arr[index].metadata.name;
+
+    // Extract basename from old path
+    string basename;
+    size_t last_slash = old_path.rfind('/');
+    if (last_slash != string::npos && last_slash < old_path.size() - 1) {
+        basename = old_path.substr(last_slash + 1);
+    } else {
+        basename = old_path;
+    }
+
+    // Build new path
+    string new_parent_name = file1.arr[newparentindex].metadata.name;
+    string new_path;
+    if (new_parent_name == "/") {
+        new_path = "/" + basename;
+    } else {
+        new_path = new_parent_name + "/" + basename;
     }
 
     // O(1) unlink from old parent using prevsibling
@@ -334,6 +384,17 @@ void change_parent(string filename, string newparentname, treefile &file1){
         file1.arr[firstson].prevsibling = index;
     }
     file1.arr[index].parent = newparentindex;
+
+    // Update hash: remove old path key, add new path key
+    hashmap_remove(&file1.hashdata, old_path.c_str());
+    hashmap_set(&file1.hashdata, new_path.c_str(), index);
+
+    // Update metadata.name to new full path
+    strncpy(file1.arr[index].metadata.name, new_path.c_str(), NAME_BUF_SIZE - 1);
+    file1.arr[index].metadata.name[NAME_BUF_SIZE - 1] = '\0';
+
+    // Recursively update all descendants' paths
+    update_descendant_paths(index, old_path, new_path, file1);
 }
 
 void initialize(treefile &file1){
