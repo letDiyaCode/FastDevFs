@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include "../include/daemon/directory tree/adt.h"
 #include "../include/daemon/fuse_lowlevel_ops.h"
+#include "../include/dedup_server.h"
 
 #define FASTDEVFS_PERSIST_PATH "/tmp/fastdevfs.mmap"
 
@@ -55,6 +56,9 @@ int main(int argc, char *argv[]) {
         fuse_opt_free_args(&args);
         return 1;
     }
+
+    // Start the deduplication IPC server listener demo
+    start_dedup_server();
 
     // Get the low-level operations struct
     struct fuse_lowlevel_ops ops = get_fuse_ll_ops();

@@ -16,12 +16,33 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include "../../include/dedup_ipc.h"
 
 using namespace std;
 
 // ============================================================
 // Helpers
 // ============================================================
+
+static void send_dedup_request(uint64_t inode, const string& path, int op_type) {
+    int sock = socket(AF_UNIX, SOCK_DGRAM, 0);
+    if (sock < 0) return;
+
+    struct sockaddr_un addr;
+    memset(&addr, 0, sizeof(addr));
+    addr.sun_family = AF_UNIX;
+    strncpy(addr.sun_path, DEDUP_SOCKET_PATH, sizeof(addr.sun_path) - 1);
+
+    DedupRequest req;
+    req.inode = inode;
+    strncpy(req.path, path.c_str(), sizeof(req.path) - 1);
+    req.operation_type = op_type;
+
+    sendto(sock, &req, sizeof(req), 0, (struct sockaddr*)&addr, sizeof(addr));
+    close(sock);
+}
 
 // Get treefile* from the FUSE request's userdata.
 static treefile* get_treefile(fuse_req_t req) {
@@ -437,6 +458,10 @@ static void ll_create(fuse_req_t req, fuse_ino_t parent, const char* name,
 
     struct fuse_entry_param e;
     fill_entry(&e, tf->arr[child_idx], child_idx);
+    
+    // Notify dedup thread of file insertion
+    send_dedup_request(e.ino, child_path, 1);
+
     fuse_reply_create(req, &e, fi);
 }
 
@@ -549,6 +574,9 @@ static void ll_write(fuse_req_t req, fuse_ino_t ino, const char* buf,
 
     tf->arr[idx].metadata.mtime = time(nullptr);
     tf->arr[idx].metadata.ctime = time(nullptr);
+
+    // Notify dedup thread of file update (Operation: 2)
+    send_dedup_request(ino, string(tf->arr[idx].metadata.name), 2);
 
     fuse_reply_write(req, (size_t)nwritten);
 }
