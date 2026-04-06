@@ -9,6 +9,7 @@
 #include "../include/dedup_server.h"
 
 #define FASTDEVFS_PERSIST_PATH "/tmp/fastdevfs.mmap"
+#define FASTDEVFS_DEDUP_PATH  "/tmp/fastdevfs_dedup.mmap"
 
 // Global treefile pointer (mmap'd) and mmap state
 static treefile* file1 = nullptr;
@@ -57,8 +58,8 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Start the deduplication IPC server listener demo
-    start_dedup_server();
+    // Start the deduplication server with mmap persistence
+    start_dedup_server(FASTDEVFS_DEDUP_PATH);
 
     // Get the low-level operations struct
     struct fuse_lowlevel_ops ops = get_fuse_ll_ops();
@@ -114,6 +115,9 @@ int main(int argc, char *argv[]) {
     fuse_session_destroy(se);
     free(opts.mountpoint);
     fuse_opt_free_args(&args);
+
+    // Stop dedup server
+    stop_dedup_server();
 
     // Sync and close mmap
     mmap_close_treefile(file1, persist_fd, persist_mapsize);

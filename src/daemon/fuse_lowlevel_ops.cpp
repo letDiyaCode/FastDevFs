@@ -19,6 +19,7 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include "../../include/dedup_ipc.h"
+#include "../../include/dedup_server.h"
 
 using namespace std;
 
@@ -26,7 +27,22 @@ using namespace std;
 // Helpers
 // ============================================================
 
-static void send_dedup_request(uint64_t inode, const string& path, int op_type) {
+// Check if a path belongs to a library/dependency directory.
+static bool is_library_path(const char* path) {
+    if (strstr(path, "/node_modules/") != nullptr) return true;
+    if (strstr(path, "/vendor/") != nullptr) return true;
+    if (strstr(path, "/.venv/") != nullptr) return true;
+    if (strstr(path, "/venv/") != nullptr) return true;
+    if (strstr(path, "/__pycache__/") != nullptr) return true;
+    if (strstr(path, "/bower_components/") != nullptr) return true;
+    if (strstr(path, "/.gradle/") != nullptr) return true;
+    if (strstr(path, "/target/debug/") != nullptr) return true;
+    if (strstr(path, "/target/release/") != nullptr) return true;
+    return false;
+}
+
+static void send_dedup_request(uint64_t inode, const string& path,
+                                int op_type, bool is_library) {
     int sock = socket(AF_UNIX, SOCK_DGRAM, 0);
     if (sock < 0) return;
 
@@ -38,10 +54,19 @@ static void send_dedup_request(uint64_t inode, const string& path, int op_type) 
     DedupRequest req;
     req.inode = inode;
     strncpy(req.path, path.c_str(), sizeof(req.path) - 1);
+    req.path[sizeof(req.path) - 1] = '\0';
     req.operation_type = op_type;
+    req.is_library = is_library;
 
     sendto(sock, &req, sizeof(req), 0, (struct sockaddr*)&addr, sizeof(addr));
     close(sock);
+}
+
+// Gate dedup notifications based on policy + is_library.
+static void maybe_send_dedup_request(uint64_t inode, const string& path,
+                                      int op_type, bool is_library) {
+    if (!should_dedup(is_library)) return;
+    send_dedup_request(inode, path, op_type, is_library);
 }
 
 // Get treefile* from the FUSE request's userdata.
@@ -228,13 +253,33 @@ static void ll_setattr(fuse_req_t req, fuse_ino_t ino, struct stat* attr,
     if (to_set & FUSE_SET_ATTR_SIZE) {
         // Truncate the host-FS file
         if (S_ISREG(node.metadata.mode)) {
-            string path = host_data_path(idx);
-            if (truncate(path.c_str(), attr->st_size) == -1) {
-                // File may not exist yet; create it
-                int fd = open(path.c_str(), O_CREAT | O_WRONLY, 0644);
-                if (fd >= 0) {
-                    ftruncate(fd, attr->st_size);
-                    close(fd);
+            // CoW break: if this file is shared, we must copy data first
+            // to avoid truncating the canonical copy and destroying other files' data.
+            if (is_file_shared(ino)) {
+                string path = host_data_path(idx);
+                int cow_fd = open(path.c_str(), O_RDWR, 0644);
+                if (cow_fd >= 0) {
+                    if (dedup_cow_break(idx, cow_fd) == 0) {
+                        // Truncate the new private copy
+                        ftruncate(cow_fd, attr->st_size);
+                    }
+                    close(cow_fd);
+                } else {
+                    // File doesn't exist yet — just create it
+                    cow_fd = open(path.c_str(), O_CREAT | O_WRONLY, 0644);
+                    if (cow_fd >= 0) {
+                        ftruncate(cow_fd, attr->st_size);
+                        close(cow_fd);
+                    }
+                }
+            } else {
+                string path = host_data_path(idx);
+                if (truncate(path.c_str(), attr->st_size) == -1) {
+                    int fd = open(path.c_str(), O_CREAT | O_WRONLY, 0644);
+                    if (fd >= 0) {
+                        ftruncate(fd, attr->st_size);
+                        close(fd);
+                    }
                 }
             }
         }
@@ -328,6 +373,9 @@ static void ll_unlink(fuse_req_t req, fuse_ino_t parent, const char* name) {
         return;
     }
 
+    // Notify dedup system before unlinking data
+    dedup_notify_delete(child_idx);
+
     // Remove host-FS data file
     string data_path = host_data_path(child_idx);
     unlink(data_path.c_str()); // OK if it doesn't exist
@@ -393,6 +441,17 @@ static void ll_create(fuse_req_t req, fuse_ino_t parent, const char* name,
     if (existing >= 0) {
         // File exists — open it (like O_CREAT without O_EXCL)
         string data_path = host_data_path(existing);
+        fuse_ino_t ex_ino = index_to_ino(existing);
+
+        // CoW break before truncation on shared files
+        if ((fi->flags & O_TRUNC) && is_file_shared(ex_ino)) {
+            int cow_fd = open(data_path.c_str(), O_RDWR, 0644);
+            if (cow_fd >= 0) {
+                dedup_cow_break(existing, cow_fd);
+                close(cow_fd);
+            }
+        }
+
         int flags = O_RDWR | O_CREAT;
         if (fi->flags & O_TRUNC) {
             flags |= O_TRUNC;
@@ -440,6 +499,9 @@ static void ll_create(fuse_req_t req, fuse_ino_t parent, const char* name,
     tf->arr[child_idx].metadata.uid = ctx->uid;
     tf->arr[child_idx].metadata.gid = ctx->gid;
 
+    // Set library classification based on path
+    tf->arr[child_idx].metadata.is_library = is_library_path(child_path.c_str());
+
     // Create host-FS data file
     string data_path = host_data_path(child_idx);
     int fd = open(data_path.c_str(), O_RDWR | O_CREAT | O_TRUNC, 0644);
@@ -458,9 +520,10 @@ static void ll_create(fuse_req_t req, fuse_ino_t parent, const char* name,
 
     struct fuse_entry_param e;
     fill_entry(&e, tf->arr[child_idx], child_idx);
-    
-    // Notify dedup thread of file insertion
-    send_dedup_request(e.ino, child_path, 1);
+
+    // Notify dedup thread of file insertion (gated by policy)
+    maybe_send_dedup_request(e.ino, child_path, 1,
+                             tf->arr[child_idx].metadata.is_library);
 
     fuse_reply_create(req, &e, fi);
 }
@@ -491,8 +554,15 @@ static void ll_open(fuse_req_t req, fuse_ino_t ino,
         return;
     }
 
-    // Handle O_TRUNC
+    // Handle O_TRUNC — with CoW break if file is shared
     if (fi->flags & O_TRUNC) {
+        if (is_file_shared(ino)) {
+            int cow_fd = fd;
+            if (dedup_cow_break(idx, cow_fd) == 0) {
+                fd = cow_fd;
+                fi->fh = (uint64_t)fd;
+            }
+        }
         ftruncate(fd, 0);
         tf->arr[idx].metadata.size = 0;
     }
@@ -560,6 +630,17 @@ static void ll_write(fuse_req_t req, fuse_ino_t ino, const char* buf,
     }
 
     int fd = (int)fi->fh;
+
+    // CoW break: if this file is sharing data via hard-link, make a private copy
+    if (is_file_shared(ino)) {
+        if (dedup_cow_break(idx, fd) == 0) {
+            fi->fh = (uint64_t)fd;  // fd was reopened during CoW break
+        } else {
+            std::cerr << "[FUSE] CoW break failed for inode " << ino << std::endl;
+            // Continue with write anyway — better than failing
+        }
+    }
+
     ssize_t nwritten = pwrite(fd, buf, size, off);
     if (nwritten < 0) {
         fuse_reply_err(req, errno);
@@ -575,8 +656,9 @@ static void ll_write(fuse_req_t req, fuse_ino_t ino, const char* buf,
     tf->arr[idx].metadata.mtime = time(nullptr);
     tf->arr[idx].metadata.ctime = time(nullptr);
 
-    // Notify dedup thread of file update (Operation: 2)
-    send_dedup_request(ino, string(tf->arr[idx].metadata.name), 2);
+    // Notify dedup thread of file update (gated by policy, debounced on worker)
+    maybe_send_dedup_request(ino, string(tf->arr[idx].metadata.name), 2,
+                             tf->arr[idx].metadata.is_library);
 
     fuse_reply_write(req, (size_t)nwritten);
 }

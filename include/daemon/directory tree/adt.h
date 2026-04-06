@@ -20,6 +20,7 @@ struct metadate{
     time_t mtime;
     time_t ctime;
     nlink_t nlink;
+    bool is_library = false;  // true if this file belongs to a library/dependency
 };
 
 struct treenode{

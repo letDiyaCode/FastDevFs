@@ -22,7 +22,7 @@ FetchContent_MakeAvailable(googletest)
 
 
 # Main executable
-add_executable(fastdevfs src/main.cpp src/dedup_server.cpp)
+add_executable(fastdevfs src/main.cpp src/dedup_server.cpp src/sha256.cpp src/dedup_index.cpp)
 target_include_directories(fastdevfs PRIVATE
     ${FUSE3_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/include
