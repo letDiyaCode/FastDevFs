@@ -11,6 +11,7 @@
 #include "../include/dedup_server.h"
 #include "../include/dedup_ipc.h"
 #include "../include/sha256.h"
+#include "../include/library_dedup.h"
 
 #include <iostream>
 #include <thread>
@@ -40,7 +41,7 @@ static const int POLL_TIMEOUT_MS = 100;   // How often to check timers
 // Globals
 // ============================================================
 
-static DedupIndex       g_index;
+DedupIndex       g_index;
 static std::atomic<bool> g_running{false};
 static std::thread       g_worker_thread;
 
@@ -69,6 +70,13 @@ struct PendingDedup {
 };
 
 static std::unordered_map<uint64_t, PendingDedup> g_pending;
+
+// For directory settlement
+struct PendingDir {
+    int dir_index;
+    std::chrono::steady_clock::time_point fire_time;
+};
+static std::unordered_map<int, PendingDir> g_pending_dirs;
 
 // ============================================================
 // Core dedup logic (called when debounce timer expires)
@@ -193,6 +201,18 @@ static void process_expired_timers() {
         g_pending.erase(inode);
         process_dedup(pd);
     }
+
+    // Process directory timers
+    std::vector<int> expired_dirs;
+    for (auto& [dir_idx, pd] : g_pending_dirs) {
+        if (now >= pd.fire_time) {
+            expired_dirs.push_back(dir_idx);
+        }
+    }
+    for (int dir_idx : expired_dirs) {
+        g_pending_dirs.erase(dir_idx);
+        evaluate_and_deduplicate_library_folder(dir_idx);
+    }
 }
 
 // ============================================================
@@ -207,6 +227,16 @@ static void handle_request(const DedupRequest& req) {
         // This shouldn't arrive via socket if we call dedup_notify_delete directly,
         // but handle it for completeness.
         dedup_notify_delete(file_index);
+        return;
+    }
+
+    if (req.operation_type == 4) {
+        // DIRECTORY UPDATE - refresh settlement timer (e.g., wait 3 seconds)
+        PendingDir pdir;
+        pdir.dir_index = file_index;
+        pdir.fire_time = std::chrono::steady_clock::now()
+                       + std::chrono::seconds(3);
+        g_pending_dirs[file_index] = pdir;
         return;
     }
 

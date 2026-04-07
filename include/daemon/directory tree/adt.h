@@ -31,6 +31,11 @@ struct treenode{
     int parent = -1;
     metadate metadata;
     bool isdeleted = true;
+
+    // Folder-level dedup fields
+    int  dedup_source   = -1; // index of canonical dir node; -1 = this IS canonical
+    bool is_deduped     = false; // true = firstchild is shared with canonical
+    int  dedup_refcount = 1;  // how many dirs share this node's firstchild (canonical only)
 };
 
 // Single treefile struct — this IS the mmap layout.
@@ -55,6 +60,16 @@ void insertfolder(string folderpath, string parentpath, treefile &file1);
 void delete1(string filepath, treefile &file1);
 void change_parent(string filepath, string newparentpath, treefile &file1);
 void initialize(treefile &file1);
+
+// Folder-level dedup: link target as a dedup alias of canonical (shares firstchild).
+// Frees the existing child subtree of target_idx before linking.
+// Caller must hold treefile_mtx.
+void dedup_link(int target_idx, int canonical_idx, treefile &tf);
+
+// CoW break: give target_idx its own private copy of the shared child chain.
+// Must be called before any mutation (create/unlink) inside a deduped dir.
+// Caller must hold treefile_mtx.
+void dedup_break(int target_idx, treefile &tf);
 
 // mmap persistence
 bool mmap_init_treefile(const char* filepath, treefile*& ptr, int& fd, size_t& mapsize);
