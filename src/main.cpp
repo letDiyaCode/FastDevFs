@@ -7,12 +7,14 @@
 #include "../include/daemon/directory tree/adt.h"
 #include "../include/daemon/fuse_lowlevel_ops.h"
 #include "../include/dedup_server.h"
+#include "../include/library_dedup.h"
 
 #define FASTDEVFS_PERSIST_PATH "/tmp/fastdevfs.mmap"
 #define FASTDEVFS_DEDUP_PATH  "/tmp/fastdevfs_dedup.mmap"
+#define FASTDEVFS_LIB_CONFIG  "/tmp/fastdevfs_lib_config.txt"
 
 // Global treefile pointer (mmap'd) and mmap state
-static treefile* file1 = nullptr;
+treefile* file1 = nullptr;
 static int persist_fd = -1;
 static size_t persist_mapsize = 0;
 
@@ -57,6 +59,9 @@ int main(int argc, char *argv[]) {
         fuse_opt_free_args(&args);
         return 1;
     }
+
+    // Initialize the library catalog
+    init_library_catalog(FASTDEVFS_LIB_CONFIG);
 
     // Start the deduplication server with mmap persistence
     start_dedup_server(FASTDEVFS_DEDUP_PATH);

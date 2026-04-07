@@ -86,6 +86,11 @@ void insertfolder(string folderpath, string parentpath, treefile &file1){
     file1.arr[index].metadata.name[NAME_BUF_SIZE - 1] = '\0';
     file1.arr[index].firstchild = -1;
 
+    // Initialize dedup fields (mmap memory is zero-filled, not constructed)
+    file1.arr[index].dedup_source   = -1;
+    file1.arr[index].is_deduped     = false;
+    file1.arr[index].dedup_refcount = 1;
+
     file1.arr[index].metadata.mode = S_IFDIR | 0755;
     file1.arr[index].metadata.uid = getuid();
     file1.arr[index].metadata.gid = getgid();
@@ -166,6 +171,11 @@ void insertfile(string filepath, string parentpath, treefile &file1){
     strncpy(file1.arr[index].metadata.name, filepath.c_str(), NAME_BUF_SIZE - 1);
     file1.arr[index].metadata.name[NAME_BUF_SIZE - 1] = '\0';
     file1.arr[index].firstchild = -1;
+
+    // Initialize dedup fields (mmap memory is zero-filled, not constructed)
+    file1.arr[index].dedup_source   = -1;
+    file1.arr[index].is_deduped     = false;
+    file1.arr[index].dedup_refcount = 1;
 
     file1.arr[index].metadata.mode = S_IFREG | 0644;
     file1.arr[index].metadata.uid = getuid();
@@ -512,4 +522,169 @@ void mmap_sync_treefile(treefile* ptr, size_t mapsize) {
     if (ptr) {
         msync(ptr, mapsize, MS_ASYNC);
     }
+}
+
+// ============================================================
+// Folder-level dedup: node-sharing helpers
+// ============================================================
+
+// Helper: push a single node (NOT its children) back onto the free list.
+// Only call this after the caller has already detached the node from all
+// sibling/parent pointers. Does NOT touch firstchild.
+static void free_node_only(int idx, treefile& tf) {
+    if (idx < 0 || idx >= tf.size) return;
+    hashmap_remove(&tf.hashdata, tf.arr[idx].metadata.name);
+    tf.arr[idx].isdeleted       = true;
+    tf.arr[idx].metadata.name[0] = '\0';
+    tf.arr[idx].metadata.mode   = 0;
+    tf.arr[idx].firstchild      = -1;
+    tf.arr[idx].nextsibling     = -1;
+    tf.arr[idx].prevsibling     = -1;
+    tf.arr[idx].parent          = -1;
+    tf.arr[idx].dedup_source    = -1;
+    tf.arr[idx].is_deduped      = false;
+    tf.arr[idx].dedup_refcount  = 1;
+    tf.arr[idx].nextfree        = tf.firstfree;
+    tf.firstfree                = idx;
+}
+
+// Helper: free every node in the subtree rooted at idx, WITHOUT following
+// firstchild (we never free the shared child chain). Used when clearing out
+// a deduped dir's OWN (already-empty) child list before linking.
+// In the normal case the target dir's firstchild is -1 when dedup_link is
+// called, so this is a no-op; it is a safety net for edge cases.
+static void free_shallow_chain(int head, treefile& tf) {
+    int cur = head;
+    int guard = tf.size;
+    while (cur >= 0 && cur < tf.size && guard-- > 0) {
+        int next = tf.arr[cur].nextsibling;
+        free_node_only(cur, tf);
+        cur = next;
+    }
+}
+
+// dedup_link: make target_idx share canonical_idx's firstchild.
+// • Frees any nodes currently under target_idx (should be empty in practice).
+// • Sets target's firstchild = canonical's firstchild.
+// • Marks target as a dedup alias; increments canonical's refcount.
+// Caller must hold treefile_mtx.
+void dedup_link(int target_idx, int canonical_idx, treefile& tf) {
+    if (target_idx < 0 || target_idx >= tf.size) return;
+    if (canonical_idx < 0 || canonical_idx >= tf.size) return;
+    if (target_idx == canonical_idx) return;
+    if (tf.arr[target_idx].isdeleted || tf.arr[canonical_idx].isdeleted) return;
+
+    // Free whatever (empty) child chain target already has
+    free_shallow_chain(tf.arr[target_idx].firstchild, tf);
+
+    // Share canonical's child chain
+    tf.arr[target_idx].firstchild   = tf.arr[canonical_idx].firstchild;
+    tf.arr[target_idx].is_deduped   = true;
+    tf.arr[target_idx].dedup_source = canonical_idx;
+
+    // Bump the canonical's refcount
+    tf.arr[canonical_idx].dedup_refcount++;
+
+    std::cout << "[NodeShare] Linked " << tf.arr[target_idx].metadata.name
+              << " → canonical[" << canonical_idx << "] "
+              << tf.arr[canonical_idx].metadata.name
+              << " (refcount=" << tf.arr[canonical_idx].dedup_refcount << ")\n";
+}
+
+// dedup_break: give target_idx its own private shallow copy of the shared
+// child chain. Only the immediate children are copied (one level); each
+// copied node keeps the same firstchild pointer (so their subtrees are
+// still shared until a deeper break is needed).
+// After this call target_idx.is_deduped == false and it can be mutated
+// freely without affecting the canonical or other aliases.
+// Caller must hold treefile_mtx.
+void dedup_break(int target_idx, treefile& tf) {
+    if (target_idx < 0 || target_idx >= tf.size) return;
+    if (!tf.arr[target_idx].is_deduped) return;
+
+    int canonical_idx = tf.arr[target_idx].dedup_source;
+
+    // Build a private copy of the child chain (one level shallow)
+    int new_head   = -1;
+    int new_tail   = -1;
+    int src_child  = tf.arr[target_idx].firstchild; // == canonical's firstchild
+    int guard      = tf.size;
+
+    while (src_child >= 0 && src_child < tf.size && guard-- > 0) {
+        if (tf.arr[src_child].isdeleted) {
+            src_child = tf.arr[src_child].nextsibling;
+            continue;
+        }
+
+        // Allocate a new node
+        int new_idx = -1;
+        if (tf.firstfree != -1 && tf.firstfree >= 0 && tf.firstfree < tf.size) {
+            new_idx = tf.firstfree;
+            tf.firstfree = tf.arr[new_idx].nextfree;
+        } else if (tf.nodeallocated < tf.size) {
+            new_idx = tf.nodeallocated++;
+        } else {
+            // No space — abandon, leave target still deduped
+            // Free whatever partial chain we built
+            free_shallow_chain(new_head, tf);
+            std::cerr << "[NodeShare] CoW break failed: tree full\n";
+            return;
+        }
+
+        // Shallow-copy the source node
+        tf.arr[new_idx] = tf.arr[src_child];
+
+        // Build a new path: replace canonical base with target base
+        string src_path  = tf.arr[src_child].metadata.name;
+        string canon_base = tf.arr[canonical_idx].metadata.name;
+        string tgt_base   = tf.arr[target_idx].metadata.name;
+        string new_path;
+        if (src_path.rfind(canon_base, 0) == 0) {
+            new_path = tgt_base + src_path.substr(canon_base.size());
+        } else {
+            new_path = src_path; // fallback: keep original
+        }
+        strncpy(tf.arr[new_idx].metadata.name, new_path.c_str(), NAME_BUF_SIZE - 1);
+        tf.arr[new_idx].metadata.name[NAME_BUF_SIZE - 1] = '\0';
+
+        // Register in hashmap
+        hashmap_set(&tf.hashdata, new_path.c_str(), new_idx);
+
+        // Reset dedup fields on the copy (it starts out independent)
+        tf.arr[new_idx].dedup_source   = -1;
+        tf.arr[new_idx].is_deduped     = false;
+        tf.arr[new_idx].dedup_refcount = 1;
+        tf.arr[new_idx].parent         = target_idx;
+        tf.arr[new_idx].nextfree       = -1;
+        tf.arr[new_idx].isdeleted      = false;
+
+        // Link into new chain
+        tf.arr[new_idx].prevsibling = new_tail;
+        tf.arr[new_idx].nextsibling = -1;
+        if (new_tail >= 0) {
+            tf.arr[new_tail].nextsibling = new_idx;
+        } else {
+            new_head = new_idx;
+        }
+        new_tail = new_idx;
+
+        src_child = tf.arr[src_child].nextsibling;
+    }
+
+    // Point target at its private chain
+    tf.arr[target_idx].firstchild = new_head;
+
+    // Decrement canonical's refcount
+    if (canonical_idx >= 0 && canonical_idx < tf.size) {
+        tf.arr[canonical_idx].dedup_refcount--;
+        if (tf.arr[canonical_idx].dedup_refcount < 1)
+            tf.arr[canonical_idx].dedup_refcount = 1; // canonical itself counts as 1
+    }
+
+    // Clear dedup state on target
+    tf.arr[target_idx].is_deduped   = false;
+    tf.arr[target_idx].dedup_source = -1;
+
+    std::cout << "[NodeShare] CoW break for " << tf.arr[target_idx].metadata.name
+              << " (new private chain head=" << new_head << ")\n";
 }

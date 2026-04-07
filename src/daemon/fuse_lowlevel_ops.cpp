@@ -349,6 +349,18 @@ static void ll_mkdir(fuse_req_t req, fuse_ino_t parent, const char* name,
 
     struct fuse_entry_param e;
     fill_entry(&e, tf->arr[child_idx], child_idx);
+
+    // Classify library status
+    tf->arr[child_idx].metadata.is_library = is_library_path(child_path.c_str());
+
+    // Notify dedup worker: new folder created (starts settlement timer)
+    maybe_send_dedup_request(e.ino, child_path, 4,
+                             tf->arr[child_idx].metadata.is_library);
+
+    // Also poke the parent's settlement timer
+    maybe_send_dedup_request(index_to_ino(parent_idx), parent_path, 4,
+                             tf->arr[parent_idx].metadata.is_library);
+
     fuse_reply_entry(req, &e);
 }
 
@@ -371,6 +383,18 @@ static void ll_unlink(fuse_req_t req, fuse_ino_t parent, const char* name) {
     if (S_ISDIR(tf->arr[child_idx].metadata.mode)) {
         fuse_reply_err(req, EISDIR);
         return;
+    }
+
+    // CoW break: if parent dir is a dedup alias, give it a private child chain
+    // before removing a file — so aliases' views stay intact.
+    if (tf->arr[parent_idx].is_deduped) {
+        // After the break, re-find the child in the new private chain
+        dedup_break(parent_idx, *tf);
+        child_idx = find_child_by_name(parent_idx, name, *tf);
+        if (child_idx < 0) {
+            fuse_reply_err(req, ENOENT);
+            return;
+        }
     }
 
     // Notify dedup system before unlinking data
@@ -413,6 +437,21 @@ static void ll_rmdir(fuse_req_t req, fuse_ino_t parent, const char* name) {
         return;
     }
 
+    // If this dir was a dedup alias, decrement canonical refcount
+    if (tf->arr[child_idx].is_deduped) {
+        int canon = tf->arr[child_idx].dedup_source;
+        if (canon >= 0 && canon < tf->size) {
+            tf->arr[canon].dedup_refcount--;
+            if (tf->arr[canon].dedup_refcount < 1)
+                tf->arr[canon].dedup_refcount = 1;
+        }
+        // Clear the shared firstchild so delete1 won't recurse into
+        // the canonical's child chain
+        tf->arr[child_idx].firstchild  = -1;
+        tf->arr[child_idx].is_deduped  = false;
+        tf->arr[child_idx].dedup_source = -1;
+    }
+
     // Build full path and delete by full path
     string child_path = build_full_path(child_idx, *tf);
     delete1(child_path, *tf);
@@ -421,6 +460,11 @@ static void ll_rmdir(fuse_req_t req, fuse_ino_t parent, const char* name) {
     if (tf->arr[parent_idx].metadata.nlink > 2) {
         tf->arr[parent_idx].metadata.nlink--;
     }
+
+    // Notify dedup worker: parent folder changed
+    string parent_path = build_full_path(parent_idx, *tf);
+    maybe_send_dedup_request(index_to_ino(parent_idx), parent_path, 4,
+                             tf->arr[parent_idx].metadata.is_library);
 
     fuse_reply_err(req, 0);
 }
@@ -483,6 +527,12 @@ static void ll_create(fuse_req_t req, fuse_ino_t parent, const char* name,
         child_path = parent_path + "/" + string(name);
     }
 
+    // CoW break: if parent dir is a dedup alias, give it a private child chain
+    // before inserting a new file into it — so siblings' views are untouched.
+    if (tf->arr[parent_idx].is_deduped) {
+        dedup_break(parent_idx, *tf);
+    }
+
     // Insert file into directory tree using full paths
     insertfile(child_path, parent_path, *tf);
 
@@ -524,6 +574,10 @@ static void ll_create(fuse_req_t req, fuse_ino_t parent, const char* name,
     // Notify dedup thread of file insertion (gated by policy)
     maybe_send_dedup_request(e.ino, child_path, 1,
                              tf->arr[child_idx].metadata.is_library);
+
+    // Notify dir update for folder settlement tracking
+    maybe_send_dedup_request(index_to_ino(parent_idx), parent_path, 4,
+                             tf->arr[parent_idx].metadata.is_library);
 
     fuse_reply_create(req, &e, fi);
 }
@@ -659,6 +713,13 @@ static void ll_write(fuse_req_t req, fuse_ino_t ino, const char* buf,
     // Notify dedup thread of file update (gated by policy, debounced on worker)
     maybe_send_dedup_request(ino, string(tf->arr[idx].metadata.name), 2,
                              tf->arr[idx].metadata.is_library);
+
+    int parent_idx = tf->arr[idx].parent;
+    if (parent_idx != -1) {
+        string parent_path = build_full_path(parent_idx, *tf);
+        maybe_send_dedup_request(index_to_ino(parent_idx), parent_path, 4,
+                                 tf->arr[parent_idx].metadata.is_library);
+    }
 
     fuse_reply_write(req, (size_t)nwritten);
 }

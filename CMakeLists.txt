@@ -22,7 +22,7 @@ FetchContent_MakeAvailable(googletest)
 
 
 # Main executable
-add_executable(fastdevfs src/main.cpp src/dedup_server.cpp src/sha256.cpp src/dedup_index.cpp)
+add_executable(fastdevfs src/main.cpp src/dedup_server.cpp src/sha256.cpp src/dedup_index.cpp src/library_dedup.cpp)
 target_include_directories(fastdevfs PRIVATE
     ${FUSE3_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/include
@@ -49,8 +49,8 @@ target_compile_options(fastdevfs_adt PRIVATE ${FUSE3_CFLAGS_OTHER} -Wno-narrowin
 add_executable(test_adt test/test_adt.cpp)
 target_link_libraries(test_adt PRIVATE 
     fastdevfs_adt
-    GTest::gtest
-    GTest::gtest_main
+    gtest
+    gtest_main
 )
 target_include_directories(test_adt PRIVATE 
     ${CMAKE_SOURCE_DIR}/include
@@ -60,8 +60,8 @@ target_include_directories(test_adt PRIVATE
 add_executable(test_hash test/test_hash.cpp)
 target_link_libraries(test_hash PRIVATE 
     fastdevfs_adt
-    GTest::gtest
-    GTest::gtest_main
+    gtest
+    gtest_main
 )
 target_include_directories(test_hash PRIVATE 
     ${CMAKE_SOURCE_DIR}/include
@@ -71,8 +71,8 @@ target_include_directories(test_hash PRIVATE
 add_executable(test_persistence test/test_persistence.cpp)
 target_link_libraries(test_persistence PRIVATE 
     fastdevfs_adt
-    GTest::gtest
-    GTest::gtest_main
+    gtest
+    gtest_main
 )
 target_include_directories(test_persistence PRIVATE 
     ${CMAKE_SOURCE_DIR}/include
@@ -119,3 +119,15 @@ add_test(NAME AdtTests COMMAND test_adt)
 add_test(NAME HashTests COMMAND test_hash)
 # add_test(NAME FuseOpsTests COMMAND test_fuse_ops)
 add_test(NAME PersistenceTests COMMAND test_persistence)
+
+# Test executable for node-sharing (folder dedup) stress tests
+add_executable(test_node_share test/test_node_share.cpp)
+target_link_libraries(test_node_share PRIVATE
+    fastdevfs_adt
+    gtest
+    gtest_main
+)
+target_include_directories(test_node_share PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+add_test(NAME NodeShareTests COMMAND test_node_share)

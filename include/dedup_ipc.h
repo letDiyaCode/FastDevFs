@@ -7,6 +7,6 @@
 struct DedupRequest {
     uint64_t inode;
     char path[512];
-    int operation_type; // 1 for insertion, 2 for update, 3 for delete
+    int operation_type; // 1 for insertion, 2 for update, 3 for delete, 4 for directory update
     bool is_library;    // whether this file is classified as a library file
 };
