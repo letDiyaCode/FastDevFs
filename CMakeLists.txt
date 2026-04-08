@@ -32,6 +32,13 @@ target_link_libraries(fastdevfs PRIVATE
     ${FUSE3_LIBRARIES}
 )
 target_compile_options(fastdevfs PRIVATE ${FUSE3_CFLAGS_OTHER} -Wno-narrowing)
+# CLI11 (header-only)
+FetchContent_Declare(
+  cli11
+  GIT_REPOSITORY https://github.com/CLIUtils/CLI11.git
+  GIT_TAG        v2.4.2
+)
+FetchContent_MakeAvailable(cli11)
 
 # Library for ADT, Hash, and FUSE low-level operations
 add_library(fastdevfs_adt STATIC
@@ -45,6 +52,46 @@ target_include_directories(fastdevfs_adt PUBLIC
 )
 target_compile_options(fastdevfs_adt PRIVATE ${FUSE3_CFLAGS_OTHER} -Wno-narrowing)
 
+# Shared library for config + IPC + UI + Dedup (used by both daemon and CLI)
+add_library(fastdevfs_common STATIC
+    src/config.cpp
+    src/ipc.cpp
+    src/sha256.cpp
+    src/ui.cpp
+    src/dedup_server.cpp
+    src/dedup_index.cpp
+)
+target_include_directories(fastdevfs_common PUBLIC
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+# ── Main daemon executable (FUSE) ──────────────────────────
+add_executable(fastdevfs
+    src/main.cpp
+)
+target_include_directories(fastdevfs PRIVATE
+    ${FUSE3_INCLUDE_DIRS}
+    ${CMAKE_SOURCE_DIR}/include
+)
+target_link_libraries(fastdevfs PRIVATE
+    fastdevfs_adt
+    fastdevfs_common
+    ${FUSE3_LIBRARIES}
+)
+target_compile_options(fastdevfs PRIVATE ${FUSE3_CFLAGS_OTHER} -Wno-narrowing)
+
+# ── CLI management tool ────────────────────────────────────
+add_executable(fastdevfs-cli
+    src/cli.cpp
+)
+target_include_directories(fastdevfs-cli PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+target_link_libraries(fastdevfs-cli PRIVATE
+    fastdevfs_common
+    CLI11::CLI11
+)
+
 # Library predictor (MLP-based library folder classifier — no FUSE dependency)
 add_library(library_predictor STATIC
     src/library_predictor.cpp
@@ -57,6 +104,8 @@ target_include_directories(library_predictor PUBLIC
 add_executable(test_predictor test/test_predictor.cpp)
 target_link_libraries(test_predictor PRIVATE library_predictor)
 target_include_directories(test_predictor PRIVATE ${CMAKE_SOURCE_DIR}/include)
+
+# ── Tests ──────────────────────────────────────────────────
 
 # Test executable for ADT
 add_executable(test_adt test/test_adt.cpp)
@@ -91,46 +140,11 @@ target_include_directories(test_persistence PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
 
-# Minimal test executable
-
-
-
-
 # Enable testing
 enable_testing()
 
-# Test executable for fs_open
-# add_executable(test_open test/test_open.cpp 
-#     "src/fuse functions/fs_open.cpp"
-#     "src/daemon/directory tree/adt.cpp"
-#     "src/daemon/directory tree/hash.cpp"
-# )
-# target_link_libraries(test_open PRIVATE 
-#     ${FUSE3_LIBRARIES}
-# )
-# target_include_directories(test_open PRIVATE 
-#     ${CMAKE_SOURCE_DIR}/include
-#     ${FUSE3_INCLUDE_DIRS}
-# )
-# target_compile_options(test_open PRIVATE ${FUSE3_CFLAGS_OTHER})
-
-# Test executable for FUSE operations (commented out until FUSE files are created)
-# add_executable(test_fuse_ops test/test_fuse_ops.cpp)
-# target_link_libraries(test_fuse_ops PRIVATE 
-#     fastdevfs_adt
-#     GTest::gtest
-#     GTest::gtest_main
-#     ${FUSE3_LIBRARIES}
-# )
-# target_include_directories(test_fuse_ops PRIVATE 
-#     ${CMAKE_SOURCE_DIR}/include
-#     ${FUSE3_INCLUDE_DIRS}
-# )
-# target_compile_options(test_fuse_ops PRIVATE ${FUSE3_CFLAGS_OTHER} -Wno-narrowing)
-
 add_test(NAME AdtTests COMMAND test_adt)
 add_test(NAME HashTests COMMAND test_hash)
-# add_test(NAME FuseOpsTests COMMAND test_fuse_ops)
 add_test(NAME PersistenceTests COMMAND test_persistence)
 
 # Test executable for node-sharing (folder dedup) stress tests

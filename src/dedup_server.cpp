@@ -21,10 +21,12 @@
 #include <chrono>
 #include <cstring>
 #include <string>
+#include <sstream>
 
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <poll.h>
@@ -44,6 +46,13 @@ static const int POLL_TIMEOUT_MS = 100;   // How often to check timers
 DedupIndex       g_index;
 static std::atomic<bool> g_running{false};
 static std::thread       g_worker_thread;
+
+// ---- Progress tracking for full dedup passes ----
+static std::atomic<bool>     g_pass_running{false};
+static std::atomic<int>      g_pass_processed{0};
+static std::atomic<int>      g_pass_total{0};
+static std::atomic<int>      g_pass_duplicates{0};
+static std::atomic<uint64_t> g_pass_saved_bytes{0};
 
 // ============================================================
 // Helpers
@@ -526,4 +535,162 @@ bool should_dedup(bool is_library) {
         default:
             return true;
     }
+}
+
+// ============================================================
+// Full Dedup Pass — triggered via CLI for manual deduplication
+// ============================================================
+
+// Scan all files and apply dedup logic
+static void run_full_dedup_pass() {
+    std::cout << "[Dedup] Starting full filesystem dedup pass..." << std::endl;
+
+    g_pass_running.store(true);
+    g_pass_processed.store(0);
+    g_pass_duplicates.store(0);
+    g_pass_saved_bytes.store(0);
+
+    // Count total files first
+    int total_files = 0;
+    std::string data_dir(FASTDEVFS_DATA_DIR);
+    for (int i = 0; i < 100000; i++) {
+        std::string fpath = data_dir + "/" + std::to_string(i);
+        struct stat st;
+        if (stat(fpath.c_str(), &st) == 0 && S_ISREG(st.st_mode)) {
+            total_files++;
+        }
+    }
+
+    g_pass_total.store(total_files);
+
+    if (total_files == 0) {
+        g_pass_running.store(false);
+        std::cout << "[Dedup] No files to dedup" << std::endl;
+        return;
+    }
+
+    // Process all files
+    for (int i = 0; i < 100000; i++) {
+        if (!g_running.load()) break;
+
+        std::string fpath = data_dir + "/" + std::to_string(i);
+        struct stat st;
+        if (stat(fpath.c_str(), &st) != 0 || !S_ISREG(st.st_mode) || st.st_size == 0) {
+            continue;
+        }
+
+        // Create a pending dedup entry for this file
+        PendingDedup pd;
+        pd.inode = i + 1;  // Convert back to inode
+        pd.file_index = i;
+        pd.path = fpath;
+        pd.is_library = false;  // Assume not library; actual logic per policy
+        pd.fire_time = std::chrono::steady_clock::now(); // Process immediately
+
+        // Process the dedup
+        process_dedup(pd);
+        g_pass_processed.store(g_pass_processed.load() + 1);
+
+        // Track duplicates (simple heuristic: if refcount > 1)
+        g_index.lock();
+        std::string hash = g_index.get_inode_hash(i);
+        if (!hash.empty()) {
+            bool is_lib = g_index.get_inode_is_library(i);
+            DedupEntry* entry = g_index.lookup(hash.c_str(), is_lib);
+            if (entry && entry->refcount > 1) {
+                g_pass_duplicates.store(g_pass_duplicates.load() + 1);
+                // Rough estimate of saved bytes
+                uint64_t saved = (entry->refcount - 1) * st.st_size;
+                g_pass_saved_bytes.store(g_pass_saved_bytes.load() + saved);
+            }
+        }
+        g_index.unlock();
+    }
+
+    g_pass_running.store(false);
+    std::cout << "[Dedup] Full dedup pass complete" << std::endl;
+}
+
+void trigger_dedup_pass() {
+    // If a pass is already running, don't start a new one
+    if (g_pass_running.load()) {
+        std::cerr << "[Dedup] Dedup pass already running" << std::endl;
+        return;
+    }
+
+    // Run the pass _synchronously_ for now
+    // In a production system, this might be spawned in thread pool
+    run_full_dedup_pass();
+}
+
+bool get_dedup_pass_progress(int& processed, int& total, int& duplicates, uint64_t& saved_bytes) {
+    if (!g_pass_running.load() && g_pass_total.load() == 0) {
+        return false;
+    }
+
+    processed = g_pass_processed.load();
+    total = g_pass_total.load();
+    duplicates = g_pass_duplicates.load();
+    saved_bytes = g_pass_saved_bytes.load();
+
+    return g_pass_running.load();
+}
+
+bool is_dedup_pass_running() {
+    return g_pass_running.load();
+}
+
+// ============================================================
+// Query Deduplicated Files
+// ============================================================
+
+std::string get_deduplicated_files_info(int& total_duplicates, uint64_t& total_saved_bytes) {
+    total_duplicates = 0;
+    total_saved_bytes = 0;
+
+    g_index.lock();
+
+    // Scan through reverse map to find files with duplicates (refcount > 1)
+    std::ostringstream result;
+    bool first = true;
+
+    // Find all entries with refcount > 1
+    for (int i = 0; i < MAX_DEDUP_INODES; i++) {
+        std::string hash = g_index.get_inode_hash(i);
+        if (hash.empty()) continue;
+
+        bool is_lib = g_index.get_inode_is_library(i);
+        DedupEntry* entry = g_index.lookup(hash.c_str(), is_lib);
+
+        if (entry && entry->refcount > 1) {
+            // This file is deduplicated (linked to canonical)
+            std::string data_path = FASTDEVFS_DATA_DIR + std::string("/") + std::to_string(i);
+            struct stat st;
+            
+            uint64_t file_size = 0;
+            if (stat(data_path.c_str(), &st) == 0 && S_ISREG(st.st_mode)) {
+                file_size = st.st_size;
+            }
+
+            if (!first) result << "|";
+            result << "file_idx=" << i
+                   << ",refcount=" << entry->refcount
+                   << ",size=" << file_size
+                   << ",hash=" << hash.substr(0, 16) << "...";
+
+            // Count this as a duplicate occurrence
+            total_duplicates++;
+            
+            // Saved bytes: (refcount - 1) * file_size
+            if (entry->refcount > 1) {
+                total_saved_bytes += (entry->refcount - 1) * file_size;
+            }
+
+            first = false;
+        }
+    }
+
+    g_index.unlock();
+
+    return result.str();
 }

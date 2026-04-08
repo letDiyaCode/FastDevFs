@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../include/dedup_index.h"
+#include <cstdint>
+#include <atomic>
 
 // Starts the dedup server threads (worker + timer).
 // mmap_path: path for the persistent dedup index file.
@@ -31,3 +33,25 @@ DedupPolicy get_dedup_policy();
 
 // Check if a dedup request should be sent based on current policy.
 bool should_dedup(bool is_library);
+
+// ---- Full Dedup Pass (triggered via CLI) ----
+
+// Trigger a full filesystem dedup pass (full scan and deduplication).
+// This scans all files in FASTDEVFS_DATA_DIR and applies dedup logic.
+// Returns immediately; progress can be queried via get_dedup_pass_progress().
+void trigger_dedup_pass();
+
+// Get progress of the currently running dedup pass.
+// Returns true if a pass is running, false otherwise.
+// Fills in: processed, total, duplicates, saved_bytes
+bool get_dedup_pass_progress(int& processed, int& total, int& duplicates, uint64_t& saved_bytes);
+
+// Check if a dedup pass is currently running.
+bool is_dedup_pass_running();
+
+// ---- Dedup Statistics Query ----
+
+// Get deduplicated files (files with refcount > 1)
+// Returns a string with pipe-delimited entries: "file_index=refcount|..."
+// Also fills in total_duplicates and total_saved_bytes
+std::string get_deduplicated_files_info(int& total_duplicates, uint64_t& total_saved_bytes);
