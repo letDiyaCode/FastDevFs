@@ -45,6 +45,19 @@ target_include_directories(fastdevfs_adt PUBLIC
 )
 target_compile_options(fastdevfs_adt PRIVATE ${FUSE3_CFLAGS_OTHER} -Wno-narrowing)
 
+# Library predictor (MLP-based library folder classifier — no FUSE dependency)
+add_library(library_predictor STATIC
+    src/library_predictor.cpp
+)
+target_include_directories(library_predictor PUBLIC
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+# Test executable for library predictor
+add_executable(test_predictor test/test_predictor.cpp)
+target_link_libraries(test_predictor PRIVATE library_predictor)
+target_include_directories(test_predictor PRIVATE ${CMAKE_SOURCE_DIR}/include)
+
 # Test executable for ADT
 add_executable(test_adt test/test_adt.cpp)
 target_link_libraries(test_adt PRIVATE 
