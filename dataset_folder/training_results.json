@@ -1,0 +1,92 @@
+{
+  "LogisticRegression": {
+    "model_name": "LogisticRegression",
+    "accuracy": 0.9907301587301587,
+    "precision": 0.9920570264765785,
+    "recall": 0.9930682976554536,
+    "f1": 0.9925624044829343,
+    "roc_auc": 0.9978499744299947,
+    "confusion_matrix": [
+      [
+        5862,
+        78
+      ],
+      [
+        68,
+        9742
+      ]
+    ]
+  },
+  "LinearSVM": {
+    "model_name": "LinearSVM",
+    "accuracy": 0.9905396825396825,
+    "precision": 0.9928578716457505,
+    "recall": 0.991946992864424,
+    "f1": 0.9924022232420581,
+    "roc_auc": 0.99813311504443,
+    "confusion_matrix": [
+      [
+        5870,
+        70
+      ],
+      [
+        79,
+        9731
+      ]
+    ]
+  },
+  "MLP-ReLU": {
+    "model_name": "MLP-ReLU",
+    "accuracy": 0.9938412698412699,
+    "precision": 0.9952075048434792,
+    "recall": 0.9949031600407747,
+    "f1": 0.9950553091706174,
+    "roc_auc": 0.9993621656593114,
+    "confusion_matrix": [
+      [
+        5893,
+        47
+      ],
+      [
+        50,
+        9760
+      ]
+    ]
+  },
+  "MLP-Tanh": {
+    "model_name": "MLP-Tanh",
+    "accuracy": 0.9931428571428571,
+    "precision": 0.9935897435897436,
+    "recall": 0.9954128440366973,
+    "f1": 0.9945004582951421,
+    "roc_auc": 0.9988404431676602,
+    "confusion_matrix": [
+      [
+        5877,
+        63
+      ],
+      [
+        45,
+        9765
+      ]
+    ]
+  },
+  "MLP-Sigmoid": {
+    "model_name": "MLP-Sigmoid",
+    "accuracy": 0.9928253968253968,
+    "precision": 0.9934860050890585,
+    "recall": 0.9950050968399592,
+    "f1": 0.994244970715559,
+    "roc_auc": 0.9979155812285272,
+    "confusion_matrix": [
+      [
+        5876,
+        64
+      ],
+      [
+        49,
+        9761
+      ]
+    ]
+  }
+}

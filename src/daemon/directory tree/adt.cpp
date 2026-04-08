@@ -1,6 +1,5 @@
 #include <iostream>
 #include "../../../include/daemon/directory tree/adt.h"
-#include "../../../include/daemon/directory tree/hash.h"
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -14,13 +13,6 @@ recursive_mutex treefile_mtx;
 // Max length for the path buffer in metadata.name
 static constexpr size_t NAME_BUF_SIZE = 300;
 
-int hashindex(string filepath, treefile &file1){
-    lock_guard<recursive_mutex> lock(treefile_mtx);
-    if (!hashmap_has(&file1.hashdata, filepath.c_str())) {
-        return -1;
-    }
-    return hashmap_get(&file1.hashdata, filepath.c_str());
-}
 
 void insertfolder(string folderpath, string parentpath, treefile &file1){
     lock_guard<recursive_mutex> lock(treefile_mtx);
@@ -49,8 +41,7 @@ void insertfolder(string folderpath, string parentpath, treefile &file1){
         return; // full
     }
 
-    // Add to hash map using full path as key
-    hashmap_set(&file1.hashdata, folderpath.c_str(), index);
+    
 
     // Determine parent index
     int parentindex = 0;
