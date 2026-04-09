@@ -16,6 +16,7 @@
 #include "../include/ipc.h"
 #include "../include/sha256.h"
 #include "../include/ui.h"
+#include "../include/library_manager.h"
 
 #include <iostream>
 #include <string>
@@ -950,6 +951,102 @@ static void cmd_config_get(const std::string& key) {
 }
 
 // ============================================================
+// Command: library add
+// ============================================================
+
+static std::string g_tracked_libs_path = FASTDEVFS_DEFAULT_TRACKED_LIBS_PATH;
+
+static void cmd_library_add(const std::string& name) {
+    if (name.empty()) {
+        ui::print_error("Library name cannot be empty");
+        exit(1);
+    }
+
+    vlog("Adding library: " + name);
+
+    if (add_tracked_library(name, g_tracked_libs_path)) {
+        ui::print_success("Library added: " + ui::colored(name, ui::Color::CYAN));
+    } else {
+        ui::print_warning("Library already exists: " + ui::colored(name, ui::Color::YELLOW));
+    }
+    std::cout << std::endl;
+}
+
+// ============================================================
+// Command: library check
+// ============================================================
+
+static void cmd_library_check(const std::string& name) {
+    if (name.empty()) {
+        ui::print_error("Library name cannot be empty");
+        exit(1);
+    }
+
+    vlog("Checking library: " + name);
+
+    if (is_tracked_library(name, g_tracked_libs_path)) {
+        ui::print_success("Found in tracked libraries: " + ui::colored(name, ui::Color::GREEN));
+    } else {
+        ui::print_error("Not found in tracked libraries: " + ui::colored(name, ui::Color::YELLOW));
+    }
+    std::cout << std::endl;
+}
+
+// ============================================================
+// Command: library list
+// ============================================================
+
+static void cmd_library_list() {
+    auto libs = get_all_tracked_libraries(g_tracked_libs_path);
+
+    ui::print_header("Tracked Libraries");
+    std::cout << ui::format_kv("File", g_tracked_libs_path) << std::endl;
+    std::cout << ui::format_kv_colored("Total", std::to_string(libs.size()), ui::Color::CYAN)
+              << std::endl;
+    ui::print_divider(50);
+
+    if (libs.empty()) {
+        ui::print_info("No libraries tracked yet");
+        std::cout << "  Use: " << ui::colored("fastdevfs-cli library add <name>", ui::Color::YELLOW)
+                  << std::endl;
+    } else {
+        // Print in columns for readability
+        const int cols = 3;
+        const int col_width = 28;
+        for (size_t i = 0; i < libs.size(); i++) {
+            if (i % cols == 0) {
+                std::cout << "  ";
+            }
+            std::cout << std::left << std::setw(col_width) << libs[i];
+            if ((i + 1) % cols == 0 || i + 1 == libs.size()) {
+                std::cout << std::endl;
+            }
+        }
+    }
+    std::cout << std::endl;
+}
+
+// ============================================================
+// Command: library remove
+// ============================================================
+
+static void cmd_library_remove(const std::string& name) {
+    if (name.empty()) {
+        ui::print_error("Library name cannot be empty");
+        exit(1);
+    }
+
+    vlog("Removing library: " + name);
+
+    if (remove_tracked_library(name, g_tracked_libs_path)) {
+        ui::print_success("Library removed: " + ui::colored(name, ui::Color::CYAN));
+    } else {
+        ui::print_error("Library not found: " + ui::colored(name, ui::Color::YELLOW));
+    }
+    std::cout << std::endl;
+}
+
+// ============================================================
 // Command: clean — remove stale PID/socket files
 // ============================================================
 
@@ -1058,6 +1155,36 @@ int main(int argc, char* argv[]) {
     auto* clean_cmd = app.add_subcommand("clean", "Remove stale PID/socket files from a crashed daemon");
     clean_cmd->callback([&]() {
         cmd_clean();
+    });
+
+    // ── library ────────────────────────────────────────────
+    auto* lib_cmd = app.add_subcommand("library", "Manage tracked library whitelist");
+    lib_cmd->require_subcommand(1);
+
+    auto* lib_add = lib_cmd->add_subcommand("add", "Add a library to the tracked list");
+    std::string lib_add_name;
+    lib_add->add_option("name", lib_add_name, "Library/package name")->required();
+    lib_add->callback([&]() {
+        cmd_library_add(lib_add_name);
+    });
+
+    auto* lib_check = lib_cmd->add_subcommand("check", "Check if a library is tracked");
+    std::string lib_check_name;
+    lib_check->add_option("name", lib_check_name, "Library/package name")->required();
+    lib_check->callback([&]() {
+        cmd_library_check(lib_check_name);
+    });
+
+    auto* lib_list = lib_cmd->add_subcommand("list", "List all tracked libraries");
+    lib_list->callback([&]() {
+        cmd_library_list();
+    });
+
+    auto* lib_remove = lib_cmd->add_subcommand("remove", "Remove a library from the tracked list");
+    std::string lib_remove_name;
+    lib_remove->add_option("name", lib_remove_name, "Library/package name")->required();
+    lib_remove->callback([&]() {
+        cmd_library_remove(lib_remove_name);
     });
 
     // ── scan ───────────────────────────────────────────────

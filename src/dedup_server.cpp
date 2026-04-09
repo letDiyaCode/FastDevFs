@@ -11,7 +11,6 @@
 #include "../include/dedup_server.h"
 #include "../include/dedup_ipc.h"
 #include "../include/sha256.h"
-#include "../include/library_dedup.h"
 
 #include <iostream>
 #include <thread>
@@ -46,6 +45,13 @@ static const int POLL_TIMEOUT_MS = 100;   // How often to check timers
 DedupIndex       g_index;
 static std::atomic<bool> g_running{false};
 static std::thread       g_worker_thread;
+
+// Callback for library dedup evaluation — set by daemon, null in CLI.
+static void (*g_library_dedup_fn)(int) = nullptr;
+
+void register_library_dedup_callback(void (*fn)(int)) {
+    g_library_dedup_fn = fn;
+}
 
 // ---- Progress tracking for full dedup passes ----
 static std::atomic<bool>     g_pass_running{false};
@@ -220,7 +226,9 @@ static void process_expired_timers() {
     }
     for (int dir_idx : expired_dirs) {
         g_pending_dirs.erase(dir_idx);
-        evaluate_and_deduplicate_library_folder(dir_idx);
+        if (g_library_dedup_fn) {
+            g_library_dedup_fn(dir_idx);
+        }
     }
 }
 

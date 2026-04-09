@@ -34,6 +34,11 @@ DedupPolicy get_dedup_policy();
 // Check if a dedup request should be sent based on current policy.
 bool should_dedup(bool is_library);
 
+// Register a callback for library dedup evaluation.
+// Called by daemon on startup to hook in evaluate_and_deduplicate_library_folder.
+// CLI does not call this, so directory settlement timers are safely skipped.
+void register_library_dedup_callback(void (*fn)(int));
+
 // ---- Full Dedup Pass (triggered via CLI) ----
 
 // Trigger a full filesystem dedup pass (full scan and deduplication).

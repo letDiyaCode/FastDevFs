@@ -9,6 +9,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(FUSE3 REQUIRED fuse3)
 
+# ── External Dependencies ──────────────────────────────────
+
 # Google Test
 include(FetchContent)
 FetchContent_Declare(
@@ -20,18 +22,6 @@ set(BUILD_GMOCK ON CACHE BOOL "" FORCE)
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-
-# Main executable
-add_executable(fastdevfs src/main.cpp src/dedup_server.cpp src/sha256.cpp src/dedup_index.cpp src/library_dedup.cpp)
-target_include_directories(fastdevfs PRIVATE
-    ${FUSE3_INCLUDE_DIRS}
-    ${CMAKE_SOURCE_DIR}/include
-)
-target_link_libraries(fastdevfs PRIVATE
-    fastdevfs_adt
-    ${FUSE3_LIBRARIES}
-)
-target_compile_options(fastdevfs PRIVATE ${FUSE3_CFLAGS_OTHER} -Wno-narrowing)
 # CLI11 (header-only)
 FetchContent_Declare(
   cli11
@@ -39,6 +29,8 @@ FetchContent_Declare(
   GIT_TAG        v2.4.2
 )
 FetchContent_MakeAvailable(cli11)
+
+# ── Static Libraries ──────────────────────────────────────
 
 # Library for ADT, Hash, and FUSE low-level operations
 add_library(fastdevfs_adt STATIC
@@ -60,14 +52,18 @@ add_library(fastdevfs_common STATIC
     src/ui.cpp
     src/dedup_server.cpp
     src/dedup_index.cpp
+    src/library_manager.cpp
 )
 target_include_directories(fastdevfs_common PUBLIC
     ${CMAKE_SOURCE_DIR}/include
 )
 
 # ── Main daemon executable (FUSE) ──────────────────────────
+# library_dedup.cpp is here (not in fastdevfs_common) because it
+# depends on daemon globals (file1, treefile_mtx, dedup_link).
 add_executable(fastdevfs
     src/main.cpp
+    src/library_dedup.cpp
 )
 target_include_directories(fastdevfs PRIVATE
     ${FUSE3_INCLUDE_DIRS}
@@ -107,52 +103,50 @@ target_include_directories(test_predictor PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
 # ── Tests ──────────────────────────────────────────────────
 
+enable_testing()
+
 # Test executable for ADT
 add_executable(test_adt test/test_adt.cpp)
-target_link_libraries(test_adt PRIVATE 
+target_link_libraries(test_adt PRIVATE
     fastdevfs_adt
-    gtest
-    gtest_main
+    GTest::gtest
+    GTest::gtest_main
 )
-target_include_directories(test_adt PRIVATE 
+target_include_directories(test_adt PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
+add_test(NAME AdtTests COMMAND test_adt)
 
 # Test executable for Hash
 add_executable(test_hash test/test_hash.cpp)
-target_link_libraries(test_hash PRIVATE 
+target_link_libraries(test_hash PRIVATE
     fastdevfs_adt
-    gtest
-    gtest_main
+    GTest::gtest
+    GTest::gtest_main
 )
-target_include_directories(test_hash PRIVATE 
+target_include_directories(test_hash PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
+add_test(NAME HashTests COMMAND test_hash)
 
 # Test executable for Persistence
 add_executable(test_persistence test/test_persistence.cpp)
-target_link_libraries(test_persistence PRIVATE 
+target_link_libraries(test_persistence PRIVATE
     fastdevfs_adt
-    gtest
-    gtest_main
+    GTest::gtest
+    GTest::gtest_main
 )
-target_include_directories(test_persistence PRIVATE 
+target_include_directories(test_persistence PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
-
-# Enable testing
-enable_testing()
-
-add_test(NAME AdtTests COMMAND test_adt)
-add_test(NAME HashTests COMMAND test_hash)
 add_test(NAME PersistenceTests COMMAND test_persistence)
 
 # Test executable for node-sharing (folder dedup) stress tests
 add_executable(test_node_share test/test_node_share.cpp)
 target_link_libraries(test_node_share PRIVATE
     fastdevfs_adt
-    gtest
-    gtest_main
+    GTest::gtest
+    GTest::gtest_main
 )
 target_include_directories(test_node_share PRIVATE
     ${CMAKE_SOURCE_DIR}/include

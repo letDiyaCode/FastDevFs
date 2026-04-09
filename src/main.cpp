@@ -183,6 +183,9 @@ int main(int argc, char *argv[]) {
     // Initialize the library catalog
     init_library_catalog(FASTDEVFS_LIB_CONFIG);
 
+    // Register library dedup callback so dedup server can invoke it
+    register_library_dedup_callback(evaluate_and_deduplicate_library_folder);
+
     // ── Start deduplication server ──────────────────────────
     start_dedup_server(dedup_path.c_str());
 
