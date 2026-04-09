@@ -44,7 +44,6 @@ int        hashmap_remove(hashmap_t *m, const char *key);         /* removes key
 void       hashmap_clear(hashmap_t *m);                           /* clears all entries */
 size_t     hashmap_size(hashmap_t *m);
 
-
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
