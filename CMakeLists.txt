@@ -61,6 +61,7 @@ target_include_directories(fastdevfs PRIVATE
 target_link_libraries(fastdevfs PRIVATE
     fastdevfs_adt
     fastdevfs_common
+    library_predictor
     ${FUSE3_LIBRARIES}
 )
 target_compile_options(fastdevfs PRIVATE ${FUSE3_CFLAGS_OTHER} -Wno-narrowing)
@@ -88,11 +89,9 @@ enable_testing()
 add_executable(test_predictor test/test_predictor.cpp)
 target_link_libraries(test_predictor PRIVATE 
     library_predictor
-    GTest::gtest
-    GTest::gtest_main
 )
 target_include_directories(test_predictor PRIVATE ${CMAKE_SOURCE_DIR}/include)
-add_test(NAME PredictorTests COMMAND test_predictor)
+add_test(NAME PredictorTests COMMAND test_predictor ${CMAKE_SOURCE_DIR}/models/model_params.bin)
 
 add_executable(test_adt test/test_adt.cpp)
 target_link_libraries(test_adt PRIVATE
@@ -129,3 +128,21 @@ target_link_libraries(test_node_share PRIVATE
 )
 target_include_directories(test_node_share PRIVATE ${CMAKE_SOURCE_DIR}/include)
 add_test(NAME NodeShareTests COMMAND test_node_share)
+
+# Test executable for library detection (two-tier: binary search + MLP)
+add_executable(test_library_detection test/test_library_detection.cpp
+    src/library_dedup.cpp
+    src/sha256.cpp
+    src/dedup_index.cpp
+)
+target_link_libraries(test_library_detection PRIVATE
+    fastdevfs_adt
+    library_predictor
+)
+target_include_directories(test_library_detection PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+    ${FUSE3_INCLUDE_DIRS}
+)
+target_compile_options(test_library_detection PRIVATE ${FUSE3_CFLAGS_OTHER} -Wno-narrowing)
+target_compile_definitions(test_library_detection PRIVATE SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+add_test(NAME LibraryDetectionTests COMMAND test_library_detection)

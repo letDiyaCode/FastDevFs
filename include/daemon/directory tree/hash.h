@@ -28,18 +28,20 @@ typedef struct hashmap_t {
 } hashmap_t;
 
 /* Create/destroy */
-hashmap_t *hashmap_create(size_t initial_buckets);
+hashmap_t *hashmap_create(size_t initial_buckets); /* initial_buckets ignored, kept for API compatibility */
 void       hashmap_destroy(hashmap_t *m);
 
-/* Return pointer to the integer value for key */
+/* Return pointer to the integer value for key.
+   If key does not exist it is inserted with initial value 0.
+   Returns NULL if table is full or key is too long. */
 int       *hashmap_ref(hashmap_t *m, const char *key);
 
 /* Convenience helpers */
-void       hashmap_set(hashmap_t *m, const char *key, int value);
-int        hashmap_get(hashmap_t *m, const char *key);
-int        hashmap_has(hashmap_t *m, const char *key);
-int        hashmap_remove(hashmap_t *m, const char *key);
-void       hashmap_clear(hashmap_t *m);
+void       hashmap_set(hashmap_t *m, const char *key, int value); /* sets value (creates if required) */
+int        hashmap_get(hashmap_t *m, const char *key);            /* returns value (0 if not present) */
+int        hashmap_has(hashmap_t *m, const char *key);            /* returns 1 if present, 0 otherwise */
+int        hashmap_remove(hashmap_t *m, const char *key);         /* removes key, returns 1 if removed, 0 if not found */
+void       hashmap_clear(hashmap_t *m);                           /* clears all entries */
 size_t     hashmap_size(hashmap_t *m);
 
 #ifdef __cplusplus

@@ -19,6 +19,8 @@
 #define FASTDEVFS_PERSIST_PATH "/tmp/fastdevfs.mmap"
 #define FASTDEVFS_DEDUP_PATH  "/tmp/fastdevfs_dedup.mmap"
 #define FASTDEVFS_LIB_CONFIG  "/tmp/fastdevfs_lib_config.txt"
+#define FASTDEVFS_MODEL_PATH  "models/model_params.bin"
+#define FASTDEVFS_TRACKED_JSON "tracked_libraries.json"
 
 // Global treefile pointer (mmap'd) and mmap state
 treefile* file1 = nullptr;
@@ -182,6 +184,10 @@ int main(int argc, char *argv[]) {
 
     // Initialize the library catalog
     init_library_catalog(FASTDEVFS_LIB_CONFIG);
+
+    // Initialize two-tier library detection
+    init_tracked_libraries(FASTDEVFS_TRACKED_JSON);
+    init_predictor(FASTDEVFS_MODEL_PATH);
 
     // Register library dedup callback so dedup server can invoke it
     register_library_dedup_callback(evaluate_and_deduplicate_library_folder);

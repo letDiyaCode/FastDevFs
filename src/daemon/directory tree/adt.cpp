@@ -13,13 +13,14 @@ recursive_mutex treefile_mtx;
 // Max length for the path buffer in metadata.name
 static constexpr size_t NAME_BUF_SIZE = 300;
 
-
-int hashindex(string filepath, treefile &file1) {
+int hashindex(string filepath, treefile &file1){
     lock_guard<recursive_mutex> lock(treefile_mtx);
-    if (!hashmap_has(&file1.hashdata, filepath.c_str())) {
+    if (!hashmap_has(&file1.hashdata, filepath.c_str()))
         return -1;
-    }
-    return hashmap_get(&file1.hashdata, filepath.c_str());
+    int idx = hashmap_get(&file1.hashdata, filepath.c_str());
+    if (idx < 0 || idx >= file1.size || file1.arr[idx].isdeleted)
+        return -1;
+    return idx;
 }
 
 void insertfolder(string folderpath, string parentpath, treefile &file1){
@@ -49,7 +50,8 @@ void insertfolder(string folderpath, string parentpath, treefile &file1){
         return; // full
     }
 
-    
+    // Add to hash map using full path as key
+    hashmap_set(&file1.hashdata, folderpath.c_str(), index);
 
     // Determine parent index
     int parentindex = 0;
