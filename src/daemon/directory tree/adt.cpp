@@ -14,6 +14,14 @@ recursive_mutex treefile_mtx;
 static constexpr size_t NAME_BUF_SIZE = 300;
 
 
+int hashindex(string filepath, treefile &file1) {
+    lock_guard<recursive_mutex> lock(treefile_mtx);
+    if (!hashmap_has(&file1.hashdata, filepath.c_str())) {
+        return -1;
+    }
+    return hashmap_get(&file1.hashdata, filepath.c_str());
+}
+
 void insertfolder(string folderpath, string parentpath, treefile &file1){
     lock_guard<recursive_mutex> lock(treefile_mtx);
 
