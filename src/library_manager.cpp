@@ -167,12 +167,23 @@ bool is_tracked_library(const std::string& name, const std::string& path) {
     if (search.empty()) return false;
 
     auto libs = read_tracked_libs(path);
-    for (const auto& lib : libs) {
-        if (to_lower(lib) == search) {
-            return true;
-        }
-    }
-    return false;
+    
+    // Sort libraries for binary search (case-insensitive)
+    std::sort(libs.begin(), libs.end(), [](const std::string& a, const std::string& b) {
+        std::string la = a, lb = b;
+        std::transform(la.begin(), la.end(), la.begin(), ::tolower);
+        std::transform(lb.begin(), lb.end(), lb.begin(), ::tolower);
+        return la < lb;
+    });
+    
+    // Binary search using lower_bound (case-insensitive comparison)
+    auto it = std::lower_bound(libs.begin(), libs.end(), search,
+                                [](const std::string& lib, const std::string& search_val) {
+                                    std::string lower_lib = to_lower(lib);
+                                    return lower_lib < search_val;
+                                });
+    
+    return it != libs.end() && to_lower(*it) == search;
 }
 
 bool add_tracked_library(const std::string& name, const std::string& path) {
